@@ -52,8 +52,8 @@
     const ctx = canvas.getContext('2d');
     const b1 = document.getElementById('bolinha1'), b2 = document.getElementById('bolinha2');
 
-    // Função que redesenha tudo o que já foi feito
-    function redesenharTudo() {
+    // Função única de desenho
+    function atualizarCanvas() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         cabosConcluidos.forEach(c => {
             let img = new Image();
@@ -63,10 +63,10 @@
     }
 
     function iniciarCabo() {
-        if (indiceAtual >= cabos.length) return console.log("Finalizado!");
+        if (indiceAtual >= cabos.length) return;
         const c = cabos[indiceAtual];
         b1.style.left = c.b1.x + "%"; b1.style.top = c.b1.y + "%";
-        b1.style.display = "block";
+        b1.style.backgroundColor = c.cor; b1.style.display = "block";
         b1.onclick = () => {
             b1.style.backgroundColor = "green";
             b2.style.left = c.b2.x + "%"; b2.style.top = c.b2.y + "%";
@@ -80,26 +80,24 @@
 
     function animar(c) {
         let frame = 1;
-        console.log("Iniciando animação de: " + c.nome);
         let intv = setInterval(() => {
-            let caminho = `${c.nome}/quadro${frame.toString().padStart(4, '0')}.png`;
             let img = new Image();
-            img.src = caminho;
+            img.src = `${c.nome}/quadro${frame.toString().padStart(4, '0')}.png`;
             
-            // Desenha o frame atual
+            // Desenha o frame atual por cima do que já existe
             img.onload = () => {
-                redesenharTudo();
-                ctx.drawImage(img, 0, 0);
+                atualizarCanvas(); // Redesenha os anteriores
+                ctx.drawImage(img, 0, 0); // Desenha o frame atual
             };
 
             if (++frame > c.total) {
                 clearInterval(intv);
                 cabosConcluidos.push(c);
-                console.log("Concluiu: " + c.nome);
                 indiceAtual++;
-                iniciarCabo();
+                // Pequeno atraso antes de permitir o próximo clique
+                setTimeout(iniciarCabo, 500); 
             }
-        }, 30); // Diminuí para 30ms para ser mais rápido
+        }, 50);
     }
 
     iniciarCabo();
