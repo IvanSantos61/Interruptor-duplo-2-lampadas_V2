@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>Simulador de Cabeamento</title>
-    <style>
-        #game-container {
-            position: relative;
-            width: 800px;
-            height: 600px;
-            /* Fundo alterado para ambiente.jpg */
-            background: url('ambiente.jpg') no-repeat;
-            margin: 0 auto;
-            border: 1px solid #ccc;
-        }
-        .bolinha {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            position: absolute;
-            cursor: pointer;
-            display: none;
-            border: 2px solid white;
-            z-index: 10;
-            box-shadow: 0 0 5px rgba(0,0,0,0.5);
-        }
-    </style>
+  <style>
+    #game-container {
+        position: relative;
+        width: 100vw;   /* Ocupa a largura total da janela */
+        height: 100vh;  /* Ocupa a altura total da janela */
+        background-image: url('ambiente.jpg');
+        background-size: cover; /* Faz a imagem cobrir toda a área */
+        background-position: center; /* Centraliza a imagem */
+        background-repeat: no-repeat;
+    }
+    .bolinha {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        position: absolute;
+        cursor: pointer;
+        display: none;
+        border: 2px solid white;
+        z-index: 10;
+        box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    }
+</style>
 </head>
 <body>
 
