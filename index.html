@@ -73,16 +73,18 @@ function iniciarCabo() {
     
     const c = cabos[indiceAtual];
     
-    // 1. Esconde TODOS os conectores primeiro (Limpa o estado anterior)
-    document.getElementById("derivacao_fase2").style.display = "none";
-    document.getElementById("derivacao_retorno").style.display = "none";
+   // Dentro da função iniciarCabo()
     
-    // 2. Exibe o conector APENAS se for o cabo específico
+    // 1. Esconde TODOS os conectores primeiro
+    document.getElementById("derivacao_fase2").style.display = "none";
+    document.getElementById("derivacao_neutro").style.display = "none";
+    
+    // 2. Exibe o conector APENAS se for o caso
     if (c.nome === "FASE_2") {
         document.getElementById("derivacao_fase2").style.display = "block";
     }
-    if (c.nome === "RETORNO") {
-        document.getElementById("derivacao_retorno").style.display = "block";
+    if (c.nome === "NEUTRO_2") { // Agora a derivação acontece quando for NEUTRO_2
+        document.getElementById("derivacao_neutro").style.display = "block";
     }
     
     // 3. Continua a lógica das bolinhas (que deve funcionar para todos)
