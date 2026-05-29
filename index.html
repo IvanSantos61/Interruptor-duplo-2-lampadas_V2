@@ -41,7 +41,7 @@
 </div>
 
 <script>
-  const cabos = [
+    const cabos = [
         { nome: "FASE_REDE", total: 64, b1: {x: 10, y: 10}, b2: {x: 30, y: 30}, cor: "red" },
         { nome: "NEUTRO_REDE", total: 76, b1: {x: 15, y: 15}, b2: {x: 35, y: 35}, cor: "blue" },
         { nome: "FASE_2", total: 25, b1: {x: 20, y: 20}, b2: {x: 40, y: 40}, cor: "red" },
@@ -55,7 +55,6 @@
     const ctx = canvas.getContext('2d');
     const b1 = document.getElementById('bolinha1'), b2 = document.getElementById('bolinha2');
 
-    // Função única de desenho
     function atualizarCanvas() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         cabosConcluidos.forEach(c => {
@@ -65,40 +64,36 @@
         });
     }
 
-function iniciarCabo() {
-    if (indiceAtual >= cabos.length) {
-        console.log("Todos os cabos foram finalizados.");
-        return;
-    }
-    
-    const c = cabos[indiceAtual];
-    
-   // Dentro da função iniciarCabo()
-    
-    // 1. Esconde TODOS os conectores primeiro
-    document.getElementById("derivacao_fase2").style.display = "none";
-    document.getElementById("derivacao_neutro").style.display = "none";
-    
-    // 2. Exibe o conector APENAS se for o caso
-    if (c.nome === "FASE_2") {
-        document.getElementById("derivacao_fase2").style.display = "block";
-    }
-    if (c.nome === "NEUTRO_2") { // Agora a derivação acontece quando for NEUTRO_2
-        document.getElementById("derivacao_neutro").style.display = "block";
-    }
-    
-    // 3. Continua a lógica das bolinhas (que deve funcionar para todos)
-    b1.style.display = "block";
-    b1.style.backgroundColor = c.cor;
-    b1.style.left = c.b1.x + "%"; 
-    b1.style.top = c.b1.y + "%";
-    
-    b2.style.display = "none";
-    b2.style.backgroundColor = c.cor;
-    
-    // ... restante dos seus eventos onclick ...
-}
+    function iniciarCabo() {
+        if (indiceAtual >= cabos.length) {
+            console.log("Todos os cabos foram finalizados.");
+            return;
+        }
         
+        const c = cabos[indiceAtual];
+        
+        // 1. Reset de visibilidade dos conectores
+        document.getElementById("derivacao_fase2").style.display = "none";
+        document.getElementById("derivacao_neutro").style.display = "none";
+        
+        // 2. Exibe conectores conforme o cabo atual
+        if (c.nome === "FASE_2") {
+            document.getElementById("derivacao_fase2").style.display = "block";
+        }
+        if (c.nome === "NEUTRO_2") {
+            document.getElementById("derivacao_neutro").style.display = "block";
+        }
+        
+        // 3. Exibe as bolinhas
+        b1.style.display = "block";
+        b1.style.backgroundColor = c.cor;
+        b1.style.left = c.b1.x + "%"; 
+        b1.style.top = c.b1.y + "%";
+        
+        b2.style.display = "none";
+        b2.style.backgroundColor = c.cor;
+        
+        // 4. Eventos dentro da função para acessar a variável 'c'
         b1.onclick = () => {
             b1.style.backgroundColor = "green";
             b2.style.left = c.b2.x + "%"; 
@@ -109,6 +104,9 @@ function iniciarCabo() {
         b2.onclick = () => {
             b1.style.display = "none";
             b2.style.display = "none";
+            // Esconde conectores ao iniciar a animação
+            document.getElementById("derivacao_fase2").style.display = "none";
+            document.getElementById("derivacao_neutro").style.display = "none";
             animar(c);
         };
     }
@@ -119,17 +117,15 @@ function iniciarCabo() {
             let img = new Image();
             img.src = `${c.nome}/quadro${frame.toString().padStart(4, '0')}.png`;
             
-            // Desenha o frame atual por cima do que já existe
             img.onload = () => {
-                atualizarCanvas(); // Redesenha os anteriores
-                ctx.drawImage(img, 0, 0); // Desenha o frame atual
+                atualizarCanvas();
+                ctx.drawImage(img, 0, 0);
             };
 
             if (++frame > c.total) {
                 clearInterval(intv);
                 cabosConcluidos.push(c);
                 indiceAtual++;
-                // Pequeno atraso antes de permitir o próximo clique
                 setTimeout(iniciarCabo, 500); 
             }
         }, 50);
