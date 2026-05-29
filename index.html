@@ -19,22 +19,18 @@
             top: 0; left: 0;
             width: 100%;
             height: 100%;
-            z-index: 5; /* Canvas atrás dos elementos de interação */
+            pointer-events: none; /* Canvas não interfere no clique dos conectores */
         }
 
         .bolinha {
             width: 2%; aspect-ratio: 1/1;
             border-radius: 50%; position: absolute;
             cursor: pointer; display: none;
-            border: 2px solid white; z-index: 20; /* Bolinhas por cima de tudo */
+            border: 2px solid white; z-index: 20;
         }
 
-        /* Classe para os conectores */
         .conector {
-            position: absolute;
-            width: 100px;
-            z-index: 15; /* Conectores acima do canvas, abaixo das bolinhas */
-            display: none;
+            position: absolute; width: 100px; z-index: 15; display: none;
         }
     </style>
 </head>
@@ -72,7 +68,7 @@
         cabosConcluidos.forEach(c => {
             let img = new Image();
             img.src = `${c.nome}/quadro${c.total.toString().padStart(4, '0')}.png`;
-            ctx.drawImage(img, 0, 0);
+            img.onload = () => ctx.drawImage(img, 0, 0);
         });
     }
 
@@ -80,11 +76,11 @@
         if (indiceAtual >= cabos.length) return;
         const c = cabos[indiceAtual];
         
-        conFase2.style.setProperty('display', 'none', 'important');
-        conNeutro.style.setProperty('display', 'none', 'important');
+        conFase2.style.display = "none";
+        conNeutro.style.display = "none";
         
-        if (c.nome === "FASE_2") conFase2.style.setProperty('display', 'block', 'important');
-        if (c.nome === "NEUTRO_2") conNeutro.style.setProperty('display', 'block', 'important');
+        if (c.nome === "FASE_2") conFase2.style.display = "block";
+        if (c.nome === "NEUTRO_2") conNeutro.style.display = "block";
         
         b1.style.display = "block";
         b1.style.backgroundColor = c.cor;
@@ -93,7 +89,7 @@
         b2.style.display = "none";
         
         b1.onclick = () => {
-            b1.style.backgroundColor = "green";
+            b1.style.backgroundColor = c.cor; // Cor original
             b2.style.left = c.b2.x + "%"; 
             b2.style.top = c.b2.y + "%";
             b2.style.display = "block";
@@ -114,14 +110,11 @@
             img.onload = () => {
                 atualizarCanvas();
                 ctx.drawImage(img, 0, 0);
-                // Re-força exibição a cada frame
-                if (c.nome === "FASE_2") conFase2.style.setProperty('display', 'block', 'important');
-                if (c.nome === "NEUTRO_2") conNeutro.style.setProperty('display', 'block', 'important');
             };
             if (++frame > c.total) {
                 clearInterval(intv);
-                conFase2.style.setProperty('display', 'none', 'important');
-                conNeutro.style.setProperty('display', 'none', 'important');
+                conFase2.style.display = "none";
+                conNeutro.style.display = "none";
                 cabosConcluidos.push(c);
                 indiceAtual++;
                 setTimeout(iniciarCabo, 500); 
