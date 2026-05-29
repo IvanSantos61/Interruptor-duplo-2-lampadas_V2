@@ -1,4 +1,43 @@
-<script>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { margin: 0; background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        
+        #game-container {
+            position: relative;
+            width: 90vw; /* Ajusta ao tamanho da tela mantendo proporção */
+            max-width: 1920px;
+            aspect-ratio: 1920 / 1080;
+            background: url('ambiente.jpg') no-repeat center center;
+            background-size: contain;
+        }
+        
+        canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .bolinha {
+            width: 2%; aspect-ratio: 1/1;
+            border-radius: 50%; position: absolute;
+            cursor: pointer; display: none;
+            border: 2px solid white; z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <canvas id="canvasCabo" width="1920" height="1080"></canvas>
+        <div id="bolinha1" class="bolinha"></div>
+        <div id="bolinha2" class="bolinha"></div>
+    </div>
+
+    <script>
     const cabos = [
         { nome: "FASE_REDE", total: 64, b1: {x: 10, y: 10}, b2: {x: 30, y: 30}, cor: "red" },
         { nome: "NEUTRO_REDE", total: 76, b1: {x: 15, y: 15}, b2: {x: 35, y: 35}, cor: "blue" },
@@ -69,4 +108,5 @@
     }
 
     iniciarCabo();
-</script>
+</script></body>
+</html>
