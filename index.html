@@ -1,103 +1,72 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <style>
-        body { margin: 0; background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+<script>
+    const cabos = [
+        { nome: "FASE_REDE", total: 64, b1: {x: 10, y: 10}, b2: {x: 30, y: 30}, cor: "red" },
+        { nome: "NEUTRO_REDE", total: 76, b1: {x: 15, y: 15}, b2: {x: 35, y: 35}, cor: "blue" },
+        { nome: "FASE2", total: 25, b1: {x: 20, y: 20}, b2: {x: 40, y: 40}, cor: "red" },
+        { nome: "NEUTRO2", total: 15, b1: {x: 25, y: 25}, b2: {x: 45, y: 45}, cor: "blue" },
+        { nome: "RETORNO", total: 45, b1: {x: 30, y: 30}, b2: {x: 50, y: 50}, cor: "yellow" }
+    ];
+
+    let indiceAtual = 0;
+    let cabosConcluidos = []; 
+    const canvas = document.getElementById('canvasCabo');
+    const ctx = canvas.getContext('2d');
+    const b1 = document.getElementById('bolinha1'), b2 = document.getElementById('bolinha2');
+
+    // Função para desenhar a imagem fixa de cada cabo concluído
+    function desenharCaboFinal(cabo) {
+        let img = new Image();
+        img.src = `${cabo.nome}/quadro${cabo.total.toString().padStart(4, '0')}.png`;
+        img.onload = () => {
+            ctx.drawImage(img, 0, 0);
+        };
+    }
+
+    function renderizarTudo() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        cabosConcluidos.forEach(c => desenharCaboFinal(c));
+    }
+
+    function iniciarCabo() {
+        if (indiceAtual >= cabos.length) {
+            console.log("Todos os cabos foram finalizados.");
+            return;
+        }
+        const c = cabos[indiceAtual];
+        b1.style.left = c.b1.x + "%"; b1.style.top = c.b1.y + "%";
+        b1.style.backgroundColor = c.cor; b1.style.display = "block";
+        b2.style.display = "none";
         
-        #game-container {
-            position: relative;
-            width: 90vw; /* Ajusta ao tamanho da tela mantendo proporção */
-            max-width: 1920px;
-            aspect-ratio: 1920 / 1080;
-            background: url('ambiente.jpg') no-repeat center center;
-            background-size: contain;
-        }
-        
-        canvas {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%;
-            height: 100%;
-        }
+        b1.onclick = () => {
+            b1.style.backgroundColor = "green";
+            b2.style.left = c.b2.x + "%"; b2.style.top = c.b2.y + "%";
+            b2.style.backgroundColor = c.cor; b2.style.display = "block";
+        };
 
-        .bolinha {
-            width: 2%; aspect-ratio: 1/1;
-            border-radius: 50%; position: absolute;
-            cursor: pointer; display: none;
-            border: 2px solid white; z-index: 10;
-        }
-    </style>
-</head>
-<body>
+        b2.onclick = () => {
+            b1.style.display = "none"; b2.style.display = "none";
+            animar(c);
+        };
+    }
 
-    <div id="game-container">
-        <canvas id="canvasCabo" width="1920" height="1080"></canvas>
-        <div id="bolinha1" class="bolinha"></div>
-        <div id="bolinha2" class="bolinha"></div>
-    </div>
-
-    <script>
-        const cabos = [
-            { nome: "FASE_REDE", total: 64, b1: {x: 10, y: 10}, b2: {x: 30, y: 30}, cor: "red" },
-            { nome: "NEUTRO_REDE", total: 76, b1: {x: 15, y: 15}, b2: {x: 35, y: 35}, cor: "blue" },
-            { nome: "FASE2", total: 25, b1: {x: 20, y: 20}, b2: {x: 40, y: 40}, cor: "red" },
-            { nome: "NEUTRO2", total: 15, b1: {x: 25, y: 25}, b2: {x: 45, y: 45}, cor: "blue" },
-            { nome: "RETORNO", total: 45, b1: {x: 30, y: 30}, b2: {x: 50, y: 50}, cor: "yellow" }
-        ];
-
-        let indiceAtual = 0;
-        let cabosConcluidos = []; // Armazena objetos {nome, frameFinal}
-        const canvas = document.getElementById('canvasCabo');
-        const ctx = canvas.getContext('2d');
-        const b1 = document.getElementById('bolinha1'), b2 = document.getElementById('bolinha2');
-
-        function renderizarTudo() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            cabosConcluidos.forEach(c => {
-                let img = new Image();
-                img.src = `${c.nome}/quadro${c.total.toString().padStart(4, '0')}.png`;
+    function animar(c) {
+        let frame = 1;
+        let intv = setInterval(() => {
+            let img = new Image();
+            img.src = `${c.nome}/quadro${frame.toString().padStart(4, '0')}.png`;
+            img.onload = () => {
+                renderizarTudo();
                 ctx.drawImage(img, 0, 0);
-            });
-        }
-
-        function iniciarCabo() {
-            if (indiceAtual >= cabos.length) return;
-            const c = cabos[indiceAtual];
-            b1.style.left = c.b1.x + "%"; b1.style.top = c.b1.y + "%";
-            b1.style.backgroundColor = c.cor; b1.style.display = "block";
+            };
             
-            b1.onclick = () => {
-                b1.style.backgroundColor = "green";
-                b2.style.left = c.b2.x + "%"; b2.style.top = c.b2.y + "%";
-                b2.style.backgroundColor = c.cor; b2.style.display = "block";
-            };
+            if (++frame > c.total) {
+                clearInterval(intv);
+                cabosConcluidos.push(c);
+                indiceAtual++;
+                iniciarCabo();
+            }
+        }, 50);
+    }
 
-            b2.onclick = () => {
-                b1.style.display = "none"; b2.style.display = "none";
-                animar(c);
-            };
-        }
-
-        function animar(c) {
-            let frame = 1;
-            let intv = setInterval(() => {
-                let img = new Image();
-                img.src = `${c.nome}/quadro${frame.toString().padStart(4, '0')}.png`;
-                img.onload = () => {
-                    renderizarTudo(); // Desenha os anteriores
-                    ctx.drawImage(img, 0, 0); // Desenha o atual
-                };
-                if (++frame > c.total) {
-                    clearInterval(intv);
-                    cabosConcluidos.push(c);
-                    indiceAtual++;
-                    iniciarCabo();
-                }
-            }, 50);
-        }
-
-        iniciarCabo();
-    </script>
-</body>
-</html>
+    iniciarCabo();
+</script>
