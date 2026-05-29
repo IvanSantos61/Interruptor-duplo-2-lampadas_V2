@@ -19,18 +19,18 @@
             top: 0; left: 0;
             width: 100%;
             height: 100%;
-            z-index: 5;
+            z-index: 1; /* Fundo */
         }
 
         .bolinha {
             width: 2%; aspect-ratio: 1/1;
             border-radius: 50%; position: absolute;
             cursor: pointer; display: none;
-            border: 2px solid white; z-index: 20;
+            border: 2px solid white; z-index: 100; /* Super prioritário */
         }
 
         .conector {
-            position: absolute; width: 100px; z-index: 15; display: none;
+            position: absolute; width: 100px; z-index: 50; display: none;
         }
     </style>
 </head>
@@ -76,9 +76,13 @@
         if (indiceAtual >= cabos.length) return;
         const c = cabos[indiceAtual];
         
-        // Exibição dos conectores baseada apenas no início de cada cabo
-        conFase2.style.display = (c.nome === "FASE_2") ? "block" : "none";
-        conNeutro.style.display = (c.nome === "NEUTRO_2") ? "block" : "none";
+        // Reset absoluto
+        conFase2.style.display = "none";
+        conNeutro.style.display = "none";
+        
+        // Exibição condicionada
+        if (c.nome === "FASE_2") conFase2.style.display = "block";
+        if (c.nome === "NEUTRO_2") conNeutro.style.display = "block";
         
         b1.style.display = "block";
         b1.style.backgroundColor = c.cor;
@@ -86,10 +90,8 @@
         b1.style.top = c.b1.y + "%";
         
         b2.style.display = "none";
-        b2.style.backgroundColor = c.cor;
         
         b1.onclick = () => {
-            b1.style.backgroundColor = c.cor; // Mantém a cor original
             b2.style.left = c.b2.x + "%"; 
             b2.style.top = c.b2.y + "%";
             b2.style.display = "block";
@@ -113,7 +115,6 @@
             };
             if (++frame > c.total) {
                 clearInterval(intv);
-                // Esconde apenas ao final da animação
                 conFase2.style.display = "none";
                 conNeutro.style.display = "none";
                 cabosConcluidos.push(c);
