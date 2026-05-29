@@ -7,7 +7,7 @@
         
         #game-container {
             position: relative;
-            width: 90vw; /* Ajusta ao tamanho da tela mantendo proporção */
+            width: 90vw;
             max-width: 1920px;
             aspect-ratio: 1920 / 1080;
             background: url('ambiente.jpg') no-repeat center center;
@@ -93,7 +93,7 @@
         b2.style.display = "none";
         b2.style.backgroundColor = c.cor;
         
-        // 4. Eventos dentro da função para acessar a variável 'c'
+        // 4. Eventos com lógica corrigida
         b1.onclick = () => {
             b1.style.backgroundColor = "green";
             b2.style.left = c.b2.x + "%"; 
@@ -104,9 +104,7 @@
         b2.onclick = () => {
             b1.style.display = "none";
             b2.style.display = "none";
-            // Esconde conectores ao iniciar a animação
-            document.getElementById("derivacao_fase2").style.display = "none";
-            document.getElementById("derivacao_neutro").style.display = "none";
+            // Não esconde os conectores aqui, para mantê-los durante a animação
             animar(c);
         };
     }
@@ -124,6 +122,10 @@
 
             if (++frame > c.total) {
                 clearInterval(intv);
+                // Esconde os conectores apenas ao finalizar a animação
+                document.getElementById("derivacao_fase2").style.display = "none";
+                document.getElementById("derivacao_neutro").style.display = "none";
+                
                 cabosConcluidos.push(c);
                 indiceAtual++;
                 setTimeout(iniciarCabo, 500); 
