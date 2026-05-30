@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        body { margin: 0; background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        body { margin: 0; background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; flex-direction: column; }
         
         #game-container { 
             position: relative; 
@@ -14,18 +14,29 @@
             background-size: contain; 
             overflow: hidden; 
         }
+
+        /* Estilos do Título e Status */
+        #titulo-app { color: cyan; font-family: sans-serif; font-size: 3vw; margin-bottom: 20px; text-transform: uppercase; text-shadow: 0 0 10px cyan; }
+        #status-bar { 
+            position: absolute; top: 5%; left: 10%; width: 80%; 
+            border: 2px solid #333; padding: 20px; box-sizing: border-box;
+            background: rgba(0,0,0,0.8); color: #ff8800; font-weight: bold; 
+            text-align: center; font-size: 1.5vw; z-index: 3000;
+        }
         
         canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         .bolinha { width: 2%; aspect-ratio: 1/1; border-radius: 50%; position: absolute; cursor: pointer; display: none; border: 2px solid white; z-index: 1000; }
         .conector { position: absolute; width: 100px; z-index: 999 !important; display: none; }
-        
-        /* Estilos independentes para as teclas */
         #btn_dg, #btn_dr, #btn_int { position: absolute; z-index: 2000; cursor: pointer; }
     </style>
 </head>
 <body>
 
+<h1 id="titulo-app">LABORATÓRIO SMT PRO</h1>
+
 <div id="game-container">
+    <div id="status-bar">REDE: CLIQUE NA REFERÊNCIA INDICADA NO BARRAMENTO PARA INICIAR A PASSAGEM DO NEUTRO</div>
+
     <img id="derivacao_fase2" class="conector" src="con_derivacao.png" style="top: 13.3%; left: 71%;">
     <img id="derivacao_neutro" class="conector" src="con_derivacao.png" style="top: 10.2%; left: 91.5%;">
     
@@ -39,13 +50,14 @@
 </div>
 
 <script>
-    // Função de alternância (Toggle) para as teclas
+    // Referência para atualizar o texto do status facilmente depois
+    const statusBar = document.getElementById("status-bar");
+
     function habilitarTroca(id, offImg, onImg) {
         const el = document.getElementById(id);
         el.onclick = () => { el.src = el.src.includes(offImg) ? onImg : offImg; };
     }
 
-    // Aplicação da lógica de troca para cada tecla pelo ID correto
     habilitarTroca("btn_dg", "al_dg_off.png", "al_dg_on.png");
     habilitarTroca("btn_dr", "al_dr_off.png", "al_dr_on.png");
     habilitarTroca("btn_int", "tec_int_off.png", "tec_int_on.png");
@@ -63,7 +75,6 @@
     const b1 = document.getElementById('bolinha1'), b2 = document.getElementById('bolinha2');
     const conFase2 = document.getElementById("derivacao_fase2"), conNeutro = document.getElementById("derivacao_neutro");
     
-    // Canvas Buffer para manter o desenho estável (sem "shake")
     const buffer = document.createElement('canvas');
     buffer.width = 1920; buffer.height = 1080;
     const bCtx = buffer.getContext('2d');
@@ -73,10 +84,7 @@
         cabosConcluidos.forEach(c => {
             let img = new Image();
             img.src = `${c.nome}/quadro${c.total.toString().padStart(4, '0')}.png`;
-            img.onload = () => { 
-                bCtx.drawImage(img, 0, 0); 
-                ctx.drawImage(buffer, 0, 0); 
-            };
+            img.onload = () => { bCtx.drawImage(img, 0, 0); ctx.drawImage(buffer, 0, 0); };
         });
     }
 
@@ -84,6 +92,9 @@
         if (indiceAtual >= cabos.length) return;
         const c = cabos[indiceAtual];
         
+        // Exemplo de atualização de status (você pode customizar a mensagem para cada cabo)
+        statusBar.innerText = `INSTALANDO: ${c.nome.replace('_', ' ')}`;
+
         if (c.nome === "FASE_2") conFase2.style.display = "block";
         if (c.nome === "NEUTRO_2") conNeutro.style.display = "block";
         
@@ -95,8 +106,7 @@
         b1.onclick = () => {
             b1.style.backgroundColor = "green";
             b2.style.backgroundColor = c.cor;
-            b2.style.left = c.b2.x + "%"; 
-            b2.style.top = c.b2.y + "%";
+            b2.style.left = c.b2.x + "%"; b2.style.top = c.b2.y + "%";
             b2.style.display = "block";
         };
 
