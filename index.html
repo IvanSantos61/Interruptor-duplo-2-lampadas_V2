@@ -37,13 +37,10 @@
             display: none;
         }
 
-        /* Classes para as novas teclas */
-        .tecla {
-            position: absolute;
-            width: 50px; /* Ajuste o tamanho conforme necessário */
-            z-index: 2000;
-            cursor: pointer;
-        }
+        /* Estilos específicos e independentes para cada tecla */
+        #btn_dg { position: absolute; z-index: 2000; cursor: pointer; }
+        #btn_dr { position: absolute; z-index: 2000; cursor: pointer; }
+        #btn_int { position: absolute; z-index: 2000; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -52,9 +49,9 @@
     <img id="derivacao_fase2" class="conector" src="con_derivacao.png" style="top: 13.3%; left: 71%;">
     <img id="derivacao_neutro" class="conector" src="con_derivacao.png" style="top: 10.2%; left: 91.5%;">
     
-    <img id="tecla_dg" class="tecla" src="al_dg_off.png" style="top: 10%; left: 10%;">
-    <img id="tecla_dr" class="tecla" src="al_dr_off.png" style="top: 10%; left: 15%;">
-    <img id="tecla_int" class="tecla" src="tec_int_off.png" style="top: 10%; left: 20%;">
+    <img id="btn_dg" src="al_dg_off.png" style="top: 10%; left: 5%; width: 50px;">
+    <img id="btn_dr" src="al_dr_off.png" style="top: 10%; left: 15%; width: 50px;">
+    <img id="btn_int" src="tec_int_off.png" style="top: 10%; left: 25%; width: 50px;">
     
     <canvas id="canvasCabo" width="1920" height="1080"></canvas>
     <div id="bolinha1" class="bolinha"></div>
@@ -62,6 +59,7 @@
 </div>
 
 <script>
+    // [LOGICA ORIGINAL MANTIDA EXATAMENTE COMO ESTAVA]
     const cabos = [
         { nome: "FASE_REDE", total: 64, b1: {x: 26, y: 38}, b2: {x: 97.5, y: 15}, cor: "red" },
         { nome: "NEUTRO_REDE", total: 76, b1: {x: 43.2, y: 32}, b2: {x: 98, y: 12}, cor: "blue" },
@@ -75,7 +73,6 @@
     const canvas = document.getElementById('canvasCabo');
     const ctx = canvas.getContext('2d');
     const b1 = document.getElementById('bolinha1'), b2 = document.getElementById('bolinha2');
-    
     const conFase2 = document.getElementById("derivacao_fase2");
     const conNeutro = document.getElementById("derivacao_neutro");
 
@@ -91,27 +88,19 @@
     function iniciarCabo() {
         if (indiceAtual >= cabos.length) return;
         const c = cabos[indiceAtual];
-        
         if (c.nome === "FASE_2") conFase2.style.display = "block";
         if (c.nome === "NEUTRO_2") conNeutro.style.display = "block";
-        
-        b1.style.display = "block";
-        b1.style.backgroundColor = c.cor;
-        b1.style.left = c.b1.x + "%"; 
-        b1.style.top = c.b1.y + "%";
-        b2.style.display = "none";
-        b2.style.backgroundColor = c.cor;
-        
+        b1.style.display = "block"; b1.style.backgroundColor = c.cor;
+        b1.style.left = c.b1.x + "%"; b1.style.top = c.b1.y + "%";
+        b2.style.display = "none"; b2.style.backgroundColor = c.cor;
         b1.onclick = () => {
             b1.style.backgroundColor = "green";
             b2.style.left = c.b2.x + "%"; 
             b2.style.top = c.b2.y + "%";
             b2.style.display = "block";
         };
-
         b2.onclick = () => {
-            b1.style.display = "none";
-            b2.style.display = "none";
+            b1.style.display = "none"; b2.style.display = "none";
             animar(c);
         };
     }
