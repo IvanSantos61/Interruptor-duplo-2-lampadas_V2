@@ -47,6 +47,21 @@
         .bolinha { width: 2%; aspect-ratio: 1/1; border-radius: 50%; position: absolute; cursor: pointer; display: none; border: 0.2vw solid white; z-index: 1000; box-sizing: border-box; }
         .conector { position: absolute; width: 5.2%; z-index: 999 !important; display: none; }
         #btn_dg, #btn_dr, #btn_int { position: absolute; z-index: 990; cursor: pointer; width: 5.7%; }
+
+        /* Estilos dos Hotspots */
+        .hotspot {
+            position: absolute; width: 2.5vw; height: 2.5vw; background: rgba(0, 255, 255, 0.3);
+            border: 2px solid #00ffff; border-radius: 50%; color: #fff; cursor: pointer;
+            z-index: 2000; display: flex; justify-content: center; align-items: center;
+            font-weight: bold; font-size: 1vw; transition: all 0.3s;
+        }
+        .hotspot:hover { background: rgba(0, 255, 255, 0.6); transform: scale(1.2); }
+        #info-box {
+            position: absolute; top: 10%; left: 35%; width: 30%; padding: 1vw;
+            background: rgba(0, 0, 0, 0.9); border: 2px solid #00ffff; color: #00ffff;
+            display: none; z-index: 3000; pointer-events: none; border-radius: 15px;
+            text-align: center; font-size: 1.5vw; text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
@@ -66,6 +81,22 @@
         <div id="status-bar">REDE: CLIQUE NA REFERÊNCIA INDICADA NO BARRAMENTO PARA INICIAR A PASSAGEM DO NEUTRO</div>
 
         <div id="game-container">
+            <div class="hotspot" style="top: 10%; left: 10%;" onclick="mostrarInfo('REDE ELÉTRICA')">?</div>
+            <div class="hotspot" style="top: 10%; left: 20%;" onclick="mostrarInfo('BARRA DE ATERRAMENTO')">?</div>
+            <div class="hotspot" style="top: 20%; left: 10%;" onclick="mostrarInfo('DISJUNTOR GERAL')">?</div>
+            <div class="hotspot" style="top: 20%; left: 20%;" onclick="mostrarInfo('DPS')">?</div>
+            <div class="hotspot" style="top: 30%; left: 10%;" onclick="mostrarInfo('DISPOSITIVO DR')">?</div>
+            <div class="hotspot" style="top: 30%; left: 20%;" onclick="mostrarInfo('DISJUNTORES DOS CIRCUITOS')">?</div>
+            <div class="hotspot" style="top: 40%; left: 10%;" onclick="mostrarInfo('BARRA DE NEUTRO')">?</div>
+            <div class="hotspot" style="top: 50%; left: 10%;" onclick="mostrarInfo('CAIXA DE PASSAGEM 4x2')">?</div>
+            <div class="hotspot" style="top: 50%; left: 15%;" onclick="mostrarInfo('CAIXA DE PASSAGEM 4x2')">?</div>
+            <div class="hotspot" style="top: 50%; left: 20%;" onclick="mostrarInfo('CAIXA DE PASSAGEM 4x2')">?</div>
+            <div class="hotspot" style="top: 50%; left: 25%;" onclick="mostrarInfo('CAIXA DE PASSAGEM 4x2')">?</div>
+            <div class="hotspot" style="top: 70%; left: 80%;" onclick="mostrarInfo('CAMPAINHA 127V')">?</div>
+            <div class="hotspot" style="top: 80%; left: 80%;" onclick="mostrarInfo('INTERRUPTOR DE PULSO')">?</div>
+            
+            <div id="info-box"></div>
+
             <img id="derivacao_fase2" class="conector" src="con_derivacao.png" style="top: 13.3%; left: 71%;">
             <img id="derivacao_neutro" class="conector" src="con_derivacao.png" style="top: 10.2%; left: 91.5%;">
             <img id="btn_dg" src="al_dg_off.png" style="top: 26%; left: 12%; width: 3.9%;">
@@ -79,10 +110,16 @@
     </div>
 
 <script>
-    // Inicialização de áudio
     const somDisjuntor = new Audio('disj.mp3');
     const somConexao = new Audio('conexao.mp3');
     const somCampainha = new Audio('campainha.mp3');
+
+    function mostrarInfo(nome) {
+        const box = document.getElementById('info-box');
+        box.innerText = nome;
+        box.style.display = 'block';
+        setTimeout(() => { box.style.display = 'none'; }, 2500);
+    }
 
     document.getElementById('btn-iniciar').onclick = () => {
         document.getElementById('splash-overlay').style.display = 'none';
@@ -105,7 +142,6 @@
         if (el) {
             const press = () => {
                 el.src = onImg;
-                // Condições para tocar campainha
                 const dgLigado = document.getElementById('btn_dg').src.includes('on');
                 const drLigado = document.getElementById('btn_dr').src.includes('on');
                 const fiaçãoOk = cabosConcluidos.length === cabos.length;
@@ -176,11 +212,8 @@
                 clearInterval(intv); 
                 cabosConcluidos.push(c); 
                 atualizarBuffer(); 
-                
-                // Toca som de conexão
                 somConexao.currentTime = 0;
                 somConexao.play();
-                
                 indiceAtual++; 
                 setTimeout(iniciarCabo, 500); 
             }
