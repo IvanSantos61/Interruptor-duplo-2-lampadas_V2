@@ -3,30 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        body { margin: 0; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; font-family: sans-serif; }
+        body { margin: 0; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; font-family: sans-serif; overflow-x: hidden; }
         
         /* TELA SPLASH */
-        #tela-splash {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center;
-        }
-        #splash-content {
-            border: 3px solid #00ffff; border-radius: 20px; padding: 50px; text-align: center; color: #00ffff;
-        }
-        #btn-iniciar { background: transparent; color: #00ffff; border: 2px solid #00ffff; padding: 15px 30px; cursor: pointer; font-size: 1.2rem; margin-top: 20px; }
+        #tela-splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; }
+        #splash-content { border: 3px solid #00ffff; border-radius: 20px; padding: 50px; text-align: center; color: #00ffff; }
+        #btn-iniciar { background: transparent; color: #00ffff; border: 2px solid #00ffff; padding: 15px 30px; cursor: pointer; font-size: 1.2rem; margin-top: 20px; text-transform: uppercase; }
         #btn-iniciar:hover { background: #00ffff; color: #000; }
 
-        /* PAINEL PRINCIPAL (Oculto inicialmente) */
-        #painel-principal { display: none; flex-direction: column; align-items: center; }
+        /* PAINEL PRINCIPAL */
+        #painel-principal { display: none; flex-direction: column; align-items: center; width: 100%; }
         #header-container { width: 90vw; max-width: 1920px; text-align: center; margin-bottom: 15px; }
         #titulo-app { color: #00ffff; font-size: 3.5vw; margin: 0 0 10px 0; text-transform: uppercase; text-shadow: 0 0 10px #00ffff; }
         #status-bar { width: 100%; padding: 35px 20px; border: 2px solid #333; background: rgba(0,0,0,0.9); color: #ff8800; font-weight: bold; font-size: 1.2vw; border-radius: 4px; box-sizing: border-box; }
         
         #game-container { position: relative; width: 90vw; max-width: 1920px; aspect-ratio: 1920 / 1080; background: url('ambiente.jpg') no-repeat center center; background-size: contain; overflow: hidden; }
-        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        .bolinha { width: 2%; aspect-ratio: 1/1; border-radius: 50%; position: absolute; cursor: pointer; display: none; border: 2px solid white; z-index: 1000; }
-        .conector { position: absolute; width: 5%; z-index: 999 !important; display: none; }
-        #btn_dg, #btn_dr, #btn_int { position: absolute; z-index: 2000; cursor: pointer; width: 5%; }
+        
+        /* Classe de elementos funcionais com vmin para escala uniforme */
+        .funcional { position: absolute; cursor: pointer; z-index: 2000; width: 5.5vmin; }
+        .conector { position: absolute; width: 5.5vmin; z-index: 999 !important; display: none; }
+        .bolinha { width: 2.5vmin; aspect-ratio: 1/1; border-radius: 50%; position: absolute; cursor: pointer; display: none; border: 0.2vmin solid white; z-index: 1000; }
+        
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -48,9 +46,11 @@
     <div id="game-container">
         <img id="derivacao_fase2" class="conector" src="con_derivacao.png" style="top: 13.3%; left: 71%;">
         <img id="derivacao_neutro" class="conector" src="con_derivacao.png" style="top: 10.2%; left: 91.5%;">
-        <img id="btn_dg" src="al_dg_off.png" style="top: 26%; left: 12%;">
-        <img id="btn_dr" src="al_dr_off.png" style="top: 28.6%; left: 23.4%;">
-        <img id="btn_int" src="tec_int_off.png" style="top: 67.8%; left: 63.5%;">
+        
+        <img id="btn_dg" class="funcional" src="al_dg_off.png" style="top: 26%; left: 12%;">
+        <img id="btn_dr" class="funcional" src="al_dr_off.png" style="top: 28.6%; left: 23.4%;">
+        <img id="btn_int" class="funcional" src="tec_int_off.png" style="top: 67.8%; left: 63.5%;">
+        
         <canvas id="canvasCabo" width="1920" height="1080"></canvas>
         <div id="bolinha1" class="bolinha"></div>
         <div id="bolinha2" class="bolinha"></div>
@@ -105,9 +105,11 @@
         statusBar.innerText = `REDE: INSTALANDO ${c.nome.replace('_', ' ')}`;
         if (c.nome === "FASE_2") conFase2.style.display = "block";
         if (c.nome === "NEUTRO_2") conNeutro.style.display = "block";
+        
         b1.style.display = "block"; b1.style.backgroundColor = c.cor;
         b1.style.left = c.b1.x + "%"; b1.style.top = c.b1.y + "%";
         b2.style.display = "none";
+        
         b1.onclick = () => { b1.style.backgroundColor = "green"; b2.style.backgroundColor = c.cor; b2.style.left = c.b2.x + "%"; b2.style.top = c.b2.y + "%"; b2.style.display = "block"; };
         b2.onclick = () => { b1.style.display = "none"; b2.style.display = "none"; animar(c); };
     }
