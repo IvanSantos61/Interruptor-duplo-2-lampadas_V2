@@ -11,18 +11,27 @@
             max-width: 1920px; 
             aspect-ratio: 1920 / 1080; 
             background: url('ambiente.jpg') no-repeat center center; 
-            background-size: contain; /* Isso garante que a imagem nunca corte */
+            background-size: contain; 
             overflow: hidden; 
         }
         
-        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
         
-        /* Agora tudo usa % para travar na posição relativa à imagem */
-        .bolinha { width: 2.2%; aspect-ratio: 1/1; border-radius: 50%; position: absolute; cursor: pointer; display: none; border: 2px solid white; z-index: 1000; }
+        /* A bolinha agora herda o contexto do game-container */
+        .bolinha { 
+            width: 2.2%; 
+            aspect-ratio: 1/1; 
+            border-radius: 50%; 
+            position: absolute; 
+            cursor: pointer; 
+            display: none; 
+            border: 2px solid white; 
+            z-index: 1000; 
+            box-sizing: border-box; /* Garante que a borda não altere o tamanho */
+        }
+
         .conector { position: absolute; width: 5.2%; z-index: 999 !important; display: none; }
-        
-        /* Teclas convertidas para % para acompanhar o zoom */
-        #btn_dg, #btn_dr, #btn_int { position: absolute; z-index: 990; cursor: pointer; }
+        #btn_dg, #btn_dr, #btn_int { position: absolute; z-index: 990; cursor: pointer; width: 5.7%; }
     </style>
 </head>
 <body>
@@ -32,8 +41,8 @@
     <img id="derivacao_neutro" class="conector" src="con_derivacao.png" style="top: 10.2%; left: 91.5%;">
     
     <img id="btn_dg" src="al_dg_off.png" style="top: 26%; left: 12%; width: 3.9%;">
-    <img id="btn_dr" src="al_dr_off.png" style="top: 28.6%; left: 23.4%; width: 5.7%;">
-    <img id="btn_int" src="tec_int_off.png" style="top: 67.8%; left: 63.5%; width: 5.7%;">
+    <img id="btn_dr" src="al_dr_off.png" style="top: 28.6%; left: 23.4%;">
+    <img id="btn_int" src="tec_int_off.png" style="top: 67.8%; left: 63.5%;">
     
     <canvas id="canvasCabo" width="1920" height="1080"></canvas>
     <div id="bolinha1" class="bolinha"></div>
@@ -41,14 +50,11 @@
 </div>
 
 <script>
-    // ... (Mantive toda a sua lógica de script original inalterada)
+    // Mantendo sua lógica original de cliques e animação
     function habilitarTroca(id, offImg, onImg) {
         const el = document.getElementById(id);
-        if(el) {
-            el.onclick = () => { el.src = el.src.includes(offImg) ? onImg : offImg; };
-        }
+        if(el) el.onclick = () => { el.src = el.src.includes(offImg) ? onImg : offImg; };
     }
-
     habilitarTroca("btn_dg", "al_dg_off.png", "al_dg_on.png");
     habilitarTroca("btn_dr", "al_dr_off.png", "al_dr_on.png");
     habilitarTroca("btn_int", "tec_int_off.png", "tec_int_on.png");
@@ -66,17 +72,10 @@
     const b1 = document.getElementById('bolinha1'), b2 = document.getElementById('bolinha2');
     const conFase2 = document.getElementById("derivacao_fase2"), conNeutro = document.getElementById("derivacao_neutro");
     
-    const buffer = document.createElement('canvas');
-    buffer.width = 1920; buffer.height = 1080;
-    const bCtx = buffer.getContext('2d');
-
-    function atualizarBuffer() {
-        bCtx.clearRect(0, 0, buffer.width, buffer.height);
-        cabosConcluidos.forEach(c => {
-            let img = new Image();
-            img.src = `${c.nome}/quadro${c.total.toString().padStart(4, '0')}.png`;
-            img.onload = () => { bCtx.drawImage(img, 0, 0); ctx.drawImage(buffer, 0, 0); };
-        });
+    // O segredo para não descolar: A bolinha sempre é posicionada em % relativa ao game-container
+    function posicionarBolinha(el, x, y) {
+        el.style.left = x + "%";
+        el.style.top = y + "%";
     }
 
     function iniciarCabo() {
@@ -84,13 +83,24 @@
         const c = cabos[indiceAtual];
         if (c.nome === "FASE_2") conFase2.style.display = "block";
         if (c.nome === "NEUTRO_2") conNeutro.style.display = "block";
-        b1.style.display = "block"; b1.style.backgroundColor = c.cor;
-        b1.style.left = c.b1.x + "%"; b1.style.top = c.b1.y + "%";
+        
+        b1.style.display = "block"; 
+        b1.style.backgroundColor = c.cor;
+        posicionarBolinha(b1, c.b1.x, c.b1.y);
+        
         b2.style.display = "none";
-        b1.onclick = () => { b1.style.backgroundColor = "green"; b2.style.backgroundColor = c.cor; b2.style.left = c.b2.x + "%"; b2.style.top = c.b2.y + "%"; b2.style.display = "block"; };
+        
+        b1.onclick = () => {
+            b1.style.backgroundColor = "green";
+            b2.style.backgroundColor = c.cor;
+            posicionarBolinha(b2, c.b2.x, c.b2.y);
+            b2.style.display = "block";
+        };
+
         b2.onclick = () => { b1.style.display = "none"; b2.style.display = "none"; animar(c); };
     }
 
+    // ... (restante da função animar inalterada) ...
     function animar(c) {
         let frame = 1;
         let intv = setInterval(() => {
