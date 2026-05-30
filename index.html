@@ -4,10 +4,22 @@
     <meta charset="UTF-8">
     <style>
         body { margin: 0; background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        #game-container { position: relative; width: 90vw; max-width: 1920px; aspect-ratio: 1920 / 1080; background: url('ambiente.jpg') no-repeat center center; background-size: contain; overflow: hidden; }
+        
+        #game-container { 
+            position: relative; 
+            width: 90vw; 
+            max-width: 1920px; 
+            aspect-ratio: 1920 / 1080; 
+            background: url('ambiente.jpg') no-repeat center center; 
+            background-size: contain; 
+            overflow: hidden; 
+        }
+        
         canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         .bolinha { width: 2%; aspect-ratio: 1/1; border-radius: 50%; position: absolute; cursor: pointer; display: none; border: 2px solid white; z-index: 1000; }
         .conector { position: absolute; width: 100px; z-index: 999 !important; display: none; }
+        
+        /* Estilos independentes para as teclas */
         #btn_dg, #btn_dr, #btn_int { position: absolute; z-index: 2000; cursor: pointer; }
     </style>
 </head>
@@ -16,23 +28,27 @@
 <div id="game-container">
     <img id="derivacao_fase2" class="conector" src="con_derivacao.png" style="top: 13.3%; left: 71%;">
     <img id="derivacao_neutro" class="conector" src="con_derivacao.png" style="top: 10.2%; left: 91.5%;">
+    
     <img id="btn_dg" src="al_dg_off.png" style="top: 26%; left: 12%; width: 75px;">
     <img id="btn_dr" src="al_dr_off.png" style="top: 28.6%; left: 23.4%; width: 110px;">
-    <img id="tec_int" src="tec_int_off.png" style="top: 67.8%; left: 63.5%; width: 110px;">
+    <img id="btn_int" src="tec_int_off.png" style="top: 67.8%; left: 63.5%; width: 110px;">
+    
     <canvas id="canvasCabo" width="1920" height="1080"></canvas>
     <div id="bolinha1" class="bolinha"></div>
     <div id="bolinha2" class="bolinha"></div>
 </div>
 
 <script>
-    // Toggle para as teclas
+    // Função de alternância (Toggle) para as teclas
     function habilitarTroca(id, offImg, onImg) {
         const el = document.getElementById(id);
         el.onclick = () => { el.src = el.src.includes(offImg) ? onImg : offImg; };
     }
+
+    // Aplicação da lógica de troca para cada tecla pelo ID correto
     habilitarTroca("btn_dg", "al_dg_off.png", "al_dg_on.png");
     habilitarTroca("btn_dr", "al_dr_off.png", "al_dr_on.png");
-    habilitarTroca("tec_int", "tec_int_off.png", "tec_int_on.png");
+    habilitarTroca("btn_int", "tec_int_off.png", "tec_int_on.png");
 
     const cabos = [
         { nome: "FASE_REDE", total: 64, b1: {x: 26, y: 38}, b2: {x: 97.5, y: 15}, cor: "red" },
@@ -47,6 +63,7 @@
     const b1 = document.getElementById('bolinha1'), b2 = document.getElementById('bolinha2');
     const conFase2 = document.getElementById("derivacao_fase2"), conNeutro = document.getElementById("derivacao_neutro");
     
+    // Canvas Buffer para manter o desenho estável (sem "shake")
     const buffer = document.createElement('canvas');
     buffer.width = 1920; buffer.height = 1080;
     const bCtx = buffer.getContext('2d');
@@ -56,7 +73,10 @@
         cabosConcluidos.forEach(c => {
             let img = new Image();
             img.src = `${c.nome}/quadro${c.total.toString().padStart(4, '0')}.png`;
-            img.onload = () => { bCtx.drawImage(img, 0, 0); ctx.drawImage(buffer, 0, 0); };
+            img.onload = () => { 
+                bCtx.drawImage(img, 0, 0); 
+                ctx.drawImage(buffer, 0, 0); 
+            };
         });
     }
 
@@ -67,16 +87,14 @@
         if (c.nome === "FASE_2") conFase2.style.display = "block";
         if (c.nome === "NEUTRO_2") conNeutro.style.display = "block";
         
-        // Reset e configuração inicial das bolinhas
         b1.style.display = "block"; 
-        b1.style.backgroundColor = c.cor; // Cor original do cabo
+        b1.style.backgroundColor = c.cor;
         b1.style.left = c.b1.x + "%"; b1.style.top = c.b1.y + "%";
-        
         b2.style.display = "none";
         
         b1.onclick = () => {
-            b1.style.backgroundColor = "green"; // Muda para verde ao clicar
-            b2.style.backgroundColor = c.cor;   // b2 assume a cor do cabo
+            b1.style.backgroundColor = "green";
+            b2.style.backgroundColor = c.cor;
             b2.style.left = c.b2.x + "%"; 
             b2.style.top = c.b2.y + "%";
             b2.style.display = "block";
