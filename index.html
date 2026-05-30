@@ -6,33 +6,42 @@
         body { margin: 0; background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; flex-direction: column; overflow: hidden; font-family: sans-serif; }
         
         .neon-text { color: #00ffff; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; font-weight: normal; }
-        .neon-box { border: 2px solid #00ffff; box-shadow: 0 0 15px #00ffff; border-radius: 50px; background: rgba(0, 0, 0, 0.9); }
+        .neon-box { border: 2.5px solid #00ffff; box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); border-radius: 60px; background: rgba(0, 0, 0, 0.9); }
 
         #splash-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; 
             z-index: 9999; display: flex; justify-content: center; align-items: center; 
         }
-        #splash-content { text-align: center; padding: 2.5vw; width: 40%; }
+        #splash-content { text-align: center; padding: 3vw 5vw; width: auto; min-width: 45%; }
         
-        #splash-content h1 { font-size: 3.5vw; margin-bottom: 1.5vw; opacity: 0.6; }
-        #splash-content h2 { font-size: 2.2vw; line-height: 1.2; margin: 1vw 0; }
-        #splash-content h3 { font-size: 1.5vw; margin: 1vw 0; }
-        #splash-content p { font-size: 0.8vw; color: #808080; margin: 2vw 0; }
+        #splash-content h1 { font-size: 3.8vw; margin-bottom: 1vw; opacity: 0.6; white-space: nowrap; }
+        #splash-content h2 { font-size: 2.5vw; line-height: 1.1; margin: 1vw 0; }
+        #splash-content h3 { font-size: 1.6vw; margin: 1vw 0; letter-spacing: 2px; }
+        #splash-content p { font-size: 0.9vw; color: #757575; margin: 3vw 0 2vw 0; text-transform: none; }
         
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
         
-        /* Botão reduzido */
         #btn-iniciar { 
-            padding: 0.6vw 1.2vw; cursor: pointer; background: transparent; 
-            color: #00ffff; border: 2px solid #00ffff; font-size: 0.9vw; 
+            padding: 0.7vw 1.8vw; cursor: pointer; background: transparent; 
+            color: #00ffff; border: 1.5px solid #00ffff; font-size: 0.85vw; 
             border-radius: 50px; 
             text-shadow: 0 0 5px #00ffff; animation: pulse 1.5s infinite;
         }
 
         #main-layout { width: 90vw; max-width: 1920px; display: flex; flex-direction: column; align-items: center; }
-        #titulo-header { font-size: 3.5vw; margin: 1vw 0; }
-        #status-bar { width: 100%; padding: 1.5vw; box-sizing: border-box; margin-bottom: 1vw; color: #ff8800; font-weight: normal; text-align: center; font-size: 1.2vw; border: 2px solid #333; }
-        #game-container { position: relative; width: 100%; aspect-ratio: 1920 / 1080; background: url('ambiente.jpg') no-repeat center center; background-size: contain; overflow: hidden; }
+        #titulo-header { font-size: 3.5vw; margin: 1vw 0; opacity: 0.8; }
+        
+        #status-bar { 
+            width: 100%; padding: 1.5vw; box-sizing: border-box; margin-bottom: 1vw; 
+            color: #ff8800; font-weight: normal; text-align: center; font-size: 1.2vw; 
+            border: 2px solid #333; 
+        }
+
+        #game-container { 
+            position: relative; width: 100%; aspect-ratio: 1920 / 1080; 
+            background: url('ambiente.jpg') no-repeat center center; 
+            background-size: contain; overflow: hidden; 
+        }
         
         canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
         .bolinha { width: 2%; aspect-ratio: 1/1; border-radius: 50%; position: absolute; cursor: pointer; display: none; border: 0.2vw solid white; z-index: 1000; box-sizing: border-box; }
@@ -83,11 +92,10 @@
     function habilitarImpulso(id, offImg, onImg) {
         const el = document.getElementById(id);
         if (el) {
-            el.onmousedown = () => { el.src = onImg; };
-            el.onmouseup = () => { el.src = offImg; };
-            el.onmouseleave = () => { el.src = offImg; };
-            el.ontouchstart = () => { el.src = onImg; };
-            el.ontouchend = () => { el.src = offImg; };
+            const press = () => el.src = onImg;
+            const release = () => el.src = offImg;
+            el.onmousedown = press; el.onmouseup = release; el.onmouseleave = release;
+            el.ontouchstart = press; el.ontouchend = release;
         }
     }
 
@@ -107,8 +115,7 @@
     const canvas = document.getElementById('canvasCabo'), ctx = canvas.getContext('2d');
     const b1 = document.getElementById('bolinha1'), b2 = document.getElementById('bolinha2');
     const conFase2 = document.getElementById("derivacao_fase2"), conNeutro = document.getElementById("derivacao_neutro");
-    const buffer = document.createElement('canvas');
-    buffer.width = 1920; buffer.height = 1080;
+    const buffer = document.createElement('canvas'); buffer.width = 1920; buffer.height = 1080;
     const bCtx = buffer.getContext('2d');
 
     function atualizarBuffer() {
