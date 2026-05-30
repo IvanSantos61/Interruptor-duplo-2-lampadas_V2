@@ -5,24 +5,22 @@
     <style>
         body { margin: 0; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; font-family: sans-serif; }
         
-        /* Cabeçalho ajustado para ter proporção coerente com o painel */
+        /* Cabeçalho alinhado ao container principal */
         #header-container { width: 90vw; max-width: 1920px; text-align: center; margin-bottom: 15px; }
-        #titulo-app { color: #00ffff; font-size: 3.5vw; margin: 0; text-transform: uppercase; text-shadow: 0 0 10px #00ffff; }
+        #titulo-app { color: #00ffff; font-size: 3.5vw; margin: 0 0 10px 0; text-transform: uppercase; text-shadow: 0 0 10px #00ffff; }
         
         #status-bar { 
-            margin: 15px auto; 
-            width: 75%; /* Ajustado para ser maior e mais próximo ao original */
-            padding: 20px 40px; 
-            border: 3px solid #333; 
+            width: 100%; /* Largura total igual ao painel */
+            box-sizing: border-box; /* Garante que a borda não aumente o tamanho */
+            padding: 20px; 
+            border: 2px solid #333; 
             background: rgba(0,0,0,0.9); 
             color: #ff8800; 
             font-weight: bold; 
-            font-size: 1.6vw; 
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            font-size: 1.2vw; /* Mantido em tamanho legível */
+            border-radius: 4px; /* Ajustado para um visual mais técnico/quadrado */
         }
 
-        /* Container do Painel */
         #game-container { 
             position: relative; 
             width: 90vw; 
@@ -60,13 +58,12 @@
 </div>
 
 <script>
+    // ... [Mantida a lógica de script anterior que funciona] ...
     const statusBar = document.getElementById("status-bar");
-    
     function habilitarTroca(id, offImg, onImg) {
         const el = document.getElementById(id);
         if(el) el.onclick = () => { el.src = el.src.includes(offImg) ? onImg : offImg; };
     }
-    
     habilitarTroca("btn_dg", "al_dg_off.png", "al_dg_on.png");
     habilitarTroca("btn_dr", "al_dr_off.png", "al_dr_on.png");
     habilitarTroca("btn_int", "tec_int_off.png", "tec_int_on.png");
