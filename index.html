@@ -5,6 +5,7 @@
     <style>
         body { margin: 0; background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         
+        /* Container principal que mantém a proporção 16:9 */
         #game-container { 
             position: relative; 
             width: 90vw; 
@@ -14,24 +15,48 @@
             background-size: contain; 
             overflow: hidden; 
         }
+
+        /* Título e Status Fixos */
+        .layout-header {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 25%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 100; pointer-events: none;
+        }
+
+        #titulo-app { 
+            color: #00ffff; font-family: sans-serif; font-size: 5vw; 
+            margin: 0; text-transform: uppercase; text-shadow: 0 0 10px #000;
+        }
         
-        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        .bolinha { width: 2%; aspect-ratio: 1/1; border-radius: 50%; position: absolute; cursor: pointer; display: none; border: 2px solid white; z-index: 1000; }
-        .conector { position: absolute; width: 100px; z-index: 999 !important; display: none; }
+        #status-bar { 
+            margin-top: 10px; width: 60%; 
+            border: 2px solid #333; padding: 1% 2%; box-sizing: border-box;
+            background: rgba(0,0,0,0.85); color: #ff8800; font-weight: bold; 
+            text-align: center; font-size: 1.5vw; border-radius: 8px;
+        }
         
-        /* Estilos independentes para as teclas */
-        #btn_dg, #btn_dr, #btn_int { position: absolute; z-index: 2000; cursor: pointer; }
+        /* Elementos funcionais */
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .bolinha { width: 2%; aspect-ratio: 1/1; border-radius: 50%; position: absolute; cursor: pointer; display: none; border: 2px solid white; z-index: 1000; pointer-events: auto; }
+        .conector { position: absolute; width: 5%; z-index: 999 !important; display: none; }
+        #btn_dg, #btn_dr, #btn_int { position: absolute; z-index: 2000; cursor: pointer; width: 5%; }
     </style>
 </head>
 <body>
 
 <div id="game-container">
+    <div class="layout-header">
+        <h1 id="titulo-app">LABORATÓRIO SMT PRO</h1>
+        <div id="status-bar">REDE: CLIQUE NA REFERÊNCIA INDICADA NO BARRAMENTO PARA INICIAR A PASSAGEM DO NEUTRO</div>
+    </div>
+
     <img id="derivacao_fase2" class="conector" src="con_derivacao.png" style="top: 13.3%; left: 71%;">
     <img id="derivacao_neutro" class="conector" src="con_derivacao.png" style="top: 10.2%; left: 91.5%;">
     
-    <img id="btn_dg" src="al_dg_off.png" style="top: 26%; left: 12%; width: 75px;">
-    <img id="btn_dr" src="al_dr_off.png" style="top: 28.6%; left: 23.4%; width: 110px;">
-    <img id="btn_int" src="tec_int_off.png" style="top: 67.8%; left: 63.5%; width: 110px;">
+    <img id="btn_dg" src="al_dg_off.png" style="top: 26%; left: 12%;">
+    <img id="btn_dr" src="al_dr_off.png" style="top: 28.6%; left: 23.4%;">
+    <img id="btn_int" src="tec_int_off.png" style="top: 67.8%; left: 63.5%;">
     
     <canvas id="canvasCabo" width="1920" height="1080"></canvas>
     <div id="bolinha1" class="bolinha"></div>
@@ -39,13 +64,14 @@
 </div>
 
 <script>
-    // Função de alternância (Toggle) para as teclas
+    // Lógica consolidada
+    const statusBar = document.getElementById("status-bar");
+    
     function habilitarTroca(id, offImg, onImg) {
         const el = document.getElementById(id);
-        el.onclick = () => { el.src = el.src.includes(offImg) ? onImg : offImg; };
+        if(el) el.onclick = () => { el.src = el.src.includes(offImg) ? onImg : offImg; };
     }
-
-    // Aplicação da lógica de troca para cada tecla pelo ID correto
+    
     habilitarTroca("btn_dg", "al_dg_off.png", "al_dg_on.png");
     habilitarTroca("btn_dr", "al_dr_off.png", "al_dr_on.png");
     habilitarTroca("btn_int", "tec_int_off.png", "tec_int_on.png");
@@ -63,7 +89,6 @@
     const b1 = document.getElementById('bolinha1'), b2 = document.getElementById('bolinha2');
     const conFase2 = document.getElementById("derivacao_fase2"), conNeutro = document.getElementById("derivacao_neutro");
     
-    // Canvas Buffer para manter o desenho estável (sem "shake")
     const buffer = document.createElement('canvas');
     buffer.width = 1920; buffer.height = 1080;
     const bCtx = buffer.getContext('2d');
@@ -73,37 +98,24 @@
         cabosConcluidos.forEach(c => {
             let img = new Image();
             img.src = `${c.nome}/quadro${c.total.toString().padStart(4, '0')}.png`;
-            img.onload = () => { 
-                bCtx.drawImage(img, 0, 0); 
-                ctx.drawImage(buffer, 0, 0); 
-            };
+            img.onload = () => { bCtx.drawImage(img, 0, 0); ctx.drawImage(buffer, 0, 0); };
         });
     }
 
     function iniciarCabo() {
         if (indiceAtual >= cabos.length) return;
         const c = cabos[indiceAtual];
+        statusBar.innerText = `REDE: INSTALANDO ${c.nome.replace('_', ' ')}`;
         
         if (c.nome === "FASE_2") conFase2.style.display = "block";
         if (c.nome === "NEUTRO_2") conNeutro.style.display = "block";
         
-        b1.style.display = "block"; 
-        b1.style.backgroundColor = c.cor;
+        b1.style.display = "block"; b1.style.backgroundColor = c.cor;
         b1.style.left = c.b1.x + "%"; b1.style.top = c.b1.y + "%";
         b2.style.display = "none";
         
-        b1.onclick = () => {
-            b1.style.backgroundColor = "green";
-            b2.style.backgroundColor = c.cor;
-            b2.style.left = c.b2.x + "%"; 
-            b2.style.top = c.b2.y + "%";
-            b2.style.display = "block";
-        };
-
-        b2.onclick = () => {
-            b1.style.display = "none"; b2.style.display = "none";
-            animar(c);
-        };
+        b1.onclick = () => { b1.style.backgroundColor = "green"; b2.style.backgroundColor = c.cor; b2.style.left = c.b2.x + "%"; b2.style.top = c.b2.y + "%"; b2.style.display = "block"; };
+        b2.onclick = () => { b1.style.display = "none"; b2.style.display = "none"; animar(c); };
     }
 
     function animar(c) {
@@ -111,21 +123,10 @@
         let intv = setInterval(() => {
             let img = new Image();
             img.src = `${c.nome}/quadro${frame.toString().padStart(4, '0')}.png`;
-            img.onload = () => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(buffer, 0, 0); 
-                ctx.drawImage(img, 0, 0);
-            };
-            if (++frame > c.total) {
-                clearInterval(intv);
-                cabosConcluidos.push(c);
-                atualizarBuffer(); 
-                indiceAtual++;
-                setTimeout(iniciarCabo, 500); 
-            }
+            img.onload = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(buffer, 0, 0); ctx.drawImage(img, 0, 0); };
+            if (++frame > c.total) { clearInterval(intv); cabosConcluidos.push(c); atualizarBuffer(); indiceAtual++; setTimeout(iniciarCabo, 500); }
         }, 50);
     }
-
     iniciarCabo();
 </script>
 </body>
