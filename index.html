@@ -83,29 +83,19 @@
 
 function animar(c) {
         let f = 1;
-        // Limpa apenas o canvas de animação (o de cima)
-        ctxAnim.clearRect(0, 0, 1400, 850);
-        
         let intv = setInterval(() => {
             let img = new Image();
             img.src = `${c.nome}/quadro${f.toString().padStart(4, '0')}.png`;
             
             img.onload = () => { 
-                // Limpa o canvas de animação antes de desenhar o novo frame
-                ctxAnim.clearRect(0, 0, 1400, 850);
-                ctxAnim.drawImage(img, 0, 0, 1400, 850); 
+                // A MÁGICA ESTÁ AQUI: 
+                // NÃO damos clearRect. Assim, o frame novo é desenhado 
+                // sobre os pixels do frame anterior que já estão no canvas.
+                ctx.drawImage(img, 0, 0, 1400, 850); 
             };
             
             if (++f > c.total) { 
                 clearInterval(intv);
-                
-                // CRUCIAL: Ao terminar a animação, desenhamos o frame final no canvasBase (o permanente)
-                // Usamos o frame final (f-1) para que o cabo continue lá
-                ctxBase.drawImage(img, 0, 0, 1400, 850);
-                
-                // Limpa o canvas de animação para deixar limpo para o próximo cabo
-                ctxAnim.clearRect(0, 0, 1400, 850);
-                
                 indice++; 
                 rodarCiclo(); 
             }
