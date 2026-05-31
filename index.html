@@ -28,24 +28,19 @@
             text-shadow: 0 0 5px #00ffff; animation: pulse 1.5s infinite;
         }
 
-        #main-layout { width: 100%; display: flex; flex-direction: column; align-items: center; }
+        #main-layout { width: 90vw; max-width: 1920px; display: flex; flex-direction: column; align-items: center; }
         #titulo-header { font-size: 3.5vw; margin: 1vw 0; opacity: 0.8; }
         
         #status-bar { 
-            width: 90vw; padding: 1.5vw; box-sizing: border-box; margin-bottom: 1vw; 
+            width: 100%; padding: 1.5vw; box-sizing: border-box; margin-bottom: 1vw; 
             color: #ff8800; font-weight: normal; text-align: center; font-size: 1.2vw; 
             border: 2px solid #333; 
         }
 
-        /* CORREÇÃO APLICADA: Container com tamanho fixo de referência e sem propriedades de transformação que quebram o zoom */
         #game-container { 
-            position: relative; 
-            width: 90vw; 
-            max-width: 1920px; 
-            aspect-ratio: 1920 / 1080; 
+            position: relative; width: 100%; aspect-ratio: 1920 / 1080; 
             background: url('ambiente.jpg') no-repeat center center; 
-            background-size: contain; 
-            overflow: hidden; 
+            background-size: contain; overflow: hidden; 
         }
         
         canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
@@ -117,22 +112,47 @@
     const somConexao = new Audio('conexao.mp3');
     const somCampainha = new Audio('campainha.mp3');
 
-    function mostrarInfo(nome) { const box = document.getElementById('info-box'); box.innerText = nome; box.style.display = 'block'; }
-    function esconderInfo() { document.getElementById('info-box').style.display = 'none'; }
+    function mostrarInfo(nome) {
+        const box = document.getElementById('info-box');
+        box.innerText = nome;
+        box.style.display = 'block';
+    }
+    function esconderInfo() {
+        document.getElementById('info-box').style.display = 'none';
+    }
 
-    document.getElementById('btn-iniciar').onclick = () => { document.getElementById('splash-overlay').style.display = 'none'; iniciarCabo(); };
+    document.getElementById('btn-iniciar').onclick = () => {
+        document.getElementById('splash-overlay').style.display = 'none';
+        iniciarCabo();
+    };
 
     function habilitarTroca(id, offImg, onImg) {
         const el = document.getElementById(id);
-        if(el) { el.onclick = () => { el.src = el.src.includes(offImg) ? onImg : offImg; somDisjuntor.currentTime = 0; somDisjuntor.play(); }; }
+        if(el) {
+            el.onclick = () => { 
+                el.src = el.src.includes(offImg) ? onImg : offImg; 
+                somDisjuntor.currentTime = 0;
+                somDisjuntor.play();
+            };
+        }
     }
     
     function habilitarImpulso(id, offImg, onImg) {
         const el = document.getElementById(id);
         if (el) {
-            const press = () => { el.src = onImg; const dgLigado = document.getElementById('btn_dg').src.includes('on'); const drLigado = document.getElementById('btn_dr').src.includes('on'); const fiaçãoOk = cabosConcluidos.length === cabos.length; if (dgLigado && drLigado && fiaçãoOk) { somCampainha.currentTime = 0; somCampainha.play(); } };
+            const press = () => {
+                el.src = onImg;
+                const dgLigado = document.getElementById('btn_dg').src.includes('on');
+                const drLigado = document.getElementById('btn_dr').src.includes('on');
+                const fiaçãoOk = cabosConcluidos.length === cabos.length;
+                if (dgLigado && drLigado && fiaçãoOk) {
+                    somCampainha.currentTime = 0;
+                    somCampainha.play();
+                }
+            };
             const release = () => { el.src = offImg; };
-            el.onmousedown = press; el.onmouseup = release; el.onmouseleave = release; el.ontouchstart = press; el.ontouchend = release;
+            el.onmousedown = press; el.onmouseup = release; el.onmouseleave = release;
+            el.ontouchstart = press; el.ontouchend = release;
         }
     }
 
@@ -158,7 +178,8 @@
     function atualizarBuffer() {
         bCtx.clearRect(0, 0, buffer.width, buffer.height);
         cabosConcluidos.forEach(c => {
-            let img = new Image(); img.src = `${c.nome}/quadro${c.total.toString().padStart(4, '0')}.png`;
+            let img = new Image();
+            img.src = `${c.nome}/quadro${c.total.toString().padStart(4, '0')}.png`;
             img.onload = () => { bCtx.drawImage(img, 0, 0); ctx.drawImage(buffer, 0, 0); };
         });
     }
@@ -168,18 +189,33 @@
         const c = cabos[indiceAtual];
         if (c.nome === "FASE_2") conFase2.style.display = "block";
         if (c.nome === "NEUTRO_2") conNeutro.style.display = "block";
-        b1.style.display = "block"; b1.style.backgroundColor = c.cor; b1.style.left = c.b1.x + "%"; b1.style.top = c.b1.y + "%";
+        b1.style.display = "block"; b1.style.backgroundColor = c.cor;
+        b1.style.left = c.b1.x + "%"; b1.style.top = c.b1.y + "%";
         b2.style.display = "none";
-        b1.onclick = () => { b1.style.backgroundColor = "green"; b2.style.backgroundColor = c.cor; b2.style.left = c.b2.x + "%"; b2.style.top = c.b2.y + "%"; b2.style.display = "block"; };
+        b1.onclick = () => {
+            b1.style.backgroundColor = "green";
+            b2.style.backgroundColor = c.cor;
+            b2.style.left = c.b2.x + "%"; b2.style.top = c.b2.y + "%";
+            b2.style.display = "block";
+        };
         b2.onclick = () => { b1.style.display = "none"; b2.style.display = "none"; animar(c); };
     }
 
     function animar(c) {
         let frame = 1;
         let intv = setInterval(() => {
-            let img = new Image(); img.src = `${c.nome}/quadro${frame.toString().padStart(4, '0')}.png`;
+            let img = new Image();
+            img.src = `${c.nome}/quadro${frame.toString().padStart(4, '0')}.png`;
             img.onload = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(buffer, 0, 0); ctx.drawImage(img, 0, 0); };
-            if (++frame > c.total) { clearInterval(intv); cabosConcluidos.push(c); atualizarBuffer(); somConexao.currentTime = 0; somConexao.play(); indiceAtual++; setTimeout(iniciarCabo, 500); }
+            if (++frame > c.total) { 
+                clearInterval(intv); 
+                cabosConcluidos.push(c); 
+                atualizarBuffer(); 
+                somConexao.currentTime = 0;
+                somConexao.play();
+                indiceAtual++; 
+                setTimeout(iniciarCabo, 500); 
+            }
         }, 50);
     }
 </script>
