@@ -5,34 +5,41 @@
     <style>
         body { margin: 0; background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
         
-        /* Esta é a ÚNICA caixa que controla o tamanho. Tudo aqui dentro é relativo a ela */
+        /* Wrapper 1920x1080 - Todo o conteúdo fica aqui dentro */
         #game-wrapper {
             width: 1920px; height: 1080px;
             transform-origin: center;
-            transform: scale(calc(min(100vw / 1920, 100vh / 1080)));
-            background: url('ambiente.jpg') no-repeat center center;
-            background-size: 100% 100%;
-            position: relative;
+            transform: scale(calc(min(90vw / 1920, 80vh / 1080)));
+            display: flex; flex-direction: column; align-items: center;
+            background: #000;
         }
 
-        /* Título e Status agora são filhos diretos do wrapper */
-        #titulo-header { position: absolute; top: 20px; width: 100%; text-align: center; color: #00ffff; font-size: 80px; text-transform: uppercase; margin: 0; }
-        #status-bar { position: absolute; top: 120px; left: 260px; width: 1400px; padding: 20px; color: #ffcc00; text-align: center; font-size: 40px; border: 2px solid #333; background: rgba(0,0,0,0.8); }
+        #titulo-header { color: #00ffff; font-size: 60px; margin: 10px 0; text-transform: uppercase; }
+        #status-bar { width: 1400px; padding: 20px; color: #ffcc00; text-align: center; font-size: 30px; border: 2px solid #333; background: rgba(0,0,0,0.8); margin-bottom: 10px; }
         
-        canvas { position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; pointer-events: none; }
-        .bolinha { width: 50px; height: 50px; border-radius: 50%; border: 4px solid white; position: absolute; cursor: pointer; display: none; z-index: 100; }
+        /* Container menor (850px de altura) para deixar espaço para títulos */
+        #game-container { 
+            width: 1400px; height: 850px; 
+            background: url('ambiente.jpg') no-repeat center center; 
+            background-size: contain; 
+            position: relative; overflow: hidden;
+        }
+        
+        canvas { position: absolute; top: 0; left: 0; width: 1400px; height: 850px; pointer-events: none; }
+        .bolinha { width: 40px; height: 40px; border-radius: 50%; border: 4px solid white; position: absolute; cursor: pointer; display: none; z-index: 100; }
     </style>
 </head>
 <body>
 
-    <div id="game-wrapper">
-        <h1 id="titulo-header">LABORATÓRIO SMT PRO</h1>
-        <div id="status-bar">CARREGANDO...</div>
-        
-        <canvas id="canvasAnim" width="1920" height="1080"></canvas>
+<div id="game-wrapper">
+    <h1 id="titulo-header">LABORATÓRIO SMT PRO</h1>
+    <div id="status-bar">CARREGANDO...</div>
+    <div id="game-container">
+        <canvas id="canvasAnim" width="1400" height="850"></canvas>
         <div id="b1" class="bolinha"></div>
         <div id="b2" class="bolinha"></div>
     </div>
+</div>
 
 <script>
     const config = [
@@ -46,6 +53,12 @@
     let indice = 0;
     const canvas = document.getElementById('canvasAnim');
     const ctx = canvas.getContext('2d');
+    
+    // Canvas de Buffer para guardar os cabos já desenhados
+    const bufferCanvas = document.createElement('canvas');
+    bufferCanvas.width = 1400; bufferCanvas.height = 850;
+    const bCtx = bufferCanvas.getContext('2d');
+
     const b1 = document.getElementById('b1'), b2 = document.getElementById('b2');
     const status = document.getElementById('status-bar');
 
@@ -54,12 +67,12 @@
         const c = config[indice];
         status.innerText = `CONECTE: ${c.nome.replace('_', ' ')}`;
         
-        b1.style.left = "500px"; b1.style.top = "400px"; b1.style.backgroundColor = c.cor;
+        b1.style.left = "200px"; b1.style.top = "200px"; b1.style.backgroundColor = c.cor;
         b1.style.display = "block";
         b2.style.display = "none";
 
         b1.onclick = () => {
-            b2.style.left = "1400px"; b2.style.top = "600px"; b2.style.backgroundColor = c.cor;
+            b2.style.left = "800px"; b2.style.top = "400px"; b2.style.backgroundColor = c.cor;
             b2.style.display = "block";
         };
 
@@ -74,9 +87,18 @@
         let intv = setInterval(() => {
             let img = new Image();
             img.src = `${c.nome}/quadro${f.toString().padStart(4, '0')}.png`;
-            img.onload = () => { ctx.clearRect(0,0,1920,1080); ctx.drawImage(img, 0, 0); };
-            if (++f > c.total) { clearInterval(intv); indice++; rodarCiclo(); }
-        }, 50);
+            img.onload = () => { 
+                ctx.clearRect(0,0,1400,850);
+                ctx.drawImage(bufferCanvas, 0, 0); // Desenha o que já existia
+                ctx.drawImage(img, 0, 0, 1400, 850); // Desenha o frame atual
+            };
+            if (++f > c.total) { 
+                clearInterval(intv); 
+                // Salva o frame final no buffer antes de passar para o próximo
+                bCtx.drawImage(img, 0, 0, 1400, 850); 
+                indice++; rodarCiclo(); 
+            }
+        }, 30);
     }
 
     rodarCiclo();
