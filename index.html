@@ -8,26 +8,55 @@
         .neon-text { color: #00ffff; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; font-weight: normal; }
         .neon-box { border: 2.5px solid #00ffff; box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); border-radius: 60px; background: rgba(0, 0, 0, 0.9); }
 
-        #splash-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; }
+        #splash-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; 
+            z-index: 9999; display: flex; justify-content: center; align-items: center; 
+        }
         #splash-content { text-align: center; padding: 3vw 5vw; width: auto; min-width: 45%; }
         
+        #splash-content h1 { font-size: 3.8vw; margin-bottom: 1vw; opacity: 0.6; white-space: nowrap; }
+        #splash-content h2 { font-size: 2.5vw; line-height: 1.1; margin: 1vw 0; }
+        #splash-content h3 { font-size: 1.6vw; margin: 1vw 0; letter-spacing: 2px; }
+        #splash-content p { font-size: 0.9vw; color: #757575; margin: 3vw 0 2vw 0; text-transform: none; }
+        
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        
+        #btn-iniciar { 
+            padding: 0.7vw 1.8vw; cursor: pointer; background: transparent; 
+            color: #00ffff; border: 1.5px solid #00ffff; font-size: 0.85vw; 
+            border-radius: 50px; 
+            text-shadow: 0 0 5px #00ffff; animation: pulse 1.5s infinite;
+        }
+
         #main-layout { width: 90vw; max-width: 1920px; display: flex; flex-direction: column; align-items: center; }
-        #game-container { position: relative; width: 100%; aspect-ratio: 1920 / 1080; background: url('ambiente.jpg') no-repeat center center; background-size: contain; overflow: hidden; }
+        #titulo-header { font-size: 3.5vw; margin: 1vw 0; opacity: 0.8; }
+        
+        #status-bar { 
+            width: 100%; padding: 1.5vw; box-sizing: border-box; margin-bottom: 1vw; 
+            color: #ff8800; font-weight: normal; text-align: center; font-size: 1.2vw; 
+            border: 2px solid #333; 
+        }
+
+        #game-container { 
+            position: relative; width: 100%; aspect-ratio: 1920 / 1080; 
+            background: url('ambiente.jpg') no-repeat center center; 
+            background-size: contain; overflow: hidden; 
+        }
         
         canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
         .bolinha { width: 2%; aspect-ratio: 1/1; border-radius: 50%; position: absolute; cursor: pointer; display: none; border: 0.2vw solid white; z-index: 1000; box-sizing: border-box; }
         .conector { position: absolute; width: 5.2%; z-index: 999 !important; display: none; }
         #btn_dg, #btn_dr, #btn_int { position: absolute; z-index: 990; cursor: pointer; width: 5.7%; }
 
-        /* Hotspots e Legendas */
+        /* Estrutura de Hotspot e Legenda */
         .hotspot-container { position: absolute; z-index: 850; }
-        .hotspot { width: 100%; height: 100%; background: transparent; cursor: pointer; }
+        .hotspot { width: 100%; height: 100%; cursor: pointer; }
         .hotspot:hover { background: rgba(0, 255, 255, 0.2); border: 1px solid #00ffff; }
         .legenda { 
             display: none; position: absolute; top: 105%; left: 0; 
             font-size: 0.7vw; color: #00ffff; white-space: nowrap; 
             background: rgba(0,0,0,0.8); padding: 0.2vw 0.5vw; border: 1px solid #00ffff;
-            pointer-events: none;
+            pointer-events: none; z-index: 3000;
         }
         .hotspot:hover + .legenda { display: block; }
     </style>
@@ -37,52 +66,32 @@
     <div id="splash-overlay">
         <div id="splash-content" class="neon-box">
             <h1 class="neon-text">LABORATÓRIO SMT PRO</h1>
+            <h2 class="neon-text">CAMPAINHA<br>ELETROMAGNÉTICA</h2>
+            <h3 class="neon-text">CIRCUITO MONOFÁSICO - 127V</h3>
+            <p>© Desenvolvido por Ivan Santos - ConectaeadPLUS - 2026</p>
             <button id="btn-iniciar" class="neon-text">CLIQUE PARA INICIAR O LABORATÓRIO</button>
         </div>
     </div>
 
     <div id="main-layout">
-        <div id="game-container">
-            <div class="hotspot-container" style="top: 52%; left: 5%; width: 3vw; height: 12vw;">
-                <div class="hotspot"></div><div class="legenda">REDE ELÉTRICA</div>
-            </div>
-            <div class="hotspot-container" style="top: 10%; left: 6.5%; width: 2vw; height: 16vw;">
-                <div class="hotspot"></div><div class="legenda">BARRA DE ATERRAMENTO</div>
-            </div>
-            <div class="hotspot-container" style="top: 13%; left: 11.8%; width: 3vw; height: 12vw;">
-                <div class="hotspot"></div><div class="legenda">DISJUNTOR GERAL</div>
-            </div>
-            <div class="hotspot-container" style="top: 13%; left: 15.8%; width: 2.8vw; height: 12vw;">
-                <div class="hotspot"></div><div class="legenda">DPS</div>
-            </div>
-            <div class="hotspot-container" style="top: 12.8%; left: 19.5%; width: 7vw; height: 13vw;">
-                <div class="hotspot"></div><div class="legenda">DISPOSITIVO DR</div>
-            </div>
-            <div class="hotspot-container" style="top: 13%; left: 28.5%; width: 9vw; height: 12vw;">
-                <div class="hotspot"></div><div class="legenda">DISJUNTORES DOS CIRCUITOS</div>
-            </div>
-            <div class="hotspot-container" style="top: 10%; left: 43%; width: 2vw; height: 16vw;">
-                <div class="hotspot"></div><div class="legenda">BARRA DE NEUTRO</div>
-            </div>
-            <div class="hotspot-container" style="top: 58.5%; left: 35%; width: 10vw; height: 14.5vw;">
-                <div class="hotspot"></div><div class="legenda">CAIXA DE PASSAGEM 4x2</div>
-            </div>
-            <div class="hotspot-container" style="top: 10.5%; left: 51.5%; width: 10vw; height: 14.5vw;">
-                <div class="hotspot"></div><div class="legenda">CAIXA DE PASSAGEM 4x2</div>
-            </div>
-            <div class="hotspot-container" style="top: 10.5%; left: 69.2%; width: 10vw; height: 14.5vw;">
-                <div class="hotspot"></div><div class="legenda">CAIXA DE PASSAGEM 4x2</div>
-            </div>
-            <div class="hotspot-container" style="top: 10.5%; left: 86.5%; width: 10vw; height: 14.5vw;">
-                <div class="hotspot"></div><div class="legenda">CAIXA DE PASSAGEM 4x2</div>
-            </div>
-            <div class="hotspot-container" style="top: 61%; left: 86%; width: 10vw; height: 14vw;">
-                <div class="hotspot"></div><div class="legenda">CAMPAINHA 127V</div>
-            </div>
-            <div class="hotspot-container" style="top: 55%; left: 64%; width: 8vw; height: 16vw;">
-                <div class="hotspot"></div><div class="legenda">INTERRUPTOR DE PULSO</div>
-            </div>
+        <h1 id="titulo-header" class="neon-text">LABORATÓRIO SMT PRO</h1>
+        <div id="status-bar">REDE: CLIQUE NA REFERÊNCIA INDICADA NO BARRAMENTO PARA INICIAR A PASSAGEM DO NEUTRO</div>
 
+        <div id="game-container">
+            <div class="hotspot-container" style="top: 52%; left: 5%; width: 3vw; height: 12vw;"><div class="hotspot"></div><div class="legenda">REDE ELÉTRICA</div></div>
+            <div class="hotspot-container" style="top: 10%; left: 6.5%; width: 2vw; height: 16vw;"><div class="hotspot"></div><div class="legenda">BARRA DE ATERRAMENTO</div></div>
+            <div class="hotspot-container" style="top: 13%; left: 11.8%; width: 3vw; height: 12vw;"><div class="hotspot"></div><div class="legenda">DISJUNTOR GERAL</div></div>
+            <div class="hotspot-container" style="top: 13%; left: 15.8%; width: 2.8vw; height: 12vw;"><div class="hotspot"></div><div class="legenda">DPS</div></div>
+            <div class="hotspot-container" style="top: 12.8%; left: 19.5%; width: 7vw; height: 13vw;"><div class="hotspot"></div><div class="legenda">DISPOSITIVO DR</div></div>
+            <div class="hotspot-container" style="top: 13%; left: 28.5%; width: 9vw; height: 12vw;"><div class="hotspot"></div><div class="legenda">DISJUNTORES DOS CIRCUITOS</div></div>
+            <div class="hotspot-container" style="top: 10%; left: 43%; width: 2vw; height: 16vw;"><div class="hotspot"></div><div class="legenda">BARRA DE NEUTRO</div></div>
+            <div class="hotspot-container" style="top: 58.5%; left: 35%; width: 10vw; height: 14.5vw;"><div class="hotspot"></div><div class="legenda">CAIXA DE PASSAGEM 4x2</div></div>
+            <div class="hotspot-container" style="top: 10.5%; left: 51.5%; width: 10vw; height: 14.5vw;"><div class="hotspot"></div><div class="legenda">CAIXA DE PASSAGEM 4x2</div></div>
+            <div class="hotspot-container" style="top: 10.5%; left: 69.2%; width: 10vw; height: 14.5vw;"><div class="hotspot"></div><div class="legenda">CAIXA DE PASSAGEM 4x2</div></div>
+            <div class="hotspot-container" style="top: 10.5%; left: 86.5%; width: 10vw; height: 14.5vw;"><div class="hotspot"></div><div class="legenda">CAIXA DE PASSAGEM 4x2</div></div>
+            <div class="hotspot-container" style="top: 61%; left: 86%; width: 10vw; height: 14vw;"><div class="hotspot"></div><div class="legenda">CAMPAINHA 127V</div></div>
+            <div class="hotspot-container" style="top: 55%; left: 64%; width: 8vw; height: 16vw;"><div class="hotspot"></div><div class="legenda">INTERRUPTOR DE PULSO</div></div>
+            
             <img id="derivacao_fase2" class="conector" src="con_derivacao.png" style="top: 13.3%; left: 71%;">
             <img id="derivacao_neutro" class="conector" src="con_derivacao.png" style="top: 10.2%; left: 91.5%;">
             <img id="btn_dg" src="al_dg_off.png" style="top: 26%; left: 12%; width: 3.9%;">
@@ -96,12 +105,12 @@
     </div>
 
 <script>
-    // [Seu script permanece intacto - apenas adicionei o evento de splash]
+    // [Seu Script Original]
     document.getElementById('btn-iniciar').onclick = () => {
         document.getElementById('splash-overlay').style.display = 'none';
         iniciarCabo();
     };
-    // ... [Resto do seu script original aqui] ...
+    // ... [Resto do script] ...
 </script>
 </body>
 </html>
