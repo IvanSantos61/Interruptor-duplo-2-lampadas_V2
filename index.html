@@ -22,6 +22,15 @@
     </div>
 
 <script>
+    // --- CONFIGURAÇÃO DE AJUSTE DOS CONECTORES ---
+    const AJUSTE_CONECTOR = {
+        offsetX: -25, // Ajuste horizontal (x + valor)
+        offsetY: -25, // Ajuste vertical (y + valor)
+        width: 50,    // Largura da imagem
+        height: 50    // Altura da imagem
+    };
+    // ----------------------------------------------
+
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     const status = document.getElementById('status');
@@ -45,8 +54,13 @@
         const conector = new Image();
         conector.src = 'con_derivacao.png';
         conector.onload = () => {
-            // Desenha o conector centralizado no ponto clicado
-            ctx.drawImage(conector, x - 25, y - 25, 50, 50);
+            ctx.drawImage(
+                conector, 
+                x + AJUSTE_CONECTOR.offsetX, 
+                y + AJUSTE_CONECTOR.offsetY, 
+                AJUSTE_CONECTOR.width, 
+                AJUSTE_CONECTOR.height
+            );
         };
     }
 
@@ -61,7 +75,6 @@
         b1.onclick = () => {
             b1.style.backgroundColor = "green";
             
-            // Adiciona o conector apenas para FASE_2 e NEUTRO_2
             if (c.nome === "FASE_2" || c.nome === "NEUTRO_2") {
                 desenharConector(c.p1.x, c.p1.y);
             }
