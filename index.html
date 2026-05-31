@@ -18,21 +18,11 @@
         #titulo-header { font-size: 3.5vw; margin: 1vw 0; opacity: 0.8; }
         #status-bar { width: 100%; padding: 1.5vw; box-sizing: border-box; margin-bottom: 1vw; color: #ff8800; text-align: center; font-size: 1.2vw; border: 2px solid #333; }
 
-        #game-container { 
-            position: relative; 
-            width: 100%; 
-            aspect-ratio: 1920 / 1080; 
-            background: url('ambiente.jpg') no-repeat center center; 
-            background-size: contain; 
-            overflow: hidden;
-            /* Força a renderização estável para manter o alinhamento com zoom */
-            contain: strict; 
-            content-visibility: auto;
-        }
+        #game-container { position: relative; width: 100%; aspect-ratio: 1920 / 1080; background: url('ambiente.jpg') no-repeat center center; background-size: contain; overflow: hidden; }
         
         canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
         .bolinha { width: 2%; aspect-ratio: 1/1; border-radius: 50%; position: absolute; cursor: pointer; display: none; border: 0.2vw solid white; z-index: 1000; box-sizing: border-box; }
-        .conector { position: absolute; width: 5.2%; z-index: 999; display: none; }
+        .conector { position: absolute; width: 5.2%; z-index: 999 !important; display: none; }
         #btn_dg, #btn_dr, #btn_int { position: absolute; z-index: 990; cursor: pointer; width: 5.7%; }
 
         .hotspot { position: absolute; background: rgba(0, 255, 255, 0.1); border: 1px solid #00ffff; cursor: pointer; z-index: 850; transition: all 0.3s; }
@@ -51,7 +41,7 @@
 
     <div id="main-layout">
         <h1 id="titulo-header" class="neon-text">LABORATÓRIO SMT PRO</h1>
-        <div id="status-bar">REDE: CLIQUE NA REFERÊNCIA INDICADA PARA INICIAR A PASSAGEM DO NEUTRO</div>
+        <div id="status-bar">REDE: CLIQUE NA REFERÊNCIA INDICADA NO BARRAMENTO PARA INICIAR A PASSAGEM DO NEUTRO</div>
 
         <div id="game-container">
             <div class="hotspot" style="top: 52%; left: 5%; width: 3vw; height: 12vw;" onmouseover="mostrarInfo('REDE ELÉTRICA')" onmouseout="esconderInfo()"></div>
