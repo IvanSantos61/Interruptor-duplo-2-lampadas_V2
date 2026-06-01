@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laboratório SMT Pro - Ajuste de Conector</title>
+    <title>Laboratório SMT Pro - Conectores Independentes</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         
@@ -64,21 +64,31 @@
             pointer-events: none;
         }
 
-        /* --- PROPRIEDADES DO CONECTOR (ACESSE E ALTERE AQUI) --- */
-        #img-con-derivacao {
+        /* --- PROPRIEDADES DOS CONECTORES (ALTERE AQUI) --- */
+        
+        /* Conector para a FASE_2 */
+        #con-fase {
             position: absolute;
-            z-index: 50;           /* Fica acima do fundo, mas abaixo das bolinhas */
-            
-            /* ALTERE ESTES VALORES PARA AJUSTAR O CONECTOR */
-            width: 8%;             /* Tamanho do conector relativo ao quadro */
-            top: 50%;              /* Posição Vertical (ajuste conforme o seu fundo) */
-            left: 30%;             /* Posição Horizontal (ajuste conforme o seu fundo) */
-            
-            transform: translate(-50%, -50%); /* Garante que o ponto de ancoragem seja o centro */
+            z-index: 50;
+            width: 6%;             /* Tamanho independente */
+            top: 58%;              /* Posição Vertical */
+            left: 35%;             /* Posição Horizontal */
+            transform: translate(-50%, -50%);
             pointer-events: none;
         }
 
-        .oculto { display: none; }
+        /* Conector para o NEUTRO_2 */
+        #con-neutro {
+            position: absolute;
+            z-index: 50;
+            width: 6%;             /* Tamanho independente */
+            top: 58%;              /* Posição Vertical */
+            left: 32.5%;           /* Posição Horizontal */
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .oculto { display: none !important; }
 
         /* PONTOS DE INTERAÇÃO */
         .ponto {
@@ -130,7 +140,8 @@
     <main id="quadro-simulacao">
         <img src="ambiente.jpg" class="camada">
 
-        <img id="img-con-derivacao" src="con_derivacao.png" class="oculto">
+        <img id="con-fase" src="con_derivacao.png" class="oculto">
+        <img id="con-neutro" src="con_derivacao.png" class="oculto">
 
         <img id="img-fase-rede" class="camada oculto">
         <img id="img-neutro-rede" class="camada oculto">
@@ -164,12 +175,12 @@
             const dados = roteiro[etapaAtual];
             document.getElementById('label-status').innerText = `CONECTE: ${dados.nome.toUpperCase()}`;
             
-            // Gatilho para mostrar o conector
-            if (dados.pasta === "FASE_2" || dados.pasta === "NEUTRO_2") {
-                document.getElementById('img-con-derivacao').classList.remove('oculto');
-            } else {
-                // Opcional: esconder o conector em outras etapas se desejar
-                // document.getElementById('img-con-derivacao').classList.add('oculto');
+            // Gatilhos específicos para cada conector
+            if (dados.pasta === "FASE_2") {
+                document.getElementById('con-fase').classList.remove('oculto');
+            }
+            if (dados.pasta === "NEUTRO_2") {
+                document.getElementById('con-neutro').classList.remove('oculto');
             }
 
             preCarregarCabo(dados);
