@@ -1,1 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratório SMT Pro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="palco">
+        <div id="app-container">
+            
+            <img src="ambiente.jpg" id="fundo-ambiente" class="camada-grafica" alt="Fundo do Quadro">
 
+            <img id="anim-fase-rede" src="FASE_REDE/quadro0001.png" class="camada-grafica cabo-inativo">
+            <img id="anim-neutro-rede" src="NEUTRO_REDE/quadro0001.png" class="camada-grafica cabo-inativo">
+            <img id="anim-fase-2" src="FASE_2/quadro0001.png" class="camada-grafica cabo-inativo">
+            <img id="anim-neutro-2" src="NEUTRO_2/quadro0001.png" class="camada-grafica cabo-inativo">
+            <img id="anim-retorno" src="RETORNO/quadro0001.png" class="camada-grafica cabo-inativo">
+
+            <div id="ui-layer">
+                
+                <h1 class="titulo-smt">LABORATÓRIO SMT PRO</h1>
+
+                <div class="barra-instrucao">
+                    <p id="texto-instrucao">CONECTE A FASE: CLIQUE NA REFERÊNCIA DO DR</p>
+                </div>
+
+                <button id="btn-reiniciar">REINICIAR</button>
+
+                <div id="hotspot-dr" class="hotspot" style="top: 450px; left: 600px; width: 40px; height: 40px;"></div>
+                <div id="hotspot-interruptor" class="hotspot" style="top: 750px; left: 1200px; width: 40px; height: 60px;"></div>
+                
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
