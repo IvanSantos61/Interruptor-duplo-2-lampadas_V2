@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laboratório SMT PRO - V2</title>
+    <title>SMT Pro - Simulador Interativo</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         
@@ -15,172 +15,235 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
         }
 
+        /* Container com proporção 1920x1080 resistente ao zoom */
         #app-container {
             width: 1920px;
             height: 1080px;
             position: relative;
             transform-origin: center center;
+            display: flex;
+            flex-direction: column;
+            background-color: #000;
         }
 
-        /* Camadas de Imagem (Fundo e Cabos) */
-        .camada {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 1920px;
-            height: 1080px;
-            pointer-events: none;
+        /* 1. ÁREA DO TÍTULO (Fora do quadro principal) */
+        #zona-titulo {
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .titulo-cyan {
+            color: #00f2ff;
+            font-size: 50px;
+            font-weight: 900;
+            text-shadow: 0 0 15px rgba(0, 242, 255, 0.6);
         }
 
-        /* Interface de Usuário conforme a Gravura */
-        #interface-layer {
+        /* 2. ÁREA DE STATUS (Fora do quadro principal) */
+        #zona-status {
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .caixa-status {
+            background: rgba(20, 25, 30, 0.9);
+            border: 1px solid #1a3a5a;
+            padding: 10px 40px;
+            border-radius: 8px;
+            min-width: 600px;
+            text-align: center;
+        }
+        .texto-gold {
+            color: #ffcc00;
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* 3. QUADRO PRINCIPAL DE EQUIPAMENTOS */
+        #quadro-principal {
+            flex: 1;
+            position: relative;
+            margin: 0 40px 40px 40px;
+            border: 3px solid #222;
+            overflow: hidden;
+            background-color: #111;
+        }
+
+        .camada-grafica {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 10;
+            pointer-events: none;
         }
 
-        /* Título com Seta */
-        .header-area {
-            margin-top: 20px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+        .cabo-oculto { display: none; }
 
-        .titulo-cyan {
-            color: #00f2ff;
-            font-size: 54px;
-            font-weight: bold;
-            text-shadow: 0 0 20px rgba(0, 242, 255, 0.7);
-        }
-
-        /* Caixa de Instrução conforme a imagem */
-        .instrucao-container {
-            margin-top: 80px;
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-
-        .caixa-texto {
-            background-color: rgba(0, 10, 20, 0.8);
-            border: 1px solid #1a3a5a;
-            border-radius: 15px;
-            padding: 30px 60px;
-            min-width: 800px;
-            text-align: center;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
-        }
-
-        .texto-gold {
-            color: #ffcc00;
-            font-size: 30px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        /* Botão Reiniciar */
-        .footer-area {
+        /* Estilo das Bolinhas de Indicação */
+        .ponto-conexao {
             position: absolute;
-            bottom: 40px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            border: 3px solid white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            transition: background-color 0.3s, transform 0.2s;
         }
+        .ponto-conexao:hover { transform: scale(1.2); }
+        
+        /* Cores das bolinhas conforme o cabo */
+        .ponto-fase { background-color: #ff0000; box-shadow: 0 0 15px #ff0000; }
+        .ponto-neutro { background-color: #0066ff; box-shadow: 0 0 15px #0066ff; }
+        .ponto-retorno { background-color: #ffffff; box-shadow: 0 0 15px #ffffff; }
+        .ponto-sucesso { background-color: #00ff00 !important; box-shadow: 0 0 15px #00ff00 !important; }
 
         #btn-reiniciar {
-            background: linear-gradient(to bottom, #cc0000, #880000);
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: #cc0000;
             color: white;
             border: none;
-            padding: 15px 60px;
-            font-size: 28px;
+            padding: 10px 30px;
             font-weight: bold;
-            border-radius: 50px;
+            border-radius: 4px;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            transition: 0.2s;
-        }
-
-        #btn-reiniciar:hover { transform: scale(1.05); filter: brightness(1.2); }
-
-        /* Seta Amarela em CSS/SVG */
-        .seta-amarela {
-            width: 80px;
-            height: 50px;
-            fill: #ffcc00;
-            filter: drop-shadow(0 0 5px rgba(255, 204, 0, 0.5));
-        }
-
-        /* Hotspots de Interação */
-        .hotspot {
-            position: absolute;
-            cursor: pointer;
-            z-index: 20;
-            /* background: rgba(0, 255, 255, 0.2); Descomente para ver as áreas */
+            z-index: 110;
         }
     </style>
 </head>
 <body>
 
     <div id="app-container">
-        <img src="ambiente.jpg" class="camada">
+        
+        <header id="zona-titulo">
+            <h1 class="titulo-cyan">LABORATÓRIO SMT PRO</h1>
+        </header>
 
-        <img id="cabo-fase" src="FASE_REDE/quadro0001.png" class="camada" style="display:none;">
-        <img id="cabo-neutro" src="NEUTRO_REDE/quadro0001.png" class="camada" style="display:none;">
+        <section id="zona-status">
+            <div class="caixa-status">
+                <p class="texto-gold" id="texto-instrucao">INICIAR INSTALAÇÃO: CLIQUE NA ORIGEM DO CABO FASE</p>
+            </div>
+        </section>
 
-        <div id="interface-layer">
+        <main id="quadro-principal">
+            <img src="ambiente.jpg" class="camada-grafica">
             
-            <div class="header-area">
-                <h1 class="titulo-cyan">LABORATÓRIO SMT PRO</h1>
-                <svg class="seta-amarela" viewBox="0 0 100 100"><path d="M10 50 L70 50 M50 20 L80 50 L50 80" stroke="#ffcc00" stroke-width="12" fill="none" stroke-linecap="round"/></svg>
-            </div>
+            <img id="camada-fase-rede" class="camada-grafica cabo-oculto">
+            <img id="camada-neutro-rede" class="camada-grafica cabo-oculto">
+            <img id="camada-fase-2" class="camada-grafica cabo-oculto">
+            <img id="camada-neutro-2" class="camada-grafica cabo-oculto">
+            <img id="camada-retorno" class="camada-grafica cabo-oculto">
 
-            <div class="instrucao-container">
-                <div class="caixa-texto">
-                    <p class="texto-gold" id="status-text">CONECTE A FASE: CLIQUE NA REFERÊNCIA DO DR</p>
-                </div>
-                <svg class="seta-amarela" viewBox="0 0 100 100"><path d="M10 50 L70 50 M50 20 L80 50 L50 80" stroke="#ffcc00" stroke-width="12" fill="none" stroke-linecap="round"/></svg>
-            </div>
+            <div id="container-pontos"></div>
 
-            <div class="footer-area">
-                <button id="btn-reiniciar">REINICIAR</button>
-                <svg class="seta-amarela" viewBox="0 0 100 100" style="transform: rotate(180deg);"><path d="M10 50 L70 50 M50 20 L80 50 L50 80" stroke="#ffcc00" stroke-width="12" fill="none" stroke-linecap="round"/></svg>
-            </div>
+            <button id="btn-reiniciar">REINICIAR</button>
+        </main>
 
-            <div id="click-dr" class="hotspot" style="top: 400px; left: 540px; width: 60px; height: 100px;"></div>
-            <div id="click-interruptor" class="hotspot" style="top: 730px; left: 1150px; width: 60px; height: 100px;"></div>
-        </div>
     </div>
 
     <script>
-        // Sistema de Escala para Zoom do Navegador
+        // --- CONFIGURAÇÃO DE ESCALA ---
         const container = document.getElementById('app-container');
-        function redimensionar() {
+        function ajustarEscala() {
             const escala = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
             container.style.transform = `scale(${escala})`;
         }
-        window.addEventListener('resize', redimensionar);
-        window.addEventListener('load', redimensionar);
+        window.addEventListener('resize', ajustarEscala);
+        window.addEventListener('load', ajustarEscala);
 
-        // Lógica simples de clique
-        document.getElementById('click-dr').addEventListener('click', () => {
-            document.getElementById('status-text').innerText = "CONECTANDO ENTRADA...";
-            // Aqui entra sua função de animação dos quadros
-        });
+        // --- DADOS DA SIMULAÇÃO ---
+        // Aqui você define as coordenadas (x, y) de onde as bolinhas devem aparecer no seu ambiente.jpg
+        const roteiro = [
+            { 
+                nome: "Fase Rede", 
+                pasta: "FASE_REDE", total: 64, idCamada: "camada-fase-rede", cor: "ponto-fase",
+                origem: { x: 540, y: 420 }, destino: { x: 540, y: 550 }
+            },
+            { 
+                nome: "Neutro Rede", 
+                pasta: "NEUTRO_REDE", total: 76, idCamada: "camada-neutro-rede", cor: "ponto-neutro",
+                origem: { x: 580, y: 420 }, destino: { x: 580, y: 550 }
+            },
+            { 
+                nome: "Fase Circuito 2", 
+                pasta: "FASE_2", total: 25, idCamada: "camada-fase-2", cor: "ponto-fase",
+                origem: { x: 650, y: 600 }, destino: { x: 1150, y: 750 }
+            }
+            // Adicione os outros conforme necessário seguindo o mesmo padrão
+        ];
 
-        document.getElementById('btn-reiniciar').addEventListener('click', () => {
-            location.reload();
-        });
+        let etapaAtual = 0;
+        const textoInstrucao = document.getElementById('texto-instrucao');
+        const containerPontos = document.getElementById('container-pontos');
+
+        function iniciarEtapa() {
+            if (etapaAtual >= roteiro.length) {
+                textoInstrucao.innerText = "INSTALAÇÃO CONCLUÍDA COM SUCESSO!";
+                return;
+            }
+
+            const dados = roteiro[etapaAtual];
+            textoInstrucao.innerText = `CONECTE O CABO: ${dados.nome.toUpperCase()}`;
+            
+            // Cria a bolinha de origem
+            criarPonto(dados.origem.x, dados.origem.y, dados.cor, () => {
+                // Ao clicar na origem: muda cor para verde e cria o destino
+                const pontoOrigem = containerPontos.lastChild;
+                pontoOrigem.classList.add('ponto-sucesso');
+                
+                criarPonto(dados.destino.x, dados.destino.y, dados.cor, () => {
+                    // Ao clicar no destino: remove bolinhas e inicia animação do cabo
+                    containerPontos.innerHTML = "";
+                    executarAnimacao(dados);
+                });
+            });
+        }
+
+        function criarPonto(x, y, classeCor, acao) {
+            const ponto = document.createElement('div');
+            ponto.className = `ponto-conexao ${classeCor}`;
+            ponto.style.left = x + "px";
+            ponto.style.top = y + "px";
+            ponto.onclick = (e) => {
+                e.stopPropagation();
+                acao();
+            };
+            containerPontos.appendChild(ponto);
+        }
+
+        function executarAnimacao(dados) {
+            const img = document.getElementById(dados.idCamada);
+            img.classList.remove('cabo-oculto');
+            let frame = 1;
+
+            function animar() {
+                if (frame <= dados.total) {
+                    const sufixo = String(frame).padStart(4, '0');
+                    img.src = `${dados.pasta}/quadro${sufixo}.png`;
+                    frame++;
+                    requestAnimationFrame(animar);
+                } else {
+                    etapaAtual++;
+                    iniciarEtapa();
+                }
+            }
+            animar();
+        }
+
+        document.getElementById('btn-reiniciar').onclick = () => location.reload();
+
+        // Inicia o processo
+        iniciarEtapa();
     </script>
 </body>
 </html>
