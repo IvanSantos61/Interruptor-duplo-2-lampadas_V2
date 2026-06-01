@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laboratório SMT Pro - Simulação Animada</title>
+    <title>Laboratório SMT Pro - Animação Controlada</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         
@@ -18,7 +18,6 @@
             padding: 20px;
         }
 
-        /* 1. TÍTULO */
         #titulo-projeto {
             color: #00f2ff;
             font-size: clamp(24px, 5vw, 48px);
@@ -28,7 +27,6 @@
             text-shadow: 0 0 15px rgba(0, 242, 255, 0.5);
         }
 
-        /* 2. LINHA DE STATUS */
         #linha-status {
             background: rgba(10, 15, 20, 0.9);
             border: 1px solid #1a3a5a;
@@ -47,7 +45,6 @@
             text-transform: uppercase;
         }
 
-        /* 3. QUADRO PRINCIPAL */
         #quadro-simulacao {
             position: relative;
             width: 100%;
@@ -71,7 +68,6 @@
 
         .oculto { display: none; }
 
-        /* INTERAÇÃO: BOLINHAS */
         .ponto {
             position: absolute;
             width: 1.8%;
@@ -85,13 +81,11 @@
         }
         .ponto:hover { transform: translate(-50%, -50%) scale(1.3); }
 
-        /* Cores das Bolinhas */
         .fase { background-color: #ff0000; box-shadow: 0 0 15px #ff0000; }
         .neutro { background-color: #0066ff; box-shadow: 0 0 15px #0066ff; }
-        .retorno { background-color: #ffff00; box-shadow: 0 0 15px #ffff00; } /* Ajustado para Amarelo */
+        .retorno { background-color: #ffff00; box-shadow: 0 0 15px #ffff00; }
         .sucesso { background-color: #00ff00 !important; box-shadow: 0 0 20px #00ff00 !important; }
 
-        /* BOTÃO REINICIAR (DENTRO DO QUADRO) */
         #btn-reiniciar {
             position: absolute;
             bottom: 3%;
@@ -109,7 +103,6 @@
             transition: filter 0.2s, transform 0.1s;
         }
         #btn-reiniciar:hover { filter: brightness(1.2); }
-        #btn-reiniciar:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -167,14 +160,11 @@
                 labelStatus.innerText = "INSTALAÇÃO FINALIZADA COM SUCESSO!";
                 return;
             }
-
             const dados = roteiro[etapaAtual];
             labelStatus.innerText = `CONECTE: ${dados.nome.toUpperCase()}`;
 
-            // Cria bolinha de origem
             criarPonto(dados.origem, dados.cor, function() {
                 this.classList.add('sucesso');
-                // Cria bolinha de destino
                 criarPonto(dados.destino, dados.cor, function() {
                     containerInteracao.innerHTML = "";
                     processarAnimacao(dados);
@@ -194,28 +184,40 @@
             containerInteracao.appendChild(ponto);
         }
 
-        // Função que garante o deslocamento suave do cabo pela tela
         function processarAnimacao(dados) {
             const img = document.getElementById(dados.imgId);
             img.classList.remove('oculto');
+            
             let frame = 1;
+            let lastTime = 0;
+            
+            // CONFIGURAÇÃO DE VELOCIDADE
+            // 30 FPS tornará o deslocamento visível e suave. 
+            // Para deixar ainda mais lento, diminua este valor (ex: 15 ou 20).
+            const fps = 30; 
+            const interval = 1000 / fps;
 
-            function desenhar() {
-                if (frame <= dados.total) {
-                    const numero = String(frame).padStart(4, '0');
-                    img.src = `${dados.pasta}/quadro${numero}.png`;
-                    frame++;
-                    // O requestAnimationFrame sincroniza com a taxa de atualização da tela
-                    requestAnimationFrame(desenhar);
-                } else {
-                    etapaAtual++;
-                    setTimeout(proximoPasso, 400);
+            function desenhar(timestamp) {
+                if (!lastTime) lastTime = timestamp;
+                const elapsed = timestamp - lastTime;
+
+                if (elapsed > interval) {
+                    if (frame <= dados.total) {
+                        const numero = String(frame).padStart(4, '0');
+                        img.src = `${dados.pasta}/quadro${numero}.png`;
+                        frame++;
+                        lastTime = timestamp;
+                    } else {
+                        etapaAtual++;
+                        setTimeout(proximoPasso, 400);
+                        return;
+                    }
                 }
+                requestAnimationFrame(desenhar);
             }
             requestAnimationFrame(desenhar);
         }
 
-        // Função do botão reiniciar
         document.getElementById('btn-reiniciar').onclick = () => {
             window.location.reload();
         };
