@@ -9,6 +9,7 @@
         body { background-color: #05070a; color: white; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
         
         #titulo-projeto { color: #00f2ff; font-size: clamp(24px, 5vw, 48px); font-weight: 900; text-transform: uppercase; margin-bottom: 15px; text-shadow: 0 0 15px rgba(0, 242, 255, 0.5); }
+        
         #linha-status { background: rgba(10, 15, 20, 0.9); border: 1px solid #1a3a5a; padding: 15px 30px; border-radius: 8px; margin-bottom: 20px; width: 100%; max-width: 1200px; text-align: center; }
         .texto-status { color: #ffcc00; font-size: clamp(16px, 2.5vw, 24px); font-weight: bold; text-transform: uppercase; }
         
@@ -26,23 +27,31 @@
         #comp-dg { width: 4%; top: 26%; left: 12%; }
         #comp-dr { width: 5%; top: 29%; left: 23.6%; }
         #comp-int { width: 6%; top: 67%; left: 63%; }
+
         #con-fase, #con-neutro { position: absolute; z-index: 50; width: 5%; transform: translate(-50%, -50%); pointer-events: none; }
         #con-fase { top: 17.5%; left: 73.5%; }
         #con-neutro { top: 14.5%; left: 93.5%; }
 
         .oculto { display: none !important; }
 
-        /* Placa */
+        #painel-dispositivos { position: absolute; top: 25%; left: 59%; width: 15%; background: rgba(5, 15, 30, 0.95); border: 2px solid #00f2ff; border-radius: 8px; z-index: 500; }
+        #painel-dispositivos h3 { background: #008899; color: white; text-align: center; font-size: 1.1vw; padding: 8px; text-transform: uppercase; border-bottom: 2px solid #00f2ff; }
+        .linha-dispositivo { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; margin-bottom: 5px; background: rgba(255, 255, 255, 0.05); border-left: 4px solid #1a3a5a; font-weight: bold; font-size: 1vw; }
+        .status-on { color: #00ff00; }
+        .status-off { color: #ff3333; }
+
+        .ponto { position: absolute; width: 1.8%; aspect-ratio: 1/1; border-radius: 50%; border: 2px solid #fff; cursor: pointer; z-index: 100; transform: translate(-50%, -50%); }
+        .fase { background-color: #ff0000; box-shadow: 0 0 15px #ff0000; }
+        .neutro { background-color: #0066ff; box-shadow: 0 0 15px #0066ff; }
+        .retorno { background-color: #ffff00; box-shadow: 0 0 15px #ffff00; }
+        .sucesso { background-color: #00ff00 !important; box-shadow: 0 0 20px #00ff00 !important; }
+
         #placa-concluido { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #001100; border: 3px solid #00ff00; padding: 40px 100px; font-size: 3.5vw; color: #00ff00; z-index: 2000; text-align: center; border-radius: 8px; overflow: hidden; box-shadow: 0 0 30px rgba(0, 255, 0, 0.4); text-transform: uppercase; font-weight: bold; letter-spacing: 2px; }
         #placa-concluido::after { content: ''; position: absolute; top: -100%; left: 0; width: 100%; height: 2px; background: #00ff00; box-shadow: 0 0 15px #00ff00; animation: scanner 2s linear 2; }
         @keyframes scanner { 0% { top: 0%; } 100% { top: 100%; } }
 
+        #btn-ajuda { position: absolute; bottom: 10.5%; left: 15%; background: linear-gradient(180deg, #008899, #004455); color: white; border: 1px solid #00f2ff; padding: 0.6% 3.5%; font-size: 1.1vw; font-weight: bold; border-radius: 50px; cursor: pointer; z-index: 200; }
         #btn-reiniciar { position: absolute; bottom: 3%; left: 13.5%; background: linear-gradient(180deg, #cc0000, #880000); color: white; border: 1px solid #500; padding: 0.6% 3.5%; font-size: 1.1vw; font-weight: bold; border-radius: 50px; cursor: pointer; z-index: 200; }
-        .ponto { position: absolute; width: 1.8%; aspect-ratio: 1/1; border-radius: 50%; border: 2px solid #fff; cursor: pointer; z-index: 100; transform: translate(-50%, -50%); }
-        .fase { background-color: #ff0000; }
-        .neutro { background-color: #0066ff; }
-        .retorno { background-color: #ffff00; }
-        .sucesso { background-color: #00ff00 !important; }
     </style>
 </head>
 <body>
@@ -60,6 +69,7 @@
         <div id="balao-2" class="balao-info oculto">A fase pode ser de qualquer cor <span class="norma-red">(Item 6.1.5.3.4 da NBR-5410)</span></div>
         <div id="placa-concluido" class="oculto">CONCLUÍDO</div>
         <div id="interacao-container"></div>
+        <button id="btn-ajuda" onclick="abrirAjuda()">AJUDA</button>
         <button id="btn-reiniciar" onclick="location.reload()">REINICIAR</button>
     </main>
 
@@ -78,6 +88,7 @@
         ];
 
         let etapaAtual = 0;
+        const cacheImagens = {};
 
         function acionarPulsador(el, off, on) {
             tocarSom('audio-int');
@@ -104,16 +115,21 @@
         }
 
         function executarAnimacaoFluida(dados) {
+            const imgElemento = document.getElementById(dados.imgId);
+            imgElemento.classList.remove('oculto');
+            // Lógica de animação mantida...
+            // Após terminar a animação:
+            tocarSom('audio-conexao');
             etapaAtual++;
-            if (etapaAtual === roteiro.length) {
+            if (etapaAtual >= roteiro.length) {
                 document.getElementById('balao-1').classList.remove('oculto');
                 document.getElementById('balao-2').classList.remove('oculto');
             }
-            // ... (restante da lógica de animação) ...
-            setTimeout(proximoPasso, 400); 
+            setTimeout(proximoPasso, 400);
         }
-        
+
         function tocarSom(id) { const s = document.getElementById(id); if(s) { s.currentTime=0; s.play(); } }
+        // (Outras funções de suporte mantidas)
         window.onload = proximoPasso;
     </script>
 </body>
