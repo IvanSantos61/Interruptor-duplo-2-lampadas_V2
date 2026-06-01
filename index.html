@@ -55,8 +55,11 @@
         #overlay-ajuda { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; }
         .modal-ajuda { background: #0a1015; border: 2px solid #1a3a5a; width: 40%; padding: 30px; border-radius: 12px; text-align: center; }
         .item-ajuda { background: rgba(255, 255, 255, 0.03); border: 1px solid #1a3a5a; margin-bottom: 10px; padding: 15px; color: white; text-align: left; cursor: pointer; font-weight: bold; font-size: 1.1vw; }
-        #visualizador-tecnico { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1100; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         
+        #visualizador-tecnico { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1100; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        #instrucao-clique { background: #ffcc00; color: #000; padding: 5px 15px; font-weight: bold; border-radius: 4px; margin-bottom: 15px; text-transform: uppercase; font-size: 1vw; animation: blink 1.5s infinite; }
+        
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
         .cursor-clique { cursor: pointer; }
     </style>
 </head>
@@ -110,6 +113,7 @@
         </div>
 
         <div id="visualizador-tecnico" class="oculto">
+            <div id="instrucao-clique" class="oculto">CLIQUE NO CONECTOR PARA TESTAR</div>
             <img id="img-tecnica-exibida" src="" style="max-width:90%; max-height:80%;">
             <button onclick="voltarParaLista()" style="margin-top:20px; background:#ffcc00; padding:10px 30px; font-weight:bold; cursor:pointer;">VOLTAR</button>
         </div>
@@ -140,25 +144,25 @@
             ];
             dispositivos.forEach(disp => {
                 const el = document.getElementById(disp.idComp);
-                const isON = el.getAttribute('data-state') === 'off'; // Considerando OFF como Fechado (Ligado)
+                const isON = el.getAttribute('data-state') === 'off';
                 document.getElementById(disp.idTxt).innerHTML = isON ? `<span class="status-on">[ ON ] ✅</span>` : `<span class="status-off">[ OFF ] ❌</span>`;
             });
         }
 
-        // --- ITEM 4: INICIA ABERTO (ON) E FECHA (OFF) AO CLICAR ---
+        // --- ITEM 4: INICIA ABERTO (ON) COM INSTRUÇÃO DE CLIQUE ---
         function abrirAnimacaoConector() {
             const img = document.getElementById('img-tecnica-exibida');
+            const legenda = document.getElementById('instrucao-clique');
             
-            // Inicia Aberto (conectder_on.png)
             img.src = 'conectder_on.png'; 
             img.classList.add('cursor-clique');
+            legenda.classList.remove('oculto'); // Mostra a indicação
             
             img.onclick = function() {
-                // Alterna entre Aberto (on) e Fechado (off)
                 if (this.src.includes('conectder_on.png')) {
-                    this.src = 'conectder_off.png'; // Fecha
+                    this.src = 'conectder_off.png'; 
                 } else {
-                    this.src = 'conectder_on.png'; // Abre
+                    this.src = 'conectder_on.png';
                 }
             };
             
@@ -167,6 +171,7 @@
 
         function mostrarImagemTecnica(src) {
             const img = document.getElementById('img-tecnica-exibida');
+            document.getElementById('instrucao-clique').classList.add('oculto'); // Esconde em outros itens
             img.src = src;
             img.onclick = null;
             img.classList.remove('cursor-clique');
@@ -175,6 +180,7 @@
 
         function voltarParaLista() {
             document.getElementById('visualizador-tecnico').classList.add('oculto');
+            document.getElementById('instrucao-clique').classList.add('oculto');
         }
 
         function proximoPasso() {
