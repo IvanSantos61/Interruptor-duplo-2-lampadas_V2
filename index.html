@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laboratório SMT Pro - Pulsador de Campainha</title>
+    <title>Laboratório SMT Pro - Simulação Sonora</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         
@@ -64,7 +64,6 @@
             pointer-events: none;
         }
 
-        /* --- COMPONENTES --- */
         .tecla-interativa {
             position: absolute;
             z-index: 60;
@@ -73,30 +72,19 @@
         }
         .tecla-interativa:active { transform: scale(0.95); }
 
-        /* Ajuste as posições conforme seu painel */
         #comp-dg { width: 4%; top: 26%; left: 12%; }
         #comp-dr { width: 5%; top: 29%; left: 23.6%; }
         #comp-int { width: 6%; top: 67%; left: 63%; }
 
-        #con-fase {
+        #con-fase, #con-neutro {
             position: absolute;
             z-index: 50;
             width: 5%;
-            top: 17.5%;
-            left: 73.5%;
             transform: translate(-50%, -50%);
             pointer-events: none;
         }
-
-        #con-neutro {
-            position: absolute;
-            z-index: 50;
-            width: 5%;
-            top: 14.5%;
-            left: 93.5%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-        }
+        #con-fase { top: 17.5%; left: 73.5%; }
+        #con-neutro { top: 14.5%; left: 93.5%; }
 
         .oculto { display: none !important; }
 
@@ -132,7 +120,6 @@
             cursor: pointer;
             z-index: 200;
             text-transform: uppercase;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
     </style>
 </head>
@@ -149,7 +136,6 @@
 
         <img id="comp-dg" src="al_dg_off.png" class="tecla-interativa" onclick="toggleComp(this, 'al_dg_off.png', 'al_dg_on.png')">
         <img id="comp-dr" src="al_dr_off.png" class="tecla-interativa" onclick="toggleComp(this, 'al_dr_off.png', 'al_dr_on.png')">
-        
         <img id="comp-int" src="tec_int_off.png" class="tecla-interativa" onclick="acionarPulsador(this, 'tec_int_off.png', 'tec_int_on.png')">
 
         <img id="con-fase" src="con_derivacao.png" class="oculto">
@@ -165,6 +151,11 @@
         <button id="btn-reiniciar">REINICIAR</button>
     </main>
 
+    <audio id="audio-campainha" src="campainha.mp3" preload="auto"></audio>
+    <audio id="audio-int" src="int.mp3" preload="auto"></audio>
+    <audio id="audio-disj" src="disj.mp3" preload="auto"></audio>
+    <audio id="audio-conexao" src="conexao.mp3" preload="auto"></audio>
+
     <script>
         const roteiro = [
             { nome: "Fase de Entrada", pasta: "FASE_REDE", total: 64, imgId: "img-fase-rede", cor: "fase", origem: { x: 27, y: 38.5 }, destino: { x: 98.5, y: 17.5 } },
@@ -177,15 +168,23 @@
         let etapaAtual = 0;
         const cacheImagens = {};
 
+        function tocarSom(id) {
+            const som = document.getElementById(id);
+            if (som) {
+                som.currentTime = 0;
+                som.play().catch(e => console.log("Erro ao tocar áudio:", e));
+            }
+        }
+
         function proximoPasso() {
             if (etapaAtual >= roteiro.length) {
-                document.getElementById('label-status').innerText = "INSTALAÇÃO CONCLUÍDA!";
+                document.getElementById('label-status').innerText = "INSTALAÇÃO CONCLUÍDA! TESTE A CAMPAINHA.";
                 return;
             }
             const dados = roteiro[etapaAtual];
             document.getElementById('label-status').innerText = `CONECTE: ${dados.nome.toUpperCase()}`;
-            if (dados.pasta === "FASE_2") { document.getElementById('con-fase').classList.remove('oculto'); }
-            if (dados.pasta === "NEUTRO_2") { document.getElementById('con-neutro').classList.remove('oculto'); }
+            if (dados.pasta === "FASE_2") document.getElementById('con-fase').classList.remove('oculto');
+            if (dados.pasta === "NEUTRO_2") document.getElementById('con-neutro').classList.remove('oculto');
             preCarregarCabo(dados);
             criarPonto(dados.origem, dados.cor, function() {
                 this.classList.add('sucesso');
@@ -196,16 +195,24 @@
             });
         }
 
-        // Lógica de Pulsador: liga e desliga após 200ms
-        function acionarPulsador(el, offImg, onImg) {
-            el.src = onImg;
-            setTimeout(() => {
-                el.src = offImg;
-            }, 200); 
+        function toggleComp(el, offImg, onImg) {
+            tocarSom('audio-disj'); // Som do disjuntor em qualquer clique
+            el.src = el.src.includes(offImg) ? onImg : offImg;
         }
 
-        function toggleComp(el, offImg, onImg) {
-            el.src = el.src.includes(offImg) ? onImg : offImg;
+        function acionarPulsador(el, offImg, onImg) {
+            tocarSom('audio-int'); // Som mecânico do clique sempre toca
+            el.src = onImg;
+
+            const dgLigado = document.getElementById('comp-dg').src.includes('al_dg_on.png');
+            const drLigado = document.getElementById('comp-dr').src.includes('al_dr_on.png');
+            const fiacaoPronta = etapaAtual >= roteiro.length;
+
+            if (fiacaoPronta && dgLigado && drLigado) {
+                tocarSom('audio-campainha');
+            }
+
+            setTimeout(() => { el.src = offImg; }, 200);
         }
 
         function preCarregarCabo(dados) {
@@ -234,6 +241,7 @@
             const frames = cacheImagens[dados.pasta];
             const lentidao = 3; 
             let contador = 0;
+            
             function animar() {
                 if (frameIdx < frames.length) {
                     if (contador % lentidao === 0) {
@@ -243,6 +251,7 @@
                     contador++;
                     requestAnimationFrame(animar);
                 } else {
+                    tocarSom('audio-conexao'); // Som ao finalizar o cabo
                     etapaAtual++;
                     setTimeout(proximoPasso, 400);
                 }
