@@ -3,388 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laboratório SMT Pro - Simulador de Cabeamento</title>
+    <title>Laboratório SMT PRO - V2</title>
     <style>
-        /* ==========================================================================
-           1. ZERAMENTO E ESTILOS GERAIS
-           ========================================================================== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-        }
-
-        body, html {
-            width: 100%;
-            height: 100%;
-            background-color: #06090e; /* Fundo ultra escuro profissional */
-            overflow: hidden;
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-        }
-
-        /* Palco principal que centraliza o container e absorve variações de tamanho de tela */
-        #palco {
-            width: 100vw;
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        
+        body {
+            background-color: #05070a;
             height: 100vh;
+            width: 100vw;
             display: flex;
             justify-content: center;
             align-items: center;
-            position: relative;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
         }
 
-        /* ==========================================================================
-           2. CONTAINER MESTRE (Proporção Fixa 1920x1080)
-           ========================================================================== */
         #app-container {
             width: 1920px;
             height: 1080px;
             position: relative;
             transform-origin: center center;
-            overflow: hidden;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
         }
 
-        /* Camadas Gráficas de Imagem (Fundo + Sequências de Cabos) */
-        .camada-grafica {
+        /* Camadas de Imagem (Fundo e Cabos) */
+        .camada {
             position: absolute;
             top: 0;
             left: 0;
             width: 1920px;
             height: 1080px;
-            pointer-events: none; /* Garante que cliques passem direto para a interface */
+            pointer-events: none;
         }
 
-        .cabo-inativo {
-            display: none; /* Mantém oculto até que a animação seja disparada */
-        }
-
-        /* ==========================================================================
-           3. CAMADA DE INTERFACE DO USUÁRIO (UI)
-           ========================================================================== */
-        #ui-layer {
+        /* Interface de Usuário conforme a Gravura */
+        #interface-layer {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 10;
-            pointer-events: none; /* Elementos transparentes não bloqueiam interações */
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 40px;
+            z-index: 10;
         }
 
-        #ui-layer > * {
-            pointer-events: auto; /* Reativa cliques para os elementos visíveis e interativos */
+        /* Título com Seta */
+        .header-area {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
-        /* Título - Ciano Neon */
-        .titulo-smt {
-            color: #00FFFF;
-            font-size: 46px;
-            font-weight: 900;
-            letter-spacing: 3px;
+        .titulo-cyan {
+            color: #00f2ff;
+            font-size: 54px;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(0, 242, 255, 0.7);
+        }
+
+        /* Caixa de Instrução conforme a imagem */
+        .instrucao-container {
+            margin-top: 80px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .caixa-texto {
+            background-color: rgba(0, 10, 20, 0.8);
+            border: 1px solid #1a3a5a;
+            border-radius: 15px;
+            padding: 30px 60px;
+            min-width: 800px;
             text-align: center;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .texto-gold {
+            color: #ffcc00;
+            font-size: 30px;
+            font-weight: bold;
+            letter-spacing: 1px;
             text-transform: uppercase;
-            text-shadow: 0 0 15px rgba(0, 255, 255, 0.6), 0 0 30px rgba(0, 255, 255, 0.3);
-            margin-bottom: 35px;
         }
 
-        /* Barra de Instrução Centralizado - Texto Amarelo Ouro */
-        .barra-instrucao {
-            width: 1100px;
-            background-color: rgba(9, 16, 22, 0.85);
-            border: 2px solid #1a2936;
-            border-radius: 12px;
-            padding: 22px 40px;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-        }
-
-        .texto-instrucao {
-            color: #FFD700;
-            font-size: 26px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
-        }
-
-        /* Botão Reiniciar - Vermelho de Alta Visibilidade */
-        #btn-reiniciar {
+        /* Botão Reiniciar */
+        .footer-area {
             position: absolute;
-            bottom: 45px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(180deg, #d10000 0%, #a00000 100%);
-            color: #ffffff;
-            font-size: 24px;
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            padding: 16px 65px;
-            border: 2px solid #700000;
-            border-radius: 40px;
+            bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        #btn-reiniciar {
+            background: linear-gradient(to bottom, #cc0000, #880000);
+            color: white;
+            border: none;
+            padding: 15px 60px;
+            font-size: 28px;
+            font-weight: bold;
+            border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 8px 25px rgba(209, 0, 0, 0.4), inset 0 2px 5px rgba(255,255,255,0.2);
-            transition: all 0.2s ease-in-out;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: 0.2s;
         }
 
-        #btn-reiniciar:hover {
-            background: linear-gradient(180deg, #ff0000 0%, #b80000 100%);
-            box-shadow: 0 12px 30px rgba(209, 0, 0, 0.6);
-            transform: translateX(-50%) scale(1.04);
+        #btn-reiniciar:hover { transform: scale(1.05); filter: brightness(1.2); }
+
+        /* Seta Amarela em CSS/SVG */
+        .seta-amarela {
+            width: 80px;
+            height: 50px;
+            fill: #ffcc00;
+            filter: drop-shadow(0 0 5px rgba(255, 204, 0, 0.5));
         }
 
-        #btn-reiniciar:active {
-            transform: translateX(-50%) scale(0.98);
-            box-shadow: 0 4px 15px rgba(209, 0, 0, 0.4);
-        }
-
-        /* ==========================================================================
-           4. PONTOS DE INTERAÇÃO (HOTSPOTS DE CLIQUE)
-           ========================================================================== */
+        /* Hotspots de Interação */
         .hotspot {
             position: absolute;
             cursor: pointer;
-            z-index: 50;
-            border-radius: 8px;
-            transition: background-color 0.2s ease;
-        }
-
-        /* Indicador visual temporário para testes rápidos (Modo Desenvolvedor) */
-        .hotspot-visivel {
-            background-color: rgba(0, 255, 255, 0.25);
-            border: 2px dashed #00FFFF;
-        }
-        
-        .hotspot-visivel:hover {
-            background-color: rgba(255, 215, 0, 0.4);
-            border-color: #FFD700;
-        }
-
-        /* Painel de Controle de Teste Técnico (Fica no canto superior esquerdo) */
-        #painel-teste {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background-color: rgba(0, 0, 0, 0.8);
-            border: 1px solid #333;
-            padding: 12px;
-            border-radius: 6px;
-            z-index: 100;
-            color: #fff;
-            font-size: 13px;
-        }
-
-        #painel-teste label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
+            z-index: 20;
+            /* background: rgba(0, 255, 255, 0.2); Descomente para ver as áreas */
         }
     </style>
 </head>
 <body>
 
-    <!-- Painel de Suporte para Teste de Bancada -->
-    <div id="painel-teste">
-        <label>
-            <input type="checkbox" id="chk-hotspots" checked>
-            <span>Mostrar Áreas de Clique (Hotspots)</span>
-        </label>
-    </div>
+    <div id="app-container">
+        <img src="ambiente.jpg" class="camada">
 
-    <div id="palco">
-        <div id="app-container">
+        <img id="cabo-fase" src="FASE_REDE/quadro0001.png" class="camada" style="display:none;">
+        <img id="cabo-neutro" src="NEUTRO_REDE/quadro0001.png" class="camada" style="display:none;">
+
+        <div id="interface-layer">
             
-            <!-- CAMADA BASE: Cenário do Simulador -->
-            <img src="ambiente.jpg" id="fundo-ambiente" class="camada-grafica" alt="Ambiente do Quadro">
-
-            <!-- CAMADAS DE ANIMAÇÃO: Alinhamento milimétrico 1:1 -->
-            <img id="anim-fase-rede" src="FASE_REDE/quadro0001.png" class="camada-grafica cabo-inativo">
-            <img id="anim-neutro-rede" src="NEUTRO_REDE/quadro0001.png" class="camada-grafica cabo-inativo">
-            <img id="anim-fase-2" src="FASE_2/quadro0001.png" class="camada-grafica cabo-inativo">
-            <img id="anim-neutro-2" src="NEUTRO_2/quadro0001.png" class="camada-grafica cabo-inativo">
-            <img id="anim-retorno" src="RETORNO/quadro0001.png" class="camada-grafica cabo-inativo">
-
-            <!-- CAMADA SUPERIOR: UI E ENGENHARIA DE CLIQUES -->
-            <div id="ui-layer">
-                
-                <h1 class="titulo-smt">Laboratório SMT Pro</h1>
-
-                <div class="barra-instrucao">
-                    <span id="texto-instrucao" class="texto-instrucao">CONECTE A FASE: CLIQUE NA REFERÊNCIA DO DR</span>
-                </div>
-
-                <button id="btn-reiniciar">REINICIAR</button>
-
-                <!-- 
-                    MAPEAMENTO DOS HOTSPOTS (Coordenadas com base na malha 1920x1080)
-                    Ajuste os valores de top, left, width e height conforme o posicionamento dos bornes físicos.
-                -->
-                <!-- Exemplo 1: Entrada do DR (Fase Rede) -->
-                <div id="target-fase-rede" class="hotspot hotspot-visivel" style="top: 410px; left: 525px; width: 50px; height: 50px;" title="Bornes DR"></div>
-                
-                <!-- Exemplo 2: Interruptor Simples -->
-                <div id="target-interruptor" class="hotspot hotspot-visivel" style="top: 720px; left: 1140px; width: 60px; height: 80px;" title="Interruptor"></div>
-                
-                <!-- Exemplo 3: Receptáculo da Lâmpada -->
-                <div id="target-lampada" class="hotspot hotspot-visivel" style="top: 670px; left: 1390px; width: 70px; height: 70px;" title="Lâmpada"></div>
-
+            <div class="header-area">
+                <h1 class="titulo-cyan">LABORATÓRIO SMT PRO</h1>
+                <svg class="seta-amarela" viewBox="0 0 100 100"><path d="M10 50 L70 50 M50 20 L80 50 L50 80" stroke="#ffcc00" stroke-width="12" fill="none" stroke-linecap="round"/></svg>
             </div>
+
+            <div class="instrucao-container">
+                <div class="caixa-texto">
+                    <p class="texto-gold" id="status-text">CONECTE A FASE: CLIQUE NA REFERÊNCIA DO DR</p>
+                </div>
+                <svg class="seta-amarela" viewBox="0 0 100 100"><path d="M10 50 L70 50 M50 20 L80 50 L50 80" stroke="#ffcc00" stroke-width="12" fill="none" stroke-linecap="round"/></svg>
+            </div>
+
+            <div class="footer-area">
+                <button id="btn-reiniciar">REINICIAR</button>
+                <svg class="seta-amarela" viewBox="0 0 100 100" style="transform: rotate(180deg);"><path d="M10 50 L70 50 M50 20 L80 50 L50 80" stroke="#ffcc00" stroke-width="12" fill="none" stroke-linecap="round"/></svg>
+            </div>
+
+            <div id="click-dr" class="hotspot" style="top: 400px; left: 540px; width: 60px; height: 100px;"></div>
+            <div id="click-interruptor" class="hotspot" style="top: 730px; left: 1150px; width: 60px; height: 100px;"></div>
         </div>
     </div>
 
     <script>
-        /* ==========================================================================
-           5. MOTOR DE ESCALA PROPORCIONAL (ANTI-DISTORÇÃO / ZOOM RESISTANT)
-           ========================================================================== */
+        // Sistema de Escala para Zoom do Navegador
         const container = document.getElementById('app-container');
-        const LARGURA_ALVO = 1920;
-        const ALTURA_ALVO = 1080;
-
-        function dimensionarInterface() {
-            const larguraJanela = window.innerWidth;
-            const alturaJanela = window.innerHeight;
-
-            // Fator de escala absoluto para ambas as dimensões
-            const proporcaoX = larguraJanela / LARGURA_ALVO;
-            const proporcaoY = alturaJanela / ALTURA_ALVO;
-
-            // Utiliza a menor escala para conter o simulador completamente sem cortes
-            const escalaPerfeita = Math.min(proporcaoX, proporcaoY);
-
-            // Aplica a matriz de transformação mantendo a centralização perfeita
-            container.style.transform = `scale(${escalaPerfeita})`;
+        function redimensionar() {
+            const escala = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+            container.style.transform = `scale(${escala})`;
         }
+        window.addEventListener('resize', redimensionar);
+        window.addEventListener('load', redimensionar);
 
-        // Registro de ouvintes para ciclos de redimensionamento e zoom do browser
-        window.addEventListener('resize', dimensionarInterface);
-        window.addEventListener('DOMContentLoaded', dimensionarInterface);
-
-
-        /* ==========================================================================
-           6. GERENCIADOR DE SEQUÊNCIAS DE QUADROS (FRAME ANIMATION ENGINE)
-           ========================================================================== */
-        const configuracaoAnimacoes = {
-            faseRede:   { id: 'anim-fase-rede',   pasta: 'FASE_REDE',   total: 64 },
-            neutroRede: { id: 'anim-neutro-rede', pasta: 'NEUTRO_REDE', total: 76 },
-            fase2:      { id: 'anim-fase-2',      pasta: 'FASE_2',      total: 25 },
-            neutro2:    { id: 'anim-neutro-2',    pasta: 'NEUTRO_2',    total: 15 },
-            retorno:    { id: 'anim-retorno',     pasta: 'RETORNO',     total: 45 }
-        };
-
-        // Estado atual do roteiro do laboratório de simulação
-        let etapaAtual = 0; 
-
-        function executarAnimacaoCabo(chave, callback) {
-            const dados = configuracaoAnimacoes[chave];
-            if (!dados) return;
-
-            const elementoImg = document.getElementById(dados.id);
-            elementoImg.style.display = 'block'; // Torna a camada ativa visível
-            
-            let frameAlvo = 1;
-
-            function processarProximoFrame() {
-                if (frameAlvo <= dados.total) {
-                    // Formata o sufixo numérico com preenchimento de zeros à esquerda (ex: quadro0014.png)
-                    const indexFormatado = String(frameAlvo).padStart(4, '0');
-                    elementoImg.src = `${dados.pasta}/quadro${indexFormatado}.png`;
-                    frameAlvo++;
-                    
-                    // Sincroniza com a taxa de atualização do monitor para fluidez máxima
-                    requestAnimationFrame(processarProximoFrame);
-                } else {
-                    if (callback) callback();
-                }
-            }
-
-            requestAnimationFrame(processarProximoFrame);
-        }
-
-        /* ==========================================================================
-           7. CONTROLADOR DE LOGICA DA SIMULAÇÃO (STATE MACHINE)
-           ========================================================================== */
-        const txtInstrucao = document.getElementById('texto-instrucao');
-
-        // Evento de Clique: Entrada da Fase no DR
-        document.getElementById('target-fase-rede').addEventListener('click', function() {
-            if (etapaAtual === 0) {
-                txtInstrucao.textContent = "CONECTANDO CABOS DE ENTRADA...";
-                this.style.pointerEvents = 'none'; // Bloqueia clique duplo durante execução
-                
-                executarAnimacaoCabo('faseRede', () => {
-                    executarAnimacaoCabo('neutroRede', () => {
-                        txtInstrucao.textContent = "AGORA CONECTE O CIRCUITO DE SAÍDA: CLIQUE NO INTERRUPTOR";
-                        etapaAtual = 1;
-                    });
-                });
-            }
+        // Lógica simples de clique
+        document.getElementById('click-dr').addEventListener('click', () => {
+            document.getElementById('status-text').innerText = "CONECTANDO ENTRADA...";
+            // Aqui entra sua função de animação dos quadros
         });
 
-        // Evento de Clique: Conexão do Interruptor
-        document.getElementById('target-interruptor').addEventListener('click', function() {
-            if (etapaAtual === 1) {
-                txtInstrucao.textContent = "PASSANDO CABOS DO CIRCUITO DE ILUMINAÇÃO...";
-                this.style.pointerEvents = 'none';
-
-                executarAnimacaoCabo('fase2', () => {
-                    executarAnimacaoCabo('retorno', () => {
-                        txtInstrucao.textContent = "FINALIZANDO A REDE: CLIQUE NA LÂMPADA PARA TESTAR O CIRCUITO";
-                        etapaAtual = 2;
-                    });
-                });
-            }
-        });
-
-        // Evento de Clique: Acionamento da Lâmpada (Fim da Linha)
-        document.getElementById('target-lampada').addEventListener('click', function() {
-            if (etapaAtual === 2) {
-                txtInstrucao.textContent = "EXECUTANDO CONEXÃO DO NEUTRO DA LÂMPADA...";
-                this.style.pointerEvents = 'none';
-
-                executarAnimacaoCabo('neutro2', () => {
-                    txtInstrucao.textContent = "CIRCUITO MONTADO E ENERGIZADO COM SUCESSO! AP Aperte REINICIAR.";
-                    txtInstrucao.style.color = "#00FFFF"; // Altera para ciano celebrando o acerto técnico
-                    etapaAtual = 3;
-                });
-            }
-        });
-
-        // Evento de Reset: Retorna o laboratório técnico ao estado zero
-        document.getElementById('btn-reiniciar').addEventListener('click', function() {
-            etapaAtual = 0;
-            txtInstrucao.textContent = "CONECTE A FASE: CLIQUE NA REFERÊNCIA DO DR";
-            txtInstrucao.style.color = "#FFD700";
-
-            // Reseta e oculta todas as camadas de imagem dos cabos
-            Object.values(configuracaoAnimacoes).forEach(dados => {
-                const img = document.getElementById(dados.id);
-                img.style.display = 'none';
-                img.src = `${dados.pasta}/quadro0001.png`;
-            });
-
-            // Reativa interações físicas nos hotspots
-            const hotspots = document.querySelectorAll('.hotspot');
-            hotspots.forEach(h => h.style.pointerEvents = 'auto');
-        });
-
-        /* ==========================================================================
-           8. INTERFACE AUXILIAR DE DESENVOLVIMENTO
-           ========================================================================== */
-        const chkHotspots = document.getElementById('chk-hotspots');
-        chkHotspots.addEventListener('change', function() {
-            const hotspots = document.querySelectorAll('.hotspot');
-            hotspots.forEach(h => {
-                if (this.checked) {
-                    h.classList.add('hotspot-visivel');
-                } else {
-                    h.classList.remove('hotspot-visivel');
-                }
-            });
+        document.getElementById('btn-reiniciar').addEventListener('click', () => {
+            location.reload();
         });
     </script>
 </body>
