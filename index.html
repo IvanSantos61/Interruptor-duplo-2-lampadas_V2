@@ -105,6 +105,45 @@
         .retorno { background-color: #ffff00; box-shadow: 0 0 15px #ffff00; }
         .sucesso { background-color: #00ff00 !important; box-shadow: 0 0 20px #00ff00 !important; }
 
+        /* --- PAINEL DE STATUS (NOVO) --- */
+        #painel-checklist {
+            position: absolute;
+            top: 30%;
+            left: 55%;
+            width: 18%;
+            background: rgba(5, 10, 20, 0.95);
+            border: 2px solid #00f2ff;
+            border-radius: 12px;
+            padding: 15px;
+            z-index: 500;
+            box-shadow: 0 0 25px rgba(0, 242, 255, 0.3);
+        }
+
+        #painel-checklist h3 {
+            color: #ffcc00;
+            text-align: center;
+            font-size: 1.2vw;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #1a3a5a;
+            padding-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .linha-checklist {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid #1a3a5a;
+            font-weight: bold;
+            font-size: 1.1vw;
+        }
+
+        .status-val { font-size: 1.3vw; }
+
         #btn-ajuda {
             position: absolute;
             bottom: 10.5%;
@@ -208,6 +247,22 @@
         <img id="img-retorno" class="camada oculto">
         <img id="img-neutro-circuito" class="camada oculto">
 
+        <div id="painel-checklist" class="oculto">
+            <h3>STATUS DO CIRCUITO</h3>
+            <div class="linha-checklist">
+                <span>DG (DISJ. GERAL)</span>
+                <span id="val-dg" class="status-val">❌</span>
+            </div>
+            <div class="linha-checklist">
+                <span>DR (DIFERENCIAL)</span>
+                <span id="val-dr" class="status-val">❌</span>
+            </div>
+            <div class="linha-checklist">
+                <span>INT (PULSADOR)</span>
+                <span id="val-int" class="status-val">❌</span>
+            </div>
+        </div>
+
         <div id="interacao-container"></div>
         
         <button id="btn-ajuda" onclick="abrirAjuda()">AJUDA</button>
@@ -253,9 +308,23 @@
             if (som) { som.currentTime = 0; som.play().catch(() => {}); }
         }
 
+        // --- FUNÇÃO PARA ATUALIZAR O CHECKLIST ---
+        function atualizarPainelStatus() {
+            const dgLigado = document.getElementById('comp-dg').src.includes('on');
+            const drLigado = document.getElementById('comp-dr').src.includes('on');
+            const intLigado = document.getElementById('comp-int').src.includes('on');
+
+            document.getElementById('val-dg').innerText = dgLigado ? "✅" : "❌";
+            document.getElementById('val-dr').innerText = drLigado ? "✅" : "❌";
+            document.getElementById('val-int').innerText = intLigado ? "✅" : "❌";
+        }
+
         function proximoPasso() {
             if (etapaAtual >= roteiro.length) {
                 document.getElementById('label-status').innerText = "INSTALAÇÃO CONCLUÍDA! TESTE A CAMPAINHA.";
+                // Mostra o quadro ao finalizar a fiação
+                document.getElementById('painel-checklist').classList.remove('oculto');
+                atualizarPainelStatus();
                 return;
             }
             const dados = roteiro[etapaAtual];
@@ -275,15 +344,22 @@
         function toggleComp(el, offImg, onImg) {
             tocarSom('audio-disj');
             el.src = el.src.includes(offImg) ? onImg : offImg;
+            atualizarPainelStatus();
         }
 
         function acionarPulsador(el, offImg, onImg) {
             tocarSom('audio-int');
             el.src = onImg;
+            atualizarPainelStatus(); // Mostra check enquanto apertado
+
             const dgOn = document.getElementById('comp-dg').src.includes('on');
             const drOn = document.getElementById('comp-dr').src.includes('on');
             if (etapaAtual >= roteiro.length && dgOn && drOn) { tocarSom('audio-campainha'); }
-            setTimeout(() => { el.src = offImg; }, 200);
+            
+            setTimeout(() => { 
+                el.src = offImg; 
+                atualizarPainelStatus(); // Volta para X ao soltar
+            }, 200);
         }
 
         function preCarregarCabo(dados) {
