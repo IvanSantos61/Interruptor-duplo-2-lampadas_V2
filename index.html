@@ -28,14 +28,8 @@
         .oculto { display: none !important; }
 
         #painel-dispositivos {
-            position: absolute;
-            top: 25%;
-            left: 55%;
-            width: 22%;
-            background: rgba(5, 15, 30, 0.95);
-            border: 2px solid #00f2ff;
-            border-radius: 8px;
-            z-index: 500;
+            position: absolute; top: 25%; left: 55%; width: 22%;
+            background: rgba(5, 15, 30, 0.95); border: 2px solid #00f2ff; border-radius: 8px; z-index: 500;
         }
 
         #painel-dispositivos h3 {
@@ -146,25 +140,25 @@
             ];
             dispositivos.forEach(disp => {
                 const el = document.getElementById(disp.idComp);
-                const isON = el.getAttribute('data-state') === 'on';
+                const isON = el.getAttribute('data-state') === 'off'; // Considerando OFF como Fechado (Ligado)
                 document.getElementById(disp.idTxt).innerHTML = isON ? `<span class="status-on">[ ON ] ✅</span>` : `<span class="status-off">[ OFF ] ❌</span>`;
             });
         }
 
-        // --- CORREÇÃO DO ITEM 4: INICIA ABERTO, FECHA NO CLIQUE ---
+        // --- ITEM 4: INICIA ABERTO (ON) E FECHA (OFF) AO CLICAR ---
         function abrirAnimacaoConector() {
             const img = document.getElementById('img-tecnica-exibida');
             
-            // Garantindo que inicie no estado Aberto (conectder_off.png)
-            img.src = 'conectder_off.png'; 
+            // Inicia Aberto (conectder_on.png)
+            img.src = 'conectder_on.png'; 
             img.classList.add('cursor-clique');
             
             img.onclick = function() {
-                // Alterna entre Aberto (off) e Fechado (on)
-                if (this.src.includes('conectder_off.png')) {
-                    this.src = 'conectder_on.png'; // Fecha
+                // Alterna entre Aberto (on) e Fechado (off)
+                if (this.src.includes('conectder_on.png')) {
+                    this.src = 'conectder_off.png'; // Fecha
                 } else {
-                    this.src = 'conectder_off.png'; // Abre novamente
+                    this.src = 'conectder_on.png'; // Abre
                 }
             };
             
@@ -216,8 +210,8 @@
             tocarSom('audio-int');
             el.src = on; el.setAttribute('data-state', 'on');
             atualizarQuadroPosicao();
-            const dgOn = document.getElementById('comp-dg').getAttribute('data-state') === 'on';
-            const drOn = document.getElementById('comp-dr').getAttribute('data-state') === 'on';
+            const dgOn = document.getElementById('comp-dg').getAttribute('data-state') === 'off';
+            const drOn = document.getElementById('comp-dr').getAttribute('data-state') === 'off';
             if (etapaAtual >= roteiro.length && dgOn && drOn) { tocarSom('audio-campainha'); }
             setTimeout(() => { 
                 el.src = off; el.setAttribute('data-state', 'off');
