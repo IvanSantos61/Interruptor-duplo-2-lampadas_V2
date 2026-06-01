@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laboratório SMT Pro - Simulação Sonora</title>
+    <title>Laboratório SMT Pro - Sistema de Ajuda</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         
@@ -64,6 +64,7 @@
             pointer-events: none;
         }
 
+        /* --- COMPONENTES --- */
         .tecla-interativa {
             position: absolute;
             z-index: 60;
@@ -97,29 +98,135 @@
             cursor: pointer;
             z-index: 100;
             transform: translate(-50%, -50%);
-            transition: transform 0.2s;
         }
-        .ponto:hover { transform: translate(-50%, -50%) scale(1.3); }
 
         .fase { background-color: #ff0000; box-shadow: 0 0 15px #ff0000; }
         .neutro { background-color: #0066ff; box-shadow: 0 0 15px #0066ff; }
         .retorno { background-color: #ffff00; box-shadow: 0 0 15px #ffff00; }
         .sucesso { background-color: #00ff00 !important; box-shadow: 0 0 20px #00ff00 !important; }
 
-        #btn-reiniciar {
+        /* --- BOTÕES DE CONTROLE --- */
+        #btn-ajuda {
             position: absolute;
-            bottom: 3%;
-            left: 13%;
-            background: linear-gradient(180deg, #cc0000, #880000);
+            bottom: 8.5%;
+            left: 2%;
+            background: linear-gradient(180deg, #008899, #004455);
             color: white;
-            border: 1px solid #500;
-            padding: 0.8% 3.5%;
+            border: 1px solid #00f2ff;
+            padding: 0.6% 3.5%;
             font-size: 1.1vw;
             font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
             z-index: 200;
             text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+        }
+
+        #btn-reiniciar {
+            position: absolute;
+            bottom: 3%;
+            left: 2%;
+            background: linear-gradient(180deg, #cc0000, #880000);
+            color: white;
+            border: 1px solid #500;
+            padding: 0.6% 3.5%;
+            font-size: 1.1vw;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 200;
+            text-transform: uppercase;
+        }
+
+        /* --- MODAL DE AJUDA --- */
+        #overlay-ajuda {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-ajuda {
+            background: #0a1015;
+            border: 2px solid #1a3a5a;
+            width: 40%;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 1);
+        }
+
+        .modal-ajuda h2 {
+            color: #ffcc00;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            font-size: 1.5vw;
+        }
+
+        .lista-ajuda { list-style: none; }
+
+        .item-ajuda {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid #1a3a5a;
+            margin-bottom: 10px;
+            padding: 15px;
+            color: white;
+            text-align: left;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1vw;
+            transition: background 0.3s;
+        }
+
+        .item-ajuda:hover {
+            background: rgba(0, 242, 255, 0.1);
+            border-color: #00f2ff;
+        }
+
+        #btn-fechar-modal {
+            margin-top: 20px;
+            background: #222;
+            color: #888;
+            border: 1px solid #444;
+            padding: 10px 30px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        /* --- VISUALIZADOR DE IMAGEM TÉCNICA --- */
+        #visualizador-tecnico {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #000;
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #img-tecnica-exibida {
+            max-width: 90%;
+            max-height: 85%;
+            border: 2px solid #333;
+        }
+
+        #btn-voltar-lista {
+            margin-top: 20px;
+            background: #ffcc00;
+            color: #000;
+            border: none;
+            padding: 12px 40px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -148,7 +255,29 @@
         <img id="img-neutro-circuito" class="camada oculto">
 
         <div id="interacao-container"></div>
-        <button id="btn-reiniciar">REINICIAR</button>
+        
+        <button id="btn-ajuda" onclick="abrirAjuda()">AJUDA</button>
+        <button id="btn-reiniciar" onclick="location.reload()">REINICIAR</button>
+
+        <div id="overlay-ajuda" class="oculto">
+            <div class="modal-ajuda">
+                <h2>Ajuda Técnico</h2>
+                <div class="lista-ajuda">
+                    <div class="item-ajuda" onclick="mostrarImagemTecnica('ligaint.png')">1. Ligação do interruptor pulsador</div>
+                    <div class="item-ajuda" onclick="mostrarImagemTecnica('ligcamp.png')">2. Ligação da campainha</div>
+                    <div class="item-ajuda" onclick="mostrarImagemTecnica('ligcamp.png')">3. Conexões e emendas</div>
+                    <div class="item-ajuda" onclick="mostrarImagemTecnica('con_derivacao.png')">4. Instalação do conector de derivação</div>
+                    <div class="item-ajuda" onclick="mostrarImagemTecnica('listamatcp.png')">5. Lista de material</div>
+                </div>
+                <button id="btn-fechar-modal" onclick="fecharAjuda()">Fechar</button>
+            </div>
+        </div>
+
+        <div id="visualizador-tecnico" class="oculto">
+            <img id="img-tecnica-exibida" src="">
+            <button id="btn-voltar-lista" onclick="voltarParaLista()">VOLTAR PARA LISTA</button>
+        </div>
+
     </main>
 
     <audio id="audio-campainha" src="campainha.mp3" preload="auto"></audio>
@@ -168,14 +297,26 @@
         let etapaAtual = 0;
         const cacheImagens = {};
 
+        // Funções de Áudio
         function tocarSom(id) {
             const som = document.getElementById(id);
-            if (som) {
-                som.currentTime = 0;
-                som.play().catch(e => console.log("Erro ao tocar áudio:", e));
-            }
+            if (som) { som.currentTime = 0; som.play().catch(() => {}); }
         }
 
+        // Funções do Modal de Ajuda
+        function abrirAjuda() { document.getElementById('overlay-ajuda').classList.remove('oculto'); }
+        function fecharAjuda() { document.getElementById('overlay-ajuda').classList.add('oculto'); }
+        
+        function mostrarImagemTecnica(src) {
+            const vis = document.getElementById('visualizador-tecnico');
+            const img = document.getElementById('img-tecnica-exibida');
+            img.src = src;
+            vis.classList.remove('oculto');
+        }
+
+        function voltarParaLista() { document.getElementById('visualizador-tecnico').classList.add('oculto'); }
+
+        // Lógica de Simulação
         function proximoPasso() {
             if (etapaAtual >= roteiro.length) {
                 document.getElementById('label-status').innerText = "INSTALAÇÃO CONCLUÍDA! TESTE A CAMPAINHA.";
@@ -196,22 +337,16 @@
         }
 
         function toggleComp(el, offImg, onImg) {
-            tocarSom('audio-disj'); // Som do disjuntor em qualquer clique
+            tocarSom('audio-disj');
             el.src = el.src.includes(offImg) ? onImg : offImg;
         }
 
         function acionarPulsador(el, offImg, onImg) {
-            tocarSom('audio-int'); // Som mecânico do clique sempre toca
+            tocarSom('audio-int');
             el.src = onImg;
-
             const dgLigado = document.getElementById('comp-dg').src.includes('al_dg_on.png');
             const drLigado = document.getElementById('comp-dr').src.includes('al_dr_on.png');
-            const fiacaoPronta = etapaAtual >= roteiro.length;
-
-            if (fiacaoPronta && dgLigado && drLigado) {
-                tocarSom('audio-campainha');
-            }
-
+            if (etapaAtual >= roteiro.length && dgLigado && drLigado) { tocarSom('audio-campainha'); }
             setTimeout(() => { el.src = offImg; }, 200);
         }
 
@@ -219,8 +354,7 @@
             cacheImagens[dados.pasta] = [];
             for (let i = 1; i <= dados.total; i++) {
                 const img = new Image();
-                const num = String(i).padStart(4, '0');
-                img.src = `${dados.pasta}/quadro${num}.png`;
+                img.src = `${dados.pasta}/quadro${String(i).padStart(4, '0')}.png`;
                 cacheImagens[dados.pasta].push(img);
             }
         }
@@ -241,25 +375,15 @@
             const frames = cacheImagens[dados.pasta];
             const lentidao = 3; 
             let contador = 0;
-            
             function animar() {
                 if (frameIdx < frames.length) {
-                    if (contador % lentidao === 0) {
-                        imgElemento.src = frames[frameIdx].src;
-                        frameIdx++;
-                    }
-                    contador++;
-                    requestAnimationFrame(animar);
-                } else {
-                    tocarSom('audio-conexao'); // Som ao finalizar o cabo
-                    etapaAtual++;
-                    setTimeout(proximoPasso, 400);
-                }
+                    if (contador % lentidao === 0) { imgElemento.src = frames[frameIdx].src; frameIdx++; }
+                    contador++; requestAnimationFrame(animar);
+                } else { tocarSom('audio-conexao'); etapaAtual++; setTimeout(proximoPasso, 400); }
             }
             requestAnimationFrame(animar);
         }
 
-        document.getElementById('btn-reiniciar').onclick = () => window.location.reload();
         window.onload = proximoPasso;
     </script>
 </body>
