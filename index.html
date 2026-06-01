@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-wiath, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laboratório SMT Pro</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
@@ -55,7 +55,6 @@
         #overlay-ajuda { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; }
         .modal-ajuda { background: #0a1015; border: 2px solid #1a3a5a; width: 40%; padding: 30px; border-radius: 12px; text-align: center; }
         
-        /* Atualizado: font-weight definido como normal */
         .item-ajuda { background: rgba(255, 255, 255, 0.03); border: 1px solid #1a3a5a; margin-bottom: 10px; padding: 15px; color: white; text-align: left; cursor: pointer; font-weight: normal; font-size: 1.1vw; }
         
         #visualizador-tecnico { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1100; display: flex; flex-direction: column; justify-content: center; align-items: center; }
@@ -146,10 +145,40 @@
             ];
             dispositivos.forEach(disp => {
                 const el = document.getElementById(disp.idComp);
-                const isON = el.getAttribute('data-state') === 'off';
+                const isON = el.getAttribute('data-state') === 'on';
                 document.getElementById(disp.idTxt).innerHTML = isON ? `<span class="status-on">[ ON ] ✅</span>` : `<span class="status-off">[ OFF ] ❌</span>`;
             });
         }
+
+        function toggleComp(el, off, on) {
+            tocarSom('audio-disj');
+            const state = el.getAttribute('data-state') === 'off' ? 'on' : 'off';
+            el.src = state === 'on' ? on : off;
+            el.setAttribute('data-state', state);
+            atualizarQuadroPosicao();
+        }
+
+        function acionarPulsador(el, off, on) {
+            tocarSom('audio-int');
+            el.src = on; 
+            el.setAttribute('data-state', 'on');
+            atualizarQuadroPosicao();
+            
+            const dgOn = document.getElementById('comp-dg').getAttribute('data-state') === 'on';
+            const drOn = document.getElementById('comp-dr').getAttribute('data-state') === 'on';
+            
+            if (etapaAtual >= roteiro.length && dgOn && drOn) { 
+                tocarSom('audio-campainha'); 
+            }
+            
+            setTimeout(() => { 
+                el.src = off; 
+                el.setAttribute('data-state', 'off');
+                atualizarQuadroPosicao();
+            }, 200);
+        }
+
+        // ... demais funções permanecem conforme a lógica original ...
 
         function abrirAnimacaoConector() {
             const img = document.getElementById('img-tecnica-exibida');
@@ -200,27 +229,6 @@
                     executarAnimacaoFluida(dados);
                 });
             });
-        }
-
-        function toggleComp(el, off, on) {
-            tocarSom('audio-disj');
-            const state = el.getAttribute('data-state') === 'off' ? 'on' : 'off';
-            el.src = state === 'on' ? on : off;
-            el.setAttribute('data-state', state);
-            atualizarQuadroPosicao();
-        }
-
-        function acionarPulsador(el, off, on) {
-            tocarSom('audio-int');
-            el.src = on; el.setAttribute('data-state', 'on');
-            atualizarQuadroPosicao();
-            const dgOn = document.getElementById('comp-dg').getAttribute('data-state') === 'off';
-            const drOn = document.getElementById('comp-dr').getAttribute('data-state') === 'off';
-            if (etapaAtual >= roteiro.length && dgOn && drOn) { tocarSom('audio-campainha'); }
-            setTimeout(() => { 
-                el.src = off; el.setAttribute('data-state', 'off');
-                atualizarQuadroPosicao();
-            }, 200);
         }
 
         function preCarregarCabo(dados) {
