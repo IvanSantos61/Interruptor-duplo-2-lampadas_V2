@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laboratório SMT Pro - Layout Final</title>
+    <title>Laboratório SMT Pro - Conectores</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         
@@ -66,6 +66,7 @@
 
         .oculto { display: none; }
 
+        /* PONTOS DE INTERAÇÃO */
         .ponto {
             position: absolute;
             width: 1.8%;
@@ -84,26 +85,24 @@
         .retorno { background-color: #ffff00; box-shadow: 0 0 15px #ffff00; }
         .sucesso { background-color: #00ff00 !important; box-shadow: 0 0 20px #00ff00 !important; }
 
-        /* BOTÃO REINICIAR - ESTILO PÍLULA NO CANTO ESQUERDO */
+        /* BOTÃO REINICIAR - ESTILO PÍLULA */
         #btn-reiniciar {
             position: absolute;
             bottom: 3%;
-            left: 2%; /* Posicionado à esquerda */
+            left: 2%;
             background: linear-gradient(180deg, #cc0000, #880000);
             color: white;
             border: 1px solid #500;
-            padding: 0.8% 3.5%; /* Padding ajustado para o formato pílula */
+            padding: 0.8% 3.5%;
             font-size: 1.1vw;
             font-weight: bold;
-            border-radius: 50px; /* Formato pílula */
+            border-radius: 50px;
             cursor: pointer;
             z-index: 200;
             text-transform: uppercase;
-            transition: filter 0.2s, transform 0.1s;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
         #btn-reiniciar:hover { filter: brightness(1.2); }
-        #btn-reiniciar:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -116,6 +115,8 @@
 
     <main id="quadro-simulacao">
         <img src="ambiente.jpg" class="camada">
+
+        <img id="img-con-derivacao" src="con_derivacao.png" class="camada oculto">
 
         <img id="img-fase-rede" class="camada oculto">
         <img id="img-neutro-rede" class="camada oculto">
@@ -145,9 +146,15 @@
                 document.getElementById('label-status').innerText = "INSTALAÇÃO CONCLUÍDA!";
                 return;
             }
+            
             const dados = roteiro[etapaAtual];
             document.getElementById('label-status').innerText = `CONECTE: ${dados.nome.toUpperCase()}`;
             
+            // Lógica para exibir o conector de derivação nos cabos FASE_2 e NEUTRO_2
+            if (dados.pasta === "FASE_2" || dados.pasta === "NEUTRO_2") {
+                document.getElementById('img-con-derivacao').classList.remove('oculto');
+            }
+
             preCarregarCabo(dados);
 
             criarPonto(dados.origem, dados.cor, function() {
