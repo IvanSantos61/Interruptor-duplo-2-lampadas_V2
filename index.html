@@ -93,6 +93,7 @@
         <div id="balao-fase-rede" class="balao-info oculto" style="top: 35%; left: 30%;" data-msg="A fase pode ser de qualquer cor (Item 6.1.5.3.4 da NBR-5410)">i</div>
         <div id="balao-neutro-rede" class="balao-info oculto" style="top: 35%; left: 45%;" data-msg="A seção mínima dos fios do circuito de iluminação é 1,5mm2 (Item 6.2.6.1.1 da NBR-5410)">i</div>
         <div id="balao-fase-2" class="balao-info oculto" style="top: 70%; left: 70%;" data-msg="O interruptor deve seccionar o condutor fase (Item 6.3.7.2.1 da NBR-5410)">i</div>
+        <div id="balao-retorno" class="balao-info oculto" style="top: 55%; left: 85%;" data-msg="O retorno, também, pode ser de qualquer cor (Continuidade da fase NBR-5410)">i</div>
 
         <img id="comp-dg" src="al_dg_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dg_off.png', 'al_dg_on.png')">
         <img id="comp-dr" src="al_dr_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dr_off.png', 'al_dr_on.png')">
@@ -289,6 +290,8 @@
                         document.getElementById('balao-neutro-rede').classList.remove('oculto');
                     } else if (dados.pasta === "FASE_2") {
                         document.getElementById('balao-fase-2').classList.remove('oculto');
+                    } else if (dados.pasta === "RETORNO") {
+                        document.getElementById('balao-retorno').classList.remove('oculto');
                     }
                     etapaAtual++; 
                     setTimeout(proximoPasso, 400); 
