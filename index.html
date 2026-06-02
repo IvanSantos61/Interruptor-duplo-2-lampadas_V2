@@ -8,6 +8,23 @@
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body { background-color: #05070a; color: white; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
         
+        /* Splash Screen */
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #05070a; z-index: 5000; display: flex; justify-content: center; align-items: center; }
+        .moldura-neon { 
+            border: 2px solid #00f2ff; padding: 60px; border-radius: 20px; text-align: center; 
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.3), inset 0 0 20px rgba(0, 242, 255, 0.1);
+        }
+        .splash-titulo { font-size: 3em; color: rgba(255, 255, 255, 0.7); text-transform: uppercase; margin-bottom: 10px; }
+        .splash-subtitulo { font-size: 2.2em; color: #00f2ff; text-transform: uppercase; margin-bottom: 20px; }
+        .splash-info { font-size: 1.5em; color: #00f2ff; margin-bottom: 40px; }
+        .splash-footer { color: #888; font-size: 0.9em; margin-bottom: 40px; }
+        .btn-iniciar { 
+            background: transparent; color: #00f2ff; border: 2px solid #00f2ff; padding: 15px 40px; 
+            border-radius: 50px; font-size: 1.2em; cursor: pointer; animation: piscar 1.5s infinite;
+        }
+        @keyframes piscar { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* Estilos mantidos conforme seu envio */
         #titulo-projeto { color: #00f2ff; font-size: clamp(24px, 5vw, 48px); font-weight: 900; text-transform: uppercase; margin-bottom: 15px; text-shadow: 0 0 15px rgba(0, 242, 255, 0.5); }
         #linha-status { background: rgba(10, 15, 20, 0.9); border: 1px solid #1a3a5a; padding: 15px 30px; border-radius: 8px; margin-bottom: 20px; width: 100%; max-width: 1200px; text-align: center; }
         .texto-status { color: #ffcc00; font-size: clamp(16px, 2.5vw, 24px); font-weight: bold; text-transform: uppercase; }
@@ -63,6 +80,16 @@
     </style>
 </head>
 <body>
+
+    <div id="splash-screen">
+        <div class="moldura-neon">
+            <h1 class="splash-titulo">LABORATÓRIO SMT PRO</h1>
+            <h2 class="splash-subtitulo">CAMPAINHA<br>ELETROMAGNÉTICA</h2>
+            <p class="splash-info">CIRCUITO MONOFÁSICO - 127V</p>
+            <p class="splash-footer">© Desenvolvido por Ivan Santos - ConectaeadPLUS - 2026</p>
+            <button class="btn-iniciar" onclick="document.getElementById('splash-screen').style.display='none'">CLIQUE PARA INICIAR O LABORATÓRIO</button>
+        </div>
+    </div>
 
     <h1 id="titulo-projeto">LABORATÓRIO SMT PRO</h1>
 
