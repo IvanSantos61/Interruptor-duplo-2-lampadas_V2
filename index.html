@@ -2,72 +2,146 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laboratório SMT Pro</title>
     <style>
-        /* CSS mantido para garantir o layout */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: #000; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        #quadro-simulacao { position: relative; width: 1000px; height: 562px; background: #111; overflow: hidden; }
-        .camada { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        .ponto { position: absolute; width: 20px; height: 20px; background: white; border-radius: 50%; cursor: pointer; z-index: 100; }
-        .oculto { display: none !important; }
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body { background-color: #05070a; color: white; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
         
+        #titulo-projeto { color: #00f2ff; font-size: clamp(24px, 5vw, 48px); font-weight: 900; text-transform: uppercase; margin-bottom: 15px; text-shadow: 0 0 15px rgba(0, 242, 255, 0.5); }
+        #linha-status { background: rgba(10, 15, 20, 0.9); border: 1px solid #1a3a5a; padding: 15px 30px; border-radius: 8px; margin-bottom: 20px; width: 100%; max-width: 1200px; text-align: center; }
+        .texto-status { color: #ffcc00; font-size: clamp(16px, 2.5vw, 24px); font-weight: bold; text-transform: uppercase; }
+        
+        #quadro-simulacao { position: relative; width: 100%; max-width: 1600px; aspect-ratio: 1920 / 1080; background-color: #000; border: 2px solid #333; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+        .camada { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+        .tecla-interativa { position: absolute; z-index: 60; cursor: pointer; transition: transform 0.1s; }
+        
+        #comp-dg { width: 4%; top: 26%; left: 12%; }
+        #comp-dr { width: 5%; top: 29%; left: 23.6%; }
+        #comp-int { width: 6%; top: 67%; left: 63%; }
+        #con-fase, #con-neutro { position: absolute; z-index: 50; width: 5%; transform: translate(-50%, -50%); pointer-events: none; }
+        #con-fase { top: 17.5%; left: 73.5%; }
+        #con-neutro { top: 14.5%; left: 93.5%; }
+
+        .oculto { display: none !important; }
+
         /* Estilo dos Balões 'i' */
-        .balao-info { position: absolute; width: 30px; height: 30px; background: #00f2ff; color: #000; border-radius: 50%; text-align: center; line-height: 30px; font-weight: bold; cursor: help; z-index: 900; }
-        .balao-info::after { content: attr(data-msg); visibility: hidden; position: absolute; top: 35px; left: 0; width: 250px; background: #fff; color: #000; padding: 10px; border-radius: 5px; font-size: 12px; pointer-events: none; }
+        .balao-info { position: absolute; width: 30px; height: 30px; background: #00f2ff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: help; z-index: 900; font-size: 18px; }
+        .balao-info::after { content: attr(data-msg); visibility: hidden; position: absolute; top: 40px; left: 0; width: 250px; background: #fff; color: #000; padding: 10px; border-radius: 5px; font-size: 13px; z-index: 999; text-transform: none; font-weight: normal; }
         .balao-info:hover::after { visibility: visible; }
+
+        .ponto { position: absolute; width: 1.8%; aspect-ratio: 1/1; border-radius: 50%; border: 2px solid #fff; cursor: pointer; z-index: 100; transform: translate(-50%, -50%); }
+        .fase { background-color: #ff0000; box-shadow: 0 0 15px #ff0000; }
+        .neutro { background-color: #0066ff; box-shadow: 0 0 15px #0066ff; }
+        .retorno { background-color: #ffff00; box-shadow: 0 0 15px #ffff00; }
+        .sucesso { background-color: #00ff00 !important; box-shadow: 0 0 20px #00ff00 !important; }
+
+        #placa-concluido { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #001100; border: 3px solid #00ff00; padding: 40px 100px; font-size: 3.5vw; color: #00ff00; z-index: 2000; text-align: center; border-radius: 8px; box-shadow: 0 0 30px rgba(0, 255, 0, 0.4); text-transform: uppercase; font-weight: bold; }
+        #placa-concluido::after { content: ''; position: absolute; top: -100%; left: 0; width: 100%; height: 2px; background: #00ff00; box-shadow: 0 0 15px #00ff00; animation: scanner 2s linear 2; }
+        @keyframes scanner { 0% { top: 0%; } 100% { top: 100%; } }
+
+        #painel-dispositivos { position: absolute; top: 25%; left: 59%; width: 15%; background: rgba(5, 15, 30, 0.95); border: 2px solid #00f2ff; border-radius: 8px; z-index: 500; }
+        #painel-dispositivos h3 { background: #008899; color: white; text-align: center; font-size: 1.1vw; padding: 8px; text-transform: uppercase; border-bottom: 2px solid #00f2ff; }
+        .linha-dispositivo { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; margin-bottom: 5px; background: rgba(255, 255, 255, 0.05); border-left: 4px solid #1a3a5a; font-weight: bold; font-size: 1vw; }
+        .status-on { color: #00ff00; } .status-off { color: #ff3333; }
     </style>
 </head>
 <body>
+    <h1 id="titulo-projeto">LABORATÓRIO SMT PRO</h1>
+    <div id="linha-status"><span id="label-status" class="texto-status">SISTEMA PRONTO</span></div>
+
     <main id="quadro-simulacao">
-        <div id="balao-fase-rede" class="balao-info oculto" style="top: 100px; left: 200px;" data-msg="A fase pode ser de qualquer cor (Item 6.1.5.3.4 da NBR-5410)">i</div>
-        <div id="balao-neutro-rede" class="balao-info oculto" style="top: 100px; left: 300px;" data-msg="A seção mínima dos fios de iluminação é 1,5mm² (Item 6.2.6.1.1 da NBR-5410)">i</div>
-        <div id="balao-fase-2" class="balao-info oculto" style="top: 100px; left: 400px;" data-msg="O interruptor deve seccionar o condutor fase (Item 6.3.7.2.1 da NBR-5410)">i</div>
-        <div id="balao-retorno" class="balao-info oculto" style="top: 100px; left: 500px;" data-msg="O retorno também poderá ser de qualquer cor (Continuidade da fase NBR-5410)">i</div>
-        <div id="balao-neutro-2" class="balao-info oculto" style="top: 100px; left: 600px;" data-msg="O interruptor recebe fase e retorno e a campainha recebe retorno e neutro">i</div>
+        <div id="balao-fase-rede" class="balao-info oculto" style="top: 35%; left: 30%;" data-msg="A fase pode ser de qualquer cor (Item 6.1.5.3.4 da NBR-5410)">i</div>
+        <div id="balao-neutro-rede" class="balao-info oculto" style="top: 30%; left: 45%;" data-msg="A seção mínima dos fios de iluminação é 1,5mm² (Item 6.2.6.1.1 da NBR-5410)">i</div>
+        <div id="balao-conector" class="balao-info oculto" style="top: 20%; left: 75%;" data-msg="Conectores de emenda garantem conexões firmes e energia sem interrupções">i</div>
+        <div id="balao-fase-2" class="balao-info oculto" style="top: 65%; left: 70%;" data-msg="O interruptor deve seccionar o condutor fase (Item 6.3.7.2.1 da NBR-5410)">i</div>
+        <div id="balao-retorno" class="balao-info oculto" style="top: 55%; left: 85%;" data-msg="O retorno também poderá ser de qualquer cor (Continuidade da fase NBR-5410)">i</div>
+        <div id="balao-neutro-2" class="balao-info oculto" style="top: 60%; left: 90%;" data-msg="O interruptor recebe fase e retorno e a campainha recebe retorno e neutro">i</div>
 
         <img src="ambiente.jpg" class="camada">
-        <div id="interacao-container"></div>
+        <img id="comp-dg" src="al_dg_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dg_off.png', 'al_dg_on.png')">
+        <img id="comp-dr" src="al_dr_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dr_off.png', 'al_dr_on.png')">
+        <img id="comp-int" src="tec_int_off.png" data-state="off" class="tecla-interativa" onclick="acionarPulsador(this, 'tec_int_off.png', 'tec_int_on.png')">
+        
+        <img id="con-fase" src="con_derivacao.png" class="oculto">
+        <img id="con-neutro" src="con_derivacao.png" class="oculto">
         <img id="img-fase-rede" class="camada oculto">
         <img id="img-neutro-rede" class="camada oculto">
         <img id="img-fase-circuito" class="camada oculto">
         <img id="img-retorno" class="camada oculto">
         <img id="img-neutro-circuito" class="camada oculto">
+
+        <div id="placa-concluido" class="oculto">CONCLUÍDO</div>
+        <div id="painel-dispositivos" class="oculto">
+            <h3>Posição dos Dispositivos</h3>
+            <div class="linha-dispositivo"><span>DG</span><span id="txt-dg">[ OFF ] ❌</span></div>
+            <div class="linha-dispositivo"><span>DR</span><span id="txt-dr">[ OFF ] ❌</span></div>
+            <div class="linha-dispositivo"><span>INT.</span><span id="txt-int">[ OFF ] ❌</span></div>
+        </div>
+        <div id="interacao-container"></div>
     </main>
 
     <script>
         const roteiro = [
-            { id: "fase-rede", origem: {x: 200, y: 200}, destino: {x: 500, y: 200} },
-            { id: "neutro-rede", origem: {x: 200, y: 300}, destino: {x: 500, y: 300} },
-            { id: "fase-2", origem: {x: 200, y: 400}, destino: {x: 500, y: 400} },
-            { id: "retorno", origem: {x: 600, y: 200}, destino: {x: 800, y: 200} },
-            { id: "neutro-2", origem: {x: 600, y: 300}, destino: {x: 800, y: 300} }
+            { id: "fase-rede", nome: "Fase de Entrada", pasta: "FASE_REDE", total: 64, imgId: "img-fase-rede", cor: "fase", origem: { x: 27, y: 38.5 }, destino: { x: 98.5, y: 17.5 } },
+            { id: "neutro-rede", nome: "Neutro de Entrada", pasta: "NEUTRO_REDE", total: 76, imgId: "img-neutro-rede", cor: "neutro", origem: { x: 44.3, y: 35.2 }, destino: { x: 98.5, y: 14 } },
+            { id: "fase-2", nome: "Fase do Pulsador", pasta: "FASE_2", total: 25, imgId: "img-fase-circuito", cor: "fase", origem: { x: 75, y: 19 }, destino: { x: 73.5, y: 71.0 } },
+            { id: "retorno", nome: "Retorno da Campainha", pasta: "RETORNO", total: 45, imgId: "img-retorno", cor: "retorno", origem: { x: 73, y: 76.5 }, destino: { x: 88.5, y: 59.5 } },
+            { id: "neutro-2", nome: "Neutro da Campainha", pasta: "NEUTRO_2", total: 15, imgId: "img-neutro-circuito", cor: "neutro", origem: { x: 92.5, y: 15.8 }, destino: { x: 90.2, y: 59.5 } }
         ];
 
-        let etapa = 0;
+        let etapaAtual = 0;
+        const cacheImagens = {};
 
         function proximoPasso() {
-            if (etapa >= roteiro.length) return;
-            const passo = roteiro[etapa];
-            criarPonto(passo.origem, () => {
-                criarPonto(passo.destino, () => {
-                    // Finalizou a etapa, mostra o balão correspondente
-                    const balao = document.getElementById('balao-' + passo.id);
-                    if (balao) balao.classList.remove('oculto');
-                    etapa++;
-                    proximoPasso();
+            if (etapaAtual >= roteiro.length) {
+                document.getElementById('label-status').innerText = "INSTALAÇÃO CONCLUÍDA! TESTE A CAMPAINHA.";
+                document.getElementById('painel-dispositivos').classList.remove('oculto');
+                return;
+            }
+            const dados = roteiro[etapaAtual];
+            document.getElementById('label-status').innerText = `CONECTE: ${dados.nome.toUpperCase()}`;
+            if (dados.id === "fase-2") { document.getElementById('con-fase').classList.remove('oculto'); document.getElementById('balao-conector').classList.remove('oculto'); }
+            if (dados.id === "neutro-2") document.getElementById('con-neutro').classList.remove('oculto');
+            
+            preCarregarCabo(dados);
+            criarPonto(dados.origem, dados.cor, function() {
+                this.classList.add('sucesso');
+                criarPonto(dados.destino, dados.cor, function() {
+                    document.getElementById('interacao-container').innerHTML = "";
+                    executarAnimacaoFluida(dados);
                 });
             });
         }
 
-        function criarPonto(pos, callback) {
-            const p = document.createElement('div');
-            p.className = 'ponto';
-            p.style.left = pos.x + 'px'; p.style.top = pos.y + 'px';
-            p.onclick = () => { p.remove(); callback(); };
-            document.getElementById('interacao-container').appendChild(p);
+        function executarAnimacaoFluida(dados) {
+            const imgElemento = document.getElementById(dados.imgId);
+            imgElemento.classList.remove('oculto');
+            let frameIdx = 0; const frames = cacheImagens[dados.pasta];
+            let contador = 0;
+            function animar() {
+                if (frameIdx < frames.length) {
+                    if (contador % 3 === 0) { imgElemento.src = frames[frameIdx].src; frameIdx++; }
+                    contador++; requestAnimationFrame(animar);
+                } else {
+                    document.getElementById('balao-' + dados.id).classList.remove('oculto');
+                    etapaAtual++; setTimeout(proximoPasso, 400);
+                }
+            }
+            requestAnimationFrame(animar);
         }
 
+        function criarPonto(pos, corClasse, cliqueFn) {
+            const ponto = document.createElement('div');
+            ponto.className = `ponto ${corClasse}`;
+            ponto.style.left = pos.x + "%"; ponto.style.top = pos.y + "%";
+            ponto.onclick = (e) => { e.stopPropagation(); cliqueFn.call(ponto); };
+            document.getElementById('interacao-container').appendChild(ponto);
+        }
+
+        function toggleComp(el, off, on) { const state = el.getAttribute('data-state') === 'off' ? 'on' : 'off'; el.src = state === 'on' ? on : off; el.setAttribute('data-state', state); }
+        function acionarPulsador(el, off, on) { el.src = on; setTimeout(() => { el.src = off; }, 200); }
+        function preCarregarCabo(dados) { cacheImagens[dados.pasta] = []; for(let i=1; i<=dados.total; i++){ const img=new Image(); img.src=`${dados.pasta}/quadro${String(i).padStart(4,'0')}.png`; cacheImagens[dados.pasta].push(img); } }
         window.onload = proximoPasso;
     </script>
 </body>
