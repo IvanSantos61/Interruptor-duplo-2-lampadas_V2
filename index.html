@@ -145,13 +145,17 @@
                 <div class="item-ajuda" onclick="abrirAnimacaoConector()">4. Instalação do conector de derivação</div>
                 <div class="item-ajuda" onclick="mostrarImagemTecnica('listamatcp.png')">5. Lista de material</div>
                 <button onclick="fecharAjuda()" style="margin-top:20px; padding:20px 30px; cursor:pointer;">Fechar</button>
+
+<button onclick="tocarSom('audio-conexao'); fecharAjuda()" style="margin-top:20px; padding:20px 30px; cursor:pointer;">Fechar</button>
             </div>
         </div>
 
         <div id="visualizador-tecnico" class="oculto">
             <div id="instrucao-clique" class="oculto">CLIQUE NO CONECTOR PARA INSTALAÇÃO</div>
             <img id="img-tecnica-exibida" src="" style="max-width:90%; max-height:80%;">
-            <button onclick="voltarParaLista()" style="margin-top:20px; background:#ffcc00; padding:10px 30px; font-weight:bold; cursor:pointer;">VOLTAR</button>
+<button onclick="voltarParaLista()" style="margin-top:20px; background:#ffcc00; padding:10px 30px; font-weight:bold; cursor:pointer;">VOLTAR</button>
+
+<button onclick="tocarSom('audio-conexao'); voltarParaLista()" style="margin-top:20px; background:#ffcc00; padding:10px 30px; font-weight:bold; cursor:pointer;">VOLTAR</button>
         </div>
     </main>
 
