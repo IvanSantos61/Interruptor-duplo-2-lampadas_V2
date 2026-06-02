@@ -26,7 +26,7 @@
 
         .oculto { display: none !important; }
 
-        /* Estilo Balão */
+        /* Estilo Balões */
         .balao-info { position: absolute; width: 30px; height: 30px; background: #00f2ff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: help; z-index: 900; font-size: 18px; }
         .balao-info::after { content: attr(data-msg); visibility: hidden; position: absolute; top: 40px; left: 0; width: 250px; background: white; color: black; padding: 10px; border-radius: 5px; font-size: 13px; z-index: 999; text-transform: none; font-weight: normal; }
         .balao-info:hover::after { visibility: visible; }
@@ -91,6 +91,7 @@
         <img src="ambiente.jpg" class="camada">
 
         <div id="balao-fase-rede" class="balao-info oculto" style="top: 35%; left: 30%;" data-msg="A fase pode ser de qualquer cor (Item 6.1.5.3.4 da NBR-5410)">i</div>
+        <div id="balao-neutro-rede" class="balao-info oculto" style="top: 35%; left: 45%;" data-msg="A seção mínima dos fios do circuito de iluminação é 1,5mm2 (Item 6.2.6.1.1 da NBR-5410)">i</div>
 
         <img id="comp-dg" src="al_dg_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dg_off.png', 'al_dg_on.png')">
         <img id="comp-dr" src="al_dr_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dr_off.png', 'al_dr_on.png')">
@@ -281,9 +282,11 @@
                     contador++; requestAnimationFrame(animar);
                 } else { 
                     tocarSom('audio-conexao');
-                    // Ativa o balão se for a primeira etapa (FASE_REDE)
+                    // Exibe o balão correspondente à pasta atual
                     if (dados.pasta === "FASE_REDE") {
                         document.getElementById('balao-fase-rede').classList.remove('oculto');
+                    } else if (dados.pasta === "NEUTRO_REDE") {
+                        document.getElementById('balao-neutro-rede').classList.remove('oculto');
                     }
                     etapaAtual++; 
                     setTimeout(proximoPasso, 400); 
