@@ -28,7 +28,7 @@
 
         /* Estilo Balões */
         .balao-info { position: absolute; width: 30px; height: 30px; background: #00f2ff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: help; z-index: 900; font-size: 18px; }
-        .balao-info::after { content: attr(data-msg); visibility: hidden; position: absolute; top: 40px; left: 0; width: 250px; background: white; color: black; padding: 10px; border-radius: 5px; font-size: 13px; z-index: 999; text-transform: none; font-weight: normal; }
+        .balao-info::after { content: attr(data-msg); visibility: hidden; position: absolute; top: 40px; left: 0; width: 280px; background: white; color: black; padding: 10px; border-radius: 5px; font-size: 13px; z-index: 999; text-transform: none; font-weight: normal; white-space: pre-line; }
         .balao-info:hover::after { visibility: visible; }
 
         #painel-dispositivos {
@@ -95,6 +95,7 @@
         <div id="balao-fase-2" class="balao-info oculto" style="top: 70%; left: 70%;" data-msg="O interruptor deve seccionar o condutor fase (Item 6.3.7.2.1 da NBR-5410)">i</div>
         <div id="balao-retorno" class="balao-info oculto" style="top: 55%; left: 85%;" data-msg="O retorno, também, pode ser de qualquer cor (Continuidade da fase NBR-5410)">i</div>
         <div id="balao-conector" class="balao-info oculto" style="top: 10%; left: 93%;" data-msg="Conectores de emenda garantem conexões firmes e energia sem interrupção">i</div>
+        <div id="balao-final" class="balao-info oculto" style="top: 60%; left: 50%;" data-msg="CAMPAINHA --> Recebe Neutro e Retorno.&#13;INTERRUPTOR --> Recebe Fase e Retorno">i</div>
 
         <img id="comp-dg" src="al_dg_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dg_off.png', 'al_dg_on.png')">
         <img id="comp-dr" src="al_dr_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dr_off.png', 'al_dr_on.png')">
@@ -294,6 +295,8 @@
                     } else if (dados.pasta === "RETORNO") {
                         document.getElementById('balao-retorno').classList.remove('oculto');
                         document.getElementById('balao-conector').classList.remove('oculto');
+                    } else if (dados.pasta === "NEUTRO_2") {
+                        document.getElementById('balao-final').classList.remove('oculto');
                     }
                     etapaAtual++; 
                     setTimeout(proximoPasso, 400); 
