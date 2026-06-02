@@ -49,19 +49,30 @@
         .retorno { background-color: #ffff00; box-shadow: 0 0 15px #ffff00; }
         .sucesso { background-color: #00ff00 !important; box-shadow: 0 0 20px #00ff00 !important; }
 
+        #placa-concluido {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #001100; border: 3px solid #00ff00; padding: 40px 100px;
+            font-size: 3.5vw; color: #00ff00; z-index: 2000; text-align: center;
+            border-radius: 8px; overflow: hidden; box-shadow: 0 0 30px rgba(0, 255, 0, 0.4);
+            text-transform: uppercase; font-weight: bold; letter-spacing: 2px;
+        }
+        #placa-concluido::after {
+            content: ''; position: absolute; top: -100%; left: 0; 
+            width: 100%; height: 2px; background: #00ff00;
+            box-shadow: 0 0 15px #00ff00;
+            animation: scanner 2s linear 2;
+        }
+        @keyframes scanner { 0% { top: 0%; } 100% { top: 100%; } }
+
         #btn-ajuda { position: absolute; bottom: 10.5%; left: 15%; background: linear-gradient(180deg, #008899, #004455); color: white; border: 1px solid #00f2ff; padding: 0.6% 3.5%; font-size: 1.1vw; font-weight: bold; border-radius: 50px; cursor: pointer; z-index: 200; }
         #btn-reiniciar { position: absolute; bottom: 3%; left: 13.5%; background: linear-gradient(180deg, #cc0000, #880000); color: white; border: 1px solid #500; padding: 0.6% 3.5%; font-size: 1.1vw; font-weight: bold; border-radius: 50px; cursor: pointer; z-index: 200; }
 
         #overlay-ajuda { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; }
         .modal-ajuda { background: #0a1015; border: 2px solid #1a3a5a; width: 40%; padding: 30px; border-radius: 12px; text-align: center; }
-        
         .item-ajuda { background: rgba(255, 255, 255, 0.03); border: 1px solid #1a3a5a; margin-bottom: 10px; padding: 15px; color: white; text-align: left; cursor: pointer; font-weight: normal; font-size: 1.1vw; }
-        
         #visualizador-tecnico { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1100; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         #instrucao-clique { background: #ffcc00; color: #000; padding: 5px 15px; font-weight: bold; border-radius: 4px; margin-bottom: 15px; text-transform: uppercase; font-size: 1vw; animation: blink 1.5s infinite; }
-        
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-        .cursor-clique { cursor: pointer; }
     </style>
 </head>
 <body>
@@ -87,6 +98,8 @@
         <img id="img-fase-circuito" class="camada oculto">
         <img id="img-retorno" class="camada oculto">
         <img id="img-neutro-circuito" class="camada oculto">
+
+        <div id="placa-concluido" class="oculto">CONCLUÍDO</div>
 
         <div id="painel-dispositivos" class="oculto">
             <h3>Posição dos Dispositivos</h3>
@@ -167,31 +180,36 @@
             const dgOn = document.getElementById('comp-dg').getAttribute('data-state') === 'on';
             const drOn = document.getElementById('comp-dr').getAttribute('data-state') === 'on';
             
-            if (etapaAtual >= roteiro.length && dgOn && drOn) { 
-                tocarSom('audio-campainha'); 
-            }
-            
+            // Retorno do botão após 200ms
             setTimeout(() => { 
                 el.src = off; 
                 el.setAttribute('data-state', 'off');
                 atualizarQuadroPosicao();
+
+                // Lógica da Placa: Após o retorno (pulsador off), espera 2 segundos para exibir
+                if (etapaAtual >= roteiro.length && dgOn && drOn) { 
+                    setTimeout(() => {
+                        tocarSom('audio-campainha');
+                        const placa = document.getElementById('placa-concluido');
+                        placa.classList.remove('oculto');
+                        
+                        placa.addEventListener('animationend', function handler() {
+                            placa.classList.add('oculto');
+                            placa.removeEventListener('animationend', handler);
+                        });
+                    }, 2000);
+                }
             }, 200);
         }
 
-        // ... demais funções permanecem conforme a lógica original ...
-
+        // --- Funções de suporte inalteradas ---
         function abrirAnimacaoConector() {
             const img = document.getElementById('img-tecnica-exibida');
             const legenda = document.getElementById('instrucao-clique');
             img.src = 'conectder_on.png'; 
-            img.classList.add('cursor-clique');
             legenda.classList.remove('oculto');
             img.onclick = function() {
-                if (this.src.includes('conectder_on.png')) {
-                    this.src = 'conectder_off.png'; 
-                } else {
-                    this.src = 'conectder_on.png';
-                }
+                this.src = this.src.includes('conectder_on.png') ? 'conectder_off.png' : 'conectder_on.png';
             };
             document.getElementById('visualizador-tecnico').classList.remove('oculto');
         }
@@ -201,7 +219,6 @@
             document.getElementById('instrucao-clique').classList.add('oculto');
             img.src = src;
             img.onclick = null;
-            img.classList.remove('cursor-clique');
             document.getElementById('visualizador-tecnico').classList.remove('oculto');
         }
 
