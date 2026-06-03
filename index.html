@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+Essé o código que vamos trabalhar hoje? <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -8,15 +8,26 @@
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body { background-color: #05070a; color: white; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
         
+        /* Splash Screen Refinada */
         #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #05070a; z-index: 5000; display: flex; justify-content: center; align-items: center; }
-        .moldura-neon { border: 2.4px solid #00f2ff; padding: 72px; border-radius: 24px; text-align: center; box-shadow: 0 0 48px rgba(0, 242, 255, 0.5), inset 0 0 24px rgba(0, 242, 255, 0.2); }
+        .moldura-neon { 
+            border: 2.4px solid #00f2ff; padding: 72px; border-radius: 24px; text-align: center; 
+            box-shadow: 0 0 48px rgba(0, 242, 255, 0.5), inset 0 0 24px rgba(0, 242, 255, 0.2);
+        }
+        /* Título com opacidade menor (0.4) e cor Cyan */
         .splash-titulo { font-size: 3.6em; color: rgba(0, 242, 255, 0.4); text-transform: uppercase; margin-bottom: 12px; font-weight: normal; }
+        /* Demais textos em Cyan pleno */
         .splash-subtitulo { font-size: 2.64em; color: #00f2ff; text-transform: uppercase; margin-bottom: 24px; font-weight: normal; }
         .splash-info { font-size: 1.8em; color: #00f2ff; margin-bottom: 48px; }
-        .splash-footer { color: #808080; font-size: 1.08em; margin-bottom: 48px; }
-        .btn-iniciar { background: transparent; color: #00f2ff; border: 2.4px solid #00f2ff; padding: 18px 48px; border-radius: 60px; font-size: 1.44em; cursor: pointer; animation: piscar 1.5s infinite; }
+        /* Créditos em cinza-claro *//* Créditos em cinza */
+.splash-footer { color: #808080; font-size: 1.08em; margin-bottom: 48px; }
+        .btn-iniciar { 
+            background: transparent; color: #00f2ff; border: 2.4px solid #00f2ff; padding: 18px 48px; 
+            border-radius: 60px; font-size: 1.44em; cursor: pointer; animation: piscar 1.5s infinite;
+        }
         @keyframes piscar { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
+        /* Estilos mantidos conforme seu envio original */
         #titulo-projeto { color: #00f2ff; font-size: clamp(24px, 5vw, 48px); font-weight: 900; text-transform: uppercase; margin-bottom: 15px; text-shadow: 0 0 15px rgba(0, 242, 255, 0.5); }
         #linha-status { background: rgba(10, 15, 20, 0.9); border: 1px solid #1a3a5a; padding: 15px 30px; border-radius: 8px; margin-bottom: 20px; width: 100%; max-width: 1200px; text-align: center; }
         .texto-status { color: #ffcc00; font-size: clamp(16px, 2.5vw, 24px); font-weight: bold; text-transform: uppercase; }
@@ -35,59 +46,318 @@
 
         .oculto { display: none !important; }
 
-        .estilo-lampada-acesa { position: absolute; top: 50px; left: 50px; width: 100px; z-index: 100; pointer-events: none; }
+        .balao-info { position: absolute; width: 45px; height: 45px; background: #000; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: help; z-index: 900; font-size: 24px; }
+        .texto-balao { 
+            visibility: hidden; position: absolute; bottom: 50px; left: 0; width: 300px; 
+            background: white; color: black; padding: 12px; border-radius: 8px; 
+            font-size: 18px; z-index: 999; text-transform: none; font-weight: normal; 
+            white-space: normal; line-height: 1.4; border: 2px solid #00f2ff;
+        }
+        .balao-info:hover .texto-balao { visibility: visible; }
 
-        /* Mantenha os outros estilos (balao, painel, etc) aqui conforme seu original */
+        #painel-dispositivos { position: absolute; top: 25%; left: 59%; width: 15%; background: rgba(5, 15, 30, 0.95); border: 2px solid #00f2ff; border-radius: 8px; z-index: 500; }
+        #painel-dispositivos h3 { background: #008899; color: white; text-align: center; font-size: 1.1vw; padding: 8px; text-transform: uppercase; border-bottom: 2px solid #00f2ff; }
+        .linha-dispositivo { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; margin-bottom: 5px; background: rgba(255, 255, 255, 0.05); border-left: 4px solid #1a3a5a; font-weight: bold; font-size: 1vw; }
+        .status-on { color: #00ff00; }
+        .status-off { color: #ff3333; }
+
+        .ponto { position: absolute; width: 1.8%; aspect-ratio: 1/1; border-radius: 50%; border: 2px solid #fff; cursor: pointer; z-index: 100; transform: translate(-50%, -50%); }
+        .fase { background-color: #ff0000; box-shadow: 0 0 15px #ff0000; }
+        .neutro { background-color: #0066ff; box-shadow: 0 0 15px #0066ff; }
+        .retorno { background-color: #ffff00; box-shadow: 0 0 15px #ffff00; }
+        .sucesso { background-color: #00ff00 !important; box-shadow: 0 0 20px #00ff00 !important; }
+
+        #placa-concluido { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #001100; border: 3px solid #00ff00; padding: 40px 100px; font-size: 3.5vw; color: #00ff00; z-index: 2000; text-align: center; border-radius: 8px; overflow: hidden; box-shadow: 0 0 30px rgba(0, 255, 0, 0.4); text-transform: uppercase; font-weight: bold; letter-spacing: 2px; }
+        #placa-concluido::after { content: ''; position: absolute; top: -100%; left: 0; width: 100%; height: 2px; background: #00ff00; box-shadow: 0 0 15px #00ff00; animation: scanner 2s linear 2; }
+        @keyframes scanner { 0% { top: 0%; } 100% { top: 100%; } }
+
+        #btn-ajuda { position: absolute; bottom: 10.5%; left: 15%; background: linear-gradient(180deg, #008899, #004455); color: white; border: 1px solid #00f2ff; padding: 0.6% 3.5%; font-size: 1.1vw; font-weight: bold; border-radius: 50px; cursor: pointer; z-index: 200; }
+        #btn-reiniciar { position: absolute; bottom: 3%; left: 13.5%; background: linear-gradient(180deg, #cc0000, #880000); color: white; border: 1px solid #500; padding: 0.6% 3.5%; font-size: 1.1vw; font-weight: bold; border-radius: 50px; cursor: pointer; z-index: 200; }
+
+        #overlay-ajuda { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; }
+        .modal-ajuda { background: #0a1015; border: 2px solid #1a3a5a; width: 40%; padding: 30px; border-radius: 12px; text-align: center; }
+        .item-ajuda { background: rgba(255, 255, 255, 0.03); border: 1px solid #1a3a5a; margin-bottom: 10px; padding: 15px; color: white; text-align: left; cursor: pointer; font-weight: normal; font-size: 1.1vw; }
+        #visualizador-tecnico { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1100; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        #instrucao-clique { background: #ffcc00; color: #000; padding: 5px 15px; font-weight: bold; border-radius: 4px; margin-bottom: 15px; text-transform: uppercase; font-size: 1vw; animation: blink 1.5s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        /* iniciar aqui */
+        /* Transforma o botão Fechar do Modal de Ajuda em pílula */
+.modal-ajuda button {
+    border-radius: 50px !important;
+    padding: 12px 30px !important;
+    border: none !important;
+    cursor: pointer !important;
+    background-color: yellow !important;
+    color: black !important;
+}
+
+/* Transforma o botão Voltar do Visualizador Técnico em pílula */
+#visualizador-tecnico button {
+    border-radius: 50px !important;
+    padding: 10px 30px !important;
+    border: none !important;
+    cursor: pointer !important;
+}
     </style>
 </head>
 <body>
+
+    <div id="splash-screen">
+        <div class="moldura-neon">
+            <h1 class="splash-titulo">LABORATÓRIO SMT PRO</h1>
+            <h2 class="splash-subtitulo">INTERRUPTOR SIMPLES<br>(PARA 1 LÂMPADA)</h2>
+            <p class="splash-info">CIRCUITO MONOFÁSICO - 127V</p>
+            <p class="splash-footer">© Desenvolvido por Ivan Santos - ConectaeadPLUS - 2026</p>
+            <button class="btn-iniciar" onclick="document.getElementById('splash-screen').style.display='none'">CLIQUE PARA INICIAR O LABORATÓRIO</button>
+        </div>
+    </div>
+
+    <h1 id="titulo-projeto">LABORATÓRIO SMT PRO</h1>
+
+    <div id="linha-status">
+        <span id="label-status" class="texto-status">SISTEMA PRONTO</span>
+    </div>
+
+    <main id="quadro-simulacao">
+        <img src="ambiente.jpg" class="camada">
+
+        <div id="balao-fase-rede" class="balao-info oculto" style="top: 93%; left: 40%;">💡
+            <div class="texto-balao">A fase pode ser de qualquer cor <span style="color:red;">(Item 6.1.5.3.4 da NBR-5410)</span></div>
+        </div>
+        <div id="balao-neutro-rede" class="balao-info oculto" style="top: 93%; left: 45%;">💡
+            <div class="texto-balao">A seção mínima dos fios do circuito de iluminação é 1,5mm2 <span style="color:red;">(Item 6.2.6.1.1 da NBR-5410)</span></div>
+        </div>
+        <div id="balao-fase-2" class="balao-info oculto" style="top: 93%; left: 50%;">💡
+            <div class="texto-balao">O interruptor deve seccionar o condutor fase <span style="color:red;">(Item 6.3.7.2.1 da NBR-5410)</span></div>
+        </div>
+        <div id="balao-retorno" class="balao-info oculto" style="top: 93%; left: 55%;">💡
+            <div class="texto-balao">O retorno, também, pode ser de qualquer cor <span style="color:red;">(Continuidade da fase NBR-5410)</span></div>
+        </div>
+        <div id="balao-conector" class="balao-info oculto" style="top: 93%; left: 60%;">💡
+            <div class="texto-balao">Conectores de emenda garantem conexões firmes e energia sem interrupção</div>
+        </div>
+        <div id="balao-final" class="balao-info oculto" style="top: 93%; left: 65%;">💡
+            <div class="texto-balao"><span style="color:red;">LÂMPADA</span> --> Recebe Neutro e Retorno.<br><span style="color:red;">INTERRUPTOR</span> --> Recebe Fase e Retorno</div>
+        </div>
+        <div id="balao-neutro-norma" class="balao-info oculto" style="top: 93%; left: 70%;">💡
+            <div class="texto-balao">O fio neutro deve ser de cor azul-claro <span style="color:red;">(Item 6.1.5.3.1 da NBR-5410)</span></div>
+        </div>
+
+        <img id="comp-dg" src="al_dg_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dg_off.png', 'al_dg_on.png')">
+        <img id="comp-dr" src="al_dr_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dr_off.png', 'al_dr_on.png')">
+        <img id="comp-int" src="tec_int_off.png" data-state="off" class="tecla-interativa" onclick="acionarPulsador(this, 'tec_int_off.png', 'tec_int_on.png')">
+
+        <img id="con-fase" src="con_derivacao.png" class="oculto">
+        <img id="con-neutro" src="con_derivacao.png" class="oculto">
+
+        <img id="img-fase-rede" class="camada oculto">
+        <img id="img-neutro-rede" class="camada oculto">
+        <img id="img-fase-circuito" class="camada oculto">
+        <img id="img-retorno" class="camada oculto">
+        <img id="img-neutro-circuito" class="camada oculto">
+
+        <div id="placa-concluido" class="oculto">CONCLUÍDO</div>
+
+        <div id="painel-dispositivos" class="oculto">
+            <h3>Posição dos Dispositivos</h3>
+            <div class="lista-status">
+                <div class="linha-dispositivo"><span>DG</span><span id="txt-dg">[ OFF ] ❌</span></div>
+                <div class="linha-dispositivo"><span>DR</span><span id="txt-dr">[ OFF ] ❌</span></div>
+                <div class="linha-dispositivo"><span>INT.</span><span id="txt-int">[ OFF ] ❌</span></div>
+            </div>
+        </div>
+
+        <div id="interacao-container"></div>
+        <button id="btn-ajuda" onclick="abrirAjuda()">AJUDA</button>
+        <button id="btn-reiniciar" onclick="location.reload()">REINICIAR</button>
+
+        <div id="overlay-ajuda" class="oculto">
+            <div class="modal-ajuda">
+                <h2 style="color:#ffcc00; margin-bottom:20px;">Ajuda Técnica</h2>
+                <div class="item-ajuda" onclick="mostrarImagemTecnica('ligaint.png')">1. Ligação do interruptor pulsador</div>
+                <div class="item-ajuda" onclick="mostrarImagemTecnica('ligcamp.png')">2. Ligação da campainha</div>
+                <div class="item-ajuda" onclick="mostrarImagemTecnica('inst_con_der.png')">3. Conexões e emendas</div>
+                <div class="item-ajuda" onclick="abrirAnimacaoConector()">4. Instalação do conector de derivação</div>
+                <div class="item-ajuda" onclick="mostrarImagemTecnica('listamatcp.png')">5. Lista de material</div>
+                <button onclick="fecharAjuda()" style="margin-top:20px; padding:20px 30px; cursor:pointer;">Fechar</button>
+            </div>
+        </div>
+
+        <div id="visualizador-tecnico" class="oculto">
+            <div id="instrucao-clique" class="oculto">CLIQUE NO CONECTOR PARA INSTALAÇÃO</div>
+            <img id="img-tecnica-exibida" src="" style="max-width:90%; max-height:80%;">
+            <button onclick="voltarParaLista()" style="margin-top:20px; background:#ffcc00; padding:10px 30px; font-weight:bold; cursor:pointer;">VOLTAR</button>
+        </div>
+    </main>
+
+    <audio id="audio-int" src="int.mp3"></audio>
+    <audio id="audio-disj" src="disj.mp3"></audio>
+    <audio id="audio-conexao" src="conexao.mp3"></audio>
+    <audio id="audio-campainha" src="campainha.mp3"></audio>
+
     <script>
-        // Mantenha suas variáveis originais
-        const roteiro = [ /* ... */ ];
+        const roteiro = [
+            { nome: "Fase do Circuito - Clique nos pontos indicados", pasta: "FASE_REDE", total: 64, imgId: "img-fase-rede", cor: "fase", origem: { x: 27, y: 38.5 }, destino: { x: 98.5, y: 17.5 } },
+            { nome: "Neutro do Circuito - Clique nos pontos indicados", pasta: "NEUTRO_REDE", total: 76, imgId: "img-neutro-rede", cor: "neutro", origem: { x: 44.3, y: 35.2 }, destino: { x: 98.5, y: 14 } },
+            { nome: "Fase do Interruptor Pulsador - Clique nos pontos indicados", pasta: "FASE_2", total: 25, imgId: "img-fase-circuito", cor: "fase", origem: { x: 75, y: 19 }, destino: { x: 73.5, y: 71.0 } },
+            { nome: "Retorno da Campainha - Clique nos pontos indicados", pasta: "RETORNO", total: 45, imgId: "img-retorno", cor: "retorno", origem: { x: 73, y: 76.5 }, destino: { x: 88.5, y: 59.5 } },
+            { nome: "Neutro da Campainha - Clique nos pontos indicados", pasta: "NEUTRO_2", total: 15, imgId: "img-neutro-circuito", cor: "neutro", origem: { x: 92.5, y: 15.8 }, destino: { x: 90.2, y: 59.5 } }
+        ];
+
         let etapaAtual = 0;
-        
-        // --- FUNÇÃO DE VERIFICAÇÃO CENTRALIZADA (COPIE ESTA) ---
-        function verificarEstadoSistema() {
-            const dgOn = document.getElementById('comp-dg').getAttribute('data-state') === 'on';
-            const drOn = document.getElementById('comp-dr').getAttribute('data-state') === 'on';
-            const intOn = document.getElementById('comp-int').getAttribute('data-state') === 'on';
-            let lampada = document.getElementById('lampada-sobreposta');
-            
-            // Só liga se terminou a fiação E os 3 estão ON
-            if (etapaAtual >= roteiro.length && dgOn && drOn && intOn) {
-                if (!lampada) {
-                    lampada = document.createElement('img');
-                    lampada.id = 'lampada-sobreposta';
-                    lampada.src = 'lamp_on.png';
-                    lampada.className = 'estilo-lampada-acesa';
-                    document.getElementById('quadro-simulacao').appendChild(lampada);
-                }
-                lampada.classList.remove('oculto');
-            } else {
-                if (lampada) lampada.classList.add('oculto');
-            }
+        const cacheImagens = {};
+
+        function atualizarQuadroPosicao() {
+            const dispositivos = [
+                { idComp: 'comp-dg', idTxt: 'txt-dg' },
+                { idComp: 'comp-dr', idTxt: 'txt-dr' },
+                { idComp: 'comp-int', idTxt: 'txt-int' }
+            ];
+            dispositivos.forEach(disp => {
+                const el = document.getElementById(disp.idComp);
+                const isON = el.getAttribute('data-state') === 'on';
+                document.getElementById(disp.idTxt).innerHTML = isON ? `<span class="status-on">[ ON ] ✅</span>` : `<span class="status-off">[ OFF ] ❌</span>`;
+            });
         }
 
-        // --- ATUALIZE SUAS FUNÇÕES ORIGINAIS ADICIONANDO A CHAMADA ---
         function toggleComp(el, off, on) {
             tocarSom('audio-disj');
             const state = el.getAttribute('data-state') === 'off' ? 'on' : 'off';
             el.src = state === 'on' ? on : off;
             el.setAttribute('data-state', state);
             atualizarQuadroPosicao();
-            verificarEstadoSistema(); // Adicionado aqui
         }
+
+        let estaPulsando = false; 
 
         function acionarPulsador(el, off, on) {
+            if (estaPulsando) return;
+            estaPulsando = true;
             tocarSom('audio-int');
-            const isOff = el.getAttribute('data-state') === 'off';
-            el.src = isOff ? on : off;
-            el.setAttribute('data-state', isOff ? 'on' : 'off');
+            el.src = on; 
+            el.setAttribute('data-state', 'on');
             atualizarQuadroPosicao();
-            verificarEstadoSistema(); // Adicionado aqui
+            
+            const dgOn = document.getElementById('comp-dg').getAttribute('data-state') === 'on';
+            const drOn = document.getElementById('comp-dr').getAttribute('data-state') === 'on';
+            
+            if (etapaAtual >= roteiro.length && dgOn && drOn) { tocarSom('audio-campainha'); }
+            
+            setTimeout(() => { 
+                el.src = off; 
+                el.setAttribute('data-state', 'off');
+                atualizarQuadroPosicao();
+                estaPulsando = false; 
+
+                if (etapaAtual >= roteiro.length && dgOn && drOn) { 
+                    setTimeout(() => {
+                        const placa = document.getElementById('placa-concluido');
+                        if (placa.classList.contains('oculto')) {
+                            placa.classList.remove('oculto');
+                            placa.addEventListener('animationend', function handler() {
+                                placa.classList.add('oculto');
+                                placa.removeEventListener('animationend', handler);
+                            });
+                        }
+                    }, 500);
+                }
+            }, 300); 
         }
 
-        // ... (mantenha o resto das suas funções originais exatamente como estavam)
+        function abrirAnimacaoConector() {
+            const img = document.getElementById('img-tecnica-exibida');
+            const legenda = document.getElementById('instrucao-clique');
+            img.src = 'conectder_on.png'; 
+            legenda.classList.remove('oculto');
+            img.onclick = function() {
+                this.src = this.src.includes('conectder_on.png') ? 'conectder_off.png' : 'conectder_on.png';
+            };
+            document.getElementById('visualizador-tecnico').classList.remove('oculto');
+        }
+
+        function mostrarImagemTecnica(src) {
+            const img = document.getElementById('img-tecnica-exibida');
+            document.getElementById('instrucao-clique').classList.add('oculto');
+            img.src = src;
+            img.onclick = null;
+            document.getElementById('visualizador-tecnico').classList.remove('oculto');
+        }
+
+        function voltarParaLista() {
+            document.getElementById('visualizador-tecnico').classList.add('oculto');
+            document.getElementById('instrucao-clique').classList.add('oculto');
+        }
+
+        function proximoPasso() {
+            if (etapaAtual >= roteiro.length) {
+                document.getElementById('label-status').innerText = "FIAÇÃO CONCLUÍDA! LIGUE O DG, O DR E CLIQUE NO INTERRUPTOR PARA TESTAR A CAMPAINHA.";
+                document.getElementById('painel-dispositivos').classList.remove('oculto');
+                atualizarQuadroPosicao();
+                return;
+            }
+            const dados = roteiro[etapaAtual];
+            document.getElementById('label-status').innerText = `CONECTE: ${dados.nome.toUpperCase()}`;
+            if (dados.pasta === "FASE_2") document.getElementById('con-fase').classList.remove('oculto');
+            if (dados.pasta === "NEUTRO_2") document.getElementById('con-neutro').classList.remove('oculto');
+            preCarregarCabo(dados);
+            criarPonto(dados.origem, dados.cor, function() {
+                this.classList.add('sucesso');
+                criarPonto(dados.destino, dados.cor, function() {
+                    document.getElementById('interacao-container').innerHTML = "";
+                    executarAnimacaoFluida(dados);
+                });
+            });
+        }
+
+        function preCarregarCabo(dados) {
+            cacheImagens[dados.pasta] = [];
+            for (let i = 1; i <= dados.total; i++) {
+                const img = new Image();
+                img.src = `${dados.pasta}/quadro${String(i).padStart(4, '0')}.png`;
+                cacheImagens[dados.pasta].push(img);
+            }
+        }
+
+        function criarPonto(pos, corClasse, cliqueFn) {
+            const ponto = document.createElement('div');
+            ponto.className = `ponto ${corClasse}`;
+            ponto.style.left = pos.x + "%"; ponto.style.top = pos.y + "%";
+            ponto.onclick = (e) => { e.stopPropagation(); cliqueFn.call(ponto); };
+            document.getElementById('interacao-container').appendChild(ponto);
+        }
+
+        function executarAnimacaoFluida(dados) {
+            const imgElemento = document.getElementById(dados.imgId);
+            imgElemento.classList.remove('oculto');
+            let frameIdx = 0; const frames = cacheImagens[dados.pasta];
+            let contador = 0;
+            function animar() {
+                if (frameIdx < frames.length) {
+                    if (contador % 3 === 0) { imgElemento.src = frames[frameIdx].src; frameIdx++; }
+                    contador++; requestAnimationFrame(animar);
+                } else { 
+                    tocarSom('audio-conexao');
+                    if (dados.pasta === "FASE_REDE") document.getElementById('balao-fase-rede').classList.remove('oculto');
+                    else if (dados.pasta === "NEUTRO_REDE") document.getElementById('balao-neutro-rede').classList.remove('oculto');
+                    else if (dados.pasta === "FASE_2") document.getElementById('balao-fase-2').classList.remove('oculto');
+                    else if (dados.pasta === "RETORNO") { document.getElementById('balao-retorno').classList.remove('oculto'); document.getElementById('balao-conector').classList.remove('oculto'); }
+                    else if (dados.pasta === "NEUTRO_2") {
+                        document.getElementById('balao-final').classList.remove('oculto');
+                        document.getElementById('balao-neutro-norma').classList.remove('oculto');
+                    }
+                    etapaAtual++; 
+                    setTimeout(proximoPasso, 400); 
+                }
+            }
+            requestAnimationFrame(animar);
+        }
+
+        function abrirAjuda() { document.getElementById('overlay-ajuda').classList.remove('oculto'); }
+        function fecharAjuda() { document.getElementById('overlay-ajuda').classList.add('oculto'); }
+        function tocarSom(id) { const s = document.getElementById(id); if(s) { s.currentTime=0; s.play().catch(()=>{}); } }
+
+        window.onload = proximoPasso;
     </script>
 </body>
-</html>
+</html> 
