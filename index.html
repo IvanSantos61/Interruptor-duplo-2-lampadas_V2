@@ -231,37 +231,41 @@
 
         let estaPulsando = false; 
 
+/* --- INÍCIO DA FUNÇÃO AQUI --- */
 function acionarPulsador(el, off, on) {
+    if (estaPulsando) return;
+    estaPulsando = true;
     tocarSom('audio-int');
-    
-    // Alterna o estado: se está 'off' vai para 'on', se está 'on' vai para 'off'
-    const newState = el.getAttribute('data-state') === 'off' ? 'on' : 'off';
-    
-    el.src = (newState === 'on') ? on : off;
-    el.setAttribute('data-state', newState);
-    
+    el.src = on; 
+    el.setAttribute('data-state', 'on');
     atualizarQuadroPosicao();
     
-    // Verifica se deve tocar a campainha apenas se o interruptor foi ligado
     const dgOn = document.getElementById('comp-dg').getAttribute('data-state') === 'on';
     const drOn = document.getElementById('comp-dr').getAttribute('data-state') === 'on';
     
-    if (newState === 'on' && etapaAtual >= roteiro.length && dgOn && drOn) {
-        tocarSom('audio-campainha');
-        
-        // Mantém a lógica de exibir a placa de concluído
-        setTimeout(() => {
-            const placa = document.getElementById('placa-concluido');
-            if (placa.classList.contains('oculto')) {
-                placa.classList.remove('oculto');
-                placa.addEventListener('animationend', function handler() {
-                    placa.classList.add('oculto');
-                    placa.removeEventListener('animationend', handler);
-                });
-            }
-        }, 500);
-    }
+    if (etapaAtual >= roteiro.length && dgOn && drOn) { tocarSom('audio-campainha'); }
+    
+    setTimeout(() => { 
+        el.src = off; 
+        el.setAttribute('data-state', 'off');
+        atualizarQuadroPosicao();
+        estaPulsando = false; 
+
+        if (etapaAtual >= roteiro.length && dgOn && drOn) { 
+            setTimeout(() => {
+                const placa = document.getElementById('placa-concluido');
+                if (placa.classList.contains('oculto')) {
+                    placa.classList.remove('oculto');
+                    placa.addEventListener('animationend', function handler() {
+                        placa.classList.add('oculto');
+                        placa.removeEventListener('animationend', handler);
+                    });
+                }
+            }, 500);
+        }
+    }, 300); 
 }
+/* --- FIM DA FUNÇÃO AQUI --- */
 
         function abrirAnimacaoConector() {
             const img = document.getElementById('img-tecnica-exibida');
