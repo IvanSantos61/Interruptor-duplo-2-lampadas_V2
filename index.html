@@ -262,6 +262,25 @@
         function fecharAjuda() { document.getElementById('overlay-ajuda').classList.add('oculto'); }
         function tocarSom(id) { const s = document.getElementById(id); if(s) { s.currentTime=0; s.play().catch(()=>{}); } }
         window.onload = proximoPasso;
+        // Renomeia a sua função original para evitar conflitos
+const _toggleCompOriginal = toggleComp;
+
+// Sobrescreve a função original com uma versão protegida
+toggleComp = function(el, off, on) {
+    try {
+        // Executa a sua lógica original
+        _toggleCompOriginal(el, off, on);
+        
+        // Garante que o painel de dispositivos não bloqueie o clique
+        const painel = document.getElementById('painel-dispositivos');
+        if (painel) painel.style.pointerEvents = 'none';
+        
+    } catch (e) {
+        console.error("Erro detectado na função de clique:", e);
+        // Tenta recuperar o estado básico se algo falhar
+        atualizarQuadroPosicao(); 
+    }
+};
     </script>
 </body>
 </html>
