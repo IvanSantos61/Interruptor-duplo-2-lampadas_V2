@@ -29,41 +29,13 @@
         #comp-dr { width: 5%; top: 29%; left: 23.6%; }
         #comp-int { width: 6%; top: 67%; left: 63%; }
 
-        #con-fase, #con-neutro { position: absolute; z-index: 50; width: 5%; transform: translate(-50%, -50%); pointer-events: none; }
-        #con-fase { top: 17.5%; left: 73.5%; }
-        #con-neutro { top: 14.5%; left: 93.5%; }
-
         .oculto { display: none !important; }
-
-        .balao-info { position: absolute; width: 45px; height: 45px; background: #000; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: help; z-index: 900; font-size: 24px; }
-        .texto-balao { visibility: hidden; position: absolute; bottom: 50px; left: 0; width: 300px; background: white; color: black; padding: 12px; border-radius: 8px; font-size: 18px; z-index: 999; text-transform: none; font-weight: normal; white-space: normal; line-height: 1.4; border: 2px solid #00f2ff; }
-        .balao-info:hover .texto-balao { visibility: visible; }
 
         #painel-dispositivos { position: absolute; top: 25%; left: 59%; width: 15%; background: rgba(5, 15, 30, 0.95); border: 2px solid #00f2ff; border-radius: 8px; z-index: 500; }
         #painel-dispositivos h3 { background: #008899; color: white; text-align: center; font-size: 1.1vw; padding: 8px; text-transform: uppercase; border-bottom: 2px solid #00f2ff; }
         .linha-dispositivo { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; margin-bottom: 5px; background: rgba(255, 255, 255, 0.05); border-left: 4px solid #1a3a5a; font-weight: bold; font-size: 1vw; }
         .status-on { color: #00ff00; }
         .status-off { color: #ff3333; }
-
-        .ponto { position: absolute; width: 1.8%; aspect-ratio: 1/1; border-radius: 50%; border: 2px solid #fff; cursor: pointer; z-index: 100; transform: translate(-50%, -50%); }
-        .fase { background-color: #ff0000; box-shadow: 0 0 15px #ff0000; }
-        .neutro { background-color: #0066ff; box-shadow: 0 0 15px #0066ff; }
-        .retorno { background-color: #ffff00; box-shadow: 0 0 15px #ffff00; }
-        .sucesso { background-color: #00ff00 !important; box-shadow: 0 0 20px #00ff00 !important; }
-
-        #placa-concluido { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #001100; border: 3px solid #00ff00; padding: 40px 100px; font-size: 3.5vw; color: #00ff00; z-index: 2000; text-align: center; border-radius: 8px; overflow: hidden; box-shadow: 0 0 30px rgba(0, 255, 0, 0.4); text-transform: uppercase; font-weight: bold; letter-spacing: 2px; }
-        #placa-concluido::after { content: ''; position: absolute; top: -100%; left: 0; width: 100%; height: 2px; background: #00ff00; box-shadow: 0 0 15px #00ff00; animation: scanner 2s linear 2; }
-        @keyframes scanner { 0% { top: 0%; } 100% { top: 100%; } }
-
-        #btn-ajuda { position: absolute; bottom: 10.5%; left: 15%; background: linear-gradient(180deg, #008899, #004455); color: white; border: 1px solid #00f2ff; padding: 0.6% 3.5%; font-size: 1.1vw; font-weight: bold; border-radius: 50px; cursor: pointer; z-index: 200; }
-        #btn-reiniciar { position: absolute; bottom: 3%; left: 13.5%; background: linear-gradient(180deg, #cc0000, #880000); color: white; border: 1px solid #500; padding: 0.6% 3.5%; font-size: 1.1vw; font-weight: bold; border-radius: 50px; cursor: pointer; z-index: 200; }
-
-        #overlay-ajuda { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; }
-        .modal-ajuda { background: #0a1015; border: 2px solid #1a3a5a; width: 40%; padding: 30px; border-radius: 12px; text-align: center; }
-        .item-ajuda { background: rgba(255, 255, 255, 0.03); border: 1px solid #1a3a5a; margin-bottom: 10px; padding: 15px; color: white; text-align: left; cursor: pointer; font-weight: normal; font-size: 1.1vw; }
-        
-        .modal-ajuda button { border-radius: 50px !important; padding: 12px 30px !important; border: none !important; cursor: pointer !important; background-color: yellow !important; color: black !important; }
-        #visualizador-tecnico button { border-radius: 50px !important; padding: 10px 30px !important; border: none !important; cursor: pointer !important; }
         
         .estilo-lampada-acesa { position: absolute; top: 50px; left: 50px; width: 100px; z-index: 100; pointer-events: none; }
     </style>
@@ -74,9 +46,7 @@
         <div class="moldura-neon">
             <h1 class="splash-titulo">LABORATÓRIO SMT PRO</h1>
             <h2 class="splash-subtitulo">INTERRUPTOR SIMPLES<br>(PARA 1 LÂMPADA)</h2>
-            <p class="splash-info">CIRCUITO MONOFÁSICO - 127V</p>
-            <p class="splash-footer">© Desenvolvido por Ivan Santos - ConectaeadPLUS - 2026</p>
-            <button class="btn-iniciar" onclick="document.getElementById('splash-screen').style.display='none'">CLIQUE PARA INICIAR O LABORATÓRIO</button>
+            <button class="btn-iniciar" onclick="document.getElementById('splash-screen').style.display='none'">CLIQUE PARA INICIAR</button>
         </div>
     </div>
 
@@ -88,29 +58,25 @@
         <img id="comp-dg" src="al_dg_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dg_off.png', 'al_dg_on.png')">
         <img id="comp-dr" src="al_dr_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dr_off.png', 'al_dr_on.png')">
         <img id="comp-int" src="tec_int_off.png" data-state="off" class="tecla-interativa" onclick="acionarPulsador(this, 'tec_int_off.png', 'tec_int_on.png')">
-        <div id="placa-concluido" class="oculto">CONCLUÍDO</div>
-        <div id="painel-dispositivos" class="oculto">
-            <h3>Posição dos Dispositivos</h3>
-            <div class="lista-status">
-                <div class="linha-dispositivo"><span>DG</span><span id="txt-dg">[ OFF ] ❌</span></div>
-                <div class="linha-dispositivo"><span>DR</span><span id="txt-dr">[ OFF ] ❌</span></div>
-                <div class="linha-dispositivo"><span>INT.</span><span id="txt-int">[ OFF ] ❌</span></div>
-            </div>
+        
+        <div id="painel-dispositivos">
+            <h3>Dispositivos</h3>
+            <div class="linha-dispositivo"><span>DG</span><span id="txt-dg">[ OFF ] ❌</span></div>
+            <div class="linha-dispositivo"><span>DR</span><span id="txt-dr">[ OFF ] ❌</span></div>
+            <div class="linha-dispositivo"><span>INT.</span><span id="txt-int">[ OFF ] ❌</span></div>
         </div>
-        <div id="interacao-container"></div>
     </main>
 
     <script>
-        const roteiro = [ /* Roteiro mantido igual */ ];
-        let etapaAtual = 0;
-        const cacheImagens = {};
+        const roteiro = []; // Preencha com seu roteiro se necessário
+        let etapaAtual = 99; // Definido como 99 para simular "fiação finalizada" para teste imediato
 
         function atualizarQuadroPosicao() {
-            const dispositivos = [{ idComp: 'comp-dg', idTxt: 'txt-dg' }, { idComp: 'comp-dr', idTxt: 'txt-dr' }, { idComp: 'comp-int', idTxt: 'txt-int' }];
-            dispositivos.forEach(disp => {
-                const el = document.getElementById(disp.idComp);
+            const disp = ['comp-dg', 'comp-dr', 'comp-int'];
+            disp.forEach(id => {
+                const el = document.getElementById(id);
                 const isON = el.getAttribute('data-state') === 'on';
-                document.getElementById(disp.idTxt).innerHTML = isON ? `<span class="status-on">[ ON ] ✅</span>` : `<span class="status-off">[ OFF ] ❌</span>`;
+                document.getElementById('txt-' + id.split('-')[1]).innerHTML = isON ? '<span class="status-on">[ ON ] ✅</span>' : '<span class="status-off">[ OFF ] ❌</span>';
             });
         }
 
@@ -118,8 +84,10 @@
             const dgOn = document.getElementById('comp-dg').getAttribute('data-state') === 'on';
             const drOn = document.getElementById('comp-dr').getAttribute('data-state') === 'on';
             const intOn = document.getElementById('comp-int').getAttribute('data-state') === 'on';
+            
             let lampada = document.getElementById('lampada-sobreposta');
             
+            // Lógica: Todos precisam estar ligados para a lâmpada existir/aparecer
             if (etapaAtual >= roteiro.length && dgOn && drOn && intOn) {
                 if (!lampada) {
                     lampada = document.createElement('img');
@@ -135,7 +103,6 @@
         }
 
         function toggleComp(el, off, on) {
-            tocarSom('audio-disj');
             const state = el.getAttribute('data-state') === 'off' ? 'on' : 'off';
             el.src = state === 'on' ? on : off;
             el.setAttribute('data-state', state);
@@ -144,14 +111,12 @@
         }
 
         function acionarPulsador(el, off, on) {
-            tocarSom('audio-int');
             const isOff = el.getAttribute('data-state') === 'off';
             el.src = isOff ? on : off;
             el.setAttribute('data-state', isOff ? 'on' : 'off');
             atualizarQuadroPosicao();
             verificarEstadoSistema();
         }
-        // ... (restante das suas funções originais permanecem aqui)
     </script>
 </body>
 </html>
