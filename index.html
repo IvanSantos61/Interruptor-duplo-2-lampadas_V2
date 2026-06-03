@@ -126,29 +126,54 @@
         let etapaAtual = 0;
         const cacheImagens = {};
         function atualizarQuadroPosicao() {
-            const dispositivos = [
-                { idComp: 'comp-dg', idTxt: 'txt-dg' },
-                { idComp: 'comp-dr', idTxt: 'txt-dr' },
-                { idComp: 'comp-int', idTxt: 'txt-int' }
-            ];
-            dispositivos.forEach(disp => {
-                const el = document.getElementById(disp.idComp);
-                const isON = el.getAttribute('data-state') === 'on';
-                document.getElementById(disp.idTxt).innerHTML = isON ? `<span class="status-on">[ ON ] ✅</span>` : `<span class="status-off">[ OFF ] ❌</span>`;
-            });
-            const dg = document.getElementById('comp-dg').getAttribute('data-state');
-            const dr = document.getElementById('comp-dr').getAttribute('data-state');
-            const int = document.getElementById('comp-int').getAttribute('data-state');
-            const lamp = document.getElementById('img-lampada');
-            if (dg === 'on' && dr === 'on' && int === 'on') { lamp.classList.remove('oculto'); }
-            else { lamp.classList.add('oculto'); }
+            try {
+                const dispositivos = [
+                    { idComp: 'comp-dg', idTxt: 'txt-dg' },
+                    { idComp: 'comp-dr', idTxt: 'txt-dr' },
+                    { idComp: 'comp-int', idTxt: 'txt-int' }
+                ];
+                
+                dispositivos.forEach(disp => {
+                    const el = document.getElementById(disp.idComp);
+                    const txt = document.getElementById(disp.idTxt);
+                    if (el && txt) {
+                        const isON = el.getAttribute('data-state') === 'on';
+                        txt.innerHTML = isON ? '<span class="status-on">[ ON ] ✅</span>' : '<span class="status-off">[ OFF ] ❌</span>';
+                    }
+                });
+
+                const dg = document.getElementById('comp-dg');
+                const dr = document.getElementById('comp-dr');
+                const int = document.getElementById('comp-int');
+                const lamp = document.getElementById('img-lampada');
+
+                if (dg && dr && int && lamp) {
+                    if (dg.getAttribute('data-state') === 'on' && 
+                        dr.getAttribute('data-state') === 'on' && 
+                        int.getAttribute('data-state') === 'on') {
+                        lamp.classList.remove('oculto');
+                    } else {
+                        lamp.classList.add('oculto');
+                    }
+                }
+            } catch (e) {
+                console.error("Erro na atualização do quadro:", e);
+            }
         }
+
         function toggleComp(el, off, on) {
+            if (!el) return;
+            
             tocarSom('audio-disj');
-            const state = el.getAttribute('data-state') === 'off' ? 'on' : 'off';
-            el.src = state === 'on' ? on : off;
-            el.setAttribute('data-state', state);
-            atualizarQuadroPosicao();
+            
+            const currentState = el.getAttribute('data-state');
+            const newState = (currentState === 'off') ? 'on' : 'off';
+            
+            el.src = (newState === 'on') ? on : off;
+            el.setAttribute('data-state', newState);
+            
+            // Pequeno atraso para garantir que o DOM processe o atributo antes de atualizar a UI
+            setTimeout(atualizarQuadroPosicao, 50);
         }
         function abrirAnimacaoConector() {
             const img = document.getElementById('img-tecnica-exibida');
