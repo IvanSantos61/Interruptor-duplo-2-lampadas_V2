@@ -124,6 +124,7 @@
         <img id="img-fase-circuito" class="camada oculto">
         <img id="img-retorno" class="camada oculto">
         <img id="img-neutro-circuito" class="camada oculto">
+        <img id="lamp-on" src="lamp_on.png" class="camada oculto">
 
         <div id="placa-concluido" class="oculto">CONCLUÍDO</div>
 
@@ -181,11 +182,21 @@
                 { idComp: 'comp-dr', idTxt: 'txt-dr' },
                 { idComp: 'comp-int', idTxt: 'txt-int' }
             ];
+            let todosLigados = true;
             dispositivos.forEach(disp => {
                 const el = document.getElementById(disp.idComp);
                 const isON = el.getAttribute('data-state') === 'on';
+                if (!isON) todosLigados = false;
                 document.getElementById(disp.idTxt).innerHTML = isON ? `<span class="status-on">[ ON ] ✅</span>` : `<span class="status-off">[ OFF ] ❌</span>`;
             });
+
+            const fiacaoConcluida = etapaAtual >= roteiro.length;
+            const lampada = document.getElementById('lamp-on');
+            if (fiacaoConcluida && todosLigados) {
+                lampada.classList.remove('oculto');
+            } else {
+                lampada.classList.add('oculto');
+            }
         }
 
         function toggleComp(el, off, on) {
