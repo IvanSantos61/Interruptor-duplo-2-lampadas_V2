@@ -92,27 +92,13 @@
     <main id="quadro-simulacao">
         <img src="ambiente.jpg" class="camada">
 
-        <div id="balao-fase-rede" class="balao-info oculto" style="top: 93%; left: 40%;">💡
-            <div class="texto-balao">A fase pode ser de qualquer cor <span style="color:red;">(Item 6.1.5.3.4 da NBR-5410)</span></div>
-        </div>
-        <div id="balao-neutro-rede" class="balao-info oculto" style="top: 93%; left: 45%;">💡
-            <div class="texto-balao">A seção mínima dos fios do circuito de iluminação é 1,5mm2 <span style="color:red;">(Item 6.2.6.1.1 da NBR-5410)</span></div>
-        </div>
-        <div id="balao-fase-2" class="balao-info oculto" style="top: 93%; left: 50%;">💡
-            <div class="texto-balao">O interruptor deve seccionar o condutor fase <span style="color:red;">(Item 6.3.7.2.1 da NBR-5410)</span></div>
-        </div>
-        <div id="balao-retorno" class="balao-info oculto" style="top: 93%; left: 55%;">💡
-            <div class="texto-balao">O retorno, também, pode ser de qualquer cor <span style="color:red;">(Continuidade da fase NBR-5410)</span></div>
-        </div>
-        <div id="balao-conector" class="balao-info oculto" style="top: 93%; left: 60%;">💡
-            <div class="texto-balao">Conectores de emenda garantem conexões firmes e energia sem interrupção</div>
-        </div>
-        <div id="balao-final" class="balao-info oculto" style="top: 93%; left: 65%;">💡
-            <div class="texto-balao"><span style="color:red;">LÂMPADA</span> --> Recebe Neutro e Retorno.<br><span style="color:red;">INTERRUPTOR</span> --> Recebe Fase e Retorno</div>
-        </div>
-        <div id="balao-neutro-norma" class="balao-info oculto" style="top: 93%; left: 70%;">💡
-            <div class="texto-balao">O fio neutro deve ser de cor azul-claro <span style="color:red;">(Item 6.1.5.3.1 da NBR-5410)</span></div>
-        </div>
+        <div id="balao-fase-rede" class="balao-info oculto" style="top: 93%; left: 40%;">💡<div class="texto-balao">A fase pode ser de qualquer cor <span style="color:red;">(Item 6.1.5.3.4 da NBR-5410)</span></div></div>
+        <div id="balao-neutro-rede" class="balao-info oculto" style="top: 93%; left: 45%;">💡<div class="texto-balao">A seção mínima dos fios do circuito de iluminação é 1,5mm2 <span style="color:red;">(Item 6.2.6.1.1 da NBR-5410)</span></div></div>
+        <div id="balao-fase-2" class="balao-info oculto" style="top: 93%; left: 50%;">💡<div class="texto-balao">O interruptor deve seccionar o condutor fase <span style="color:red;">(Item 6.3.7.2.1 da NBR-5410)</span></div></div>
+        <div id="balao-retorno" class="balao-info oculto" style="top: 93%; left: 55%;">💡<div class="texto-balao">O retorno, também, pode ser de qualquer cor <span style="color:red;">(Continuidade da fase NBR-5410)</span></div></div>
+        <div id="balao-conector" class="balao-info oculto" style="top: 93%; left: 60%;">💡<div class="texto-balao">Conectores de emenda garantem conexões firmes e energia sem interrupção</div></div>
+        <div id="balao-final" class="balao-info oculto" style="top: 93%; left: 65%;">💡<div class="texto-balao"><span style="color:red;">LÂMPADA</span> --> Recebe Neutro e Retorno.<br><span style="color:red;">INTERRUPTOR</span> --> Recebe Fase e Retorno</div></div>
+        <div id="balao-neutro-norma" class="balao-info oculto" style="top: 93%; left: 70%;">💡<div class="texto-balao">O fio neutro deve ser de cor azul-claro <span style="color:red;">(Item 6.1.5.3.1 da NBR-5410)</span></div></div>
 
         <img id="comp-dg" src="al_dg_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dg_off.png', 'al_dg_on.png')">
         <img id="comp-dr" src="al_dr_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dr_off.png', 'al_dr_on.png')">
@@ -153,14 +139,14 @@
                 <div class="item-ajuda" onclick="mostrarImagemTecnica('inst_con_der.png')">3. Conexões e emendas</div>
                 <div class="item-ajuda" onclick="abrirAnimacaoConector()">4. Instalação do conector de derivação</div>
                 <div class="item-ajuda" onclick="mostrarImagemTecnica('listamatcp.png')">5. Lista de material</div>
-                <button onclick="fecharAjuda()" style="margin-top:20px; padding:20px 30px; cursor:pointer;">Fechar</button>
+                <button onclick="fecharAjuda()" style="margin-top:20px;">Fechar</button>
             </div>
         </div>
 
         <div id="visualizador-tecnico" class="oculto">
             <div id="instrucao-clique" class="oculto">CLIQUE NO CONECTOR PARA INSTALAÇÃO</div>
             <img id="img-tecnica-exibida" src="" style="max-width:90%; max-height:80%;">
-            <button onclick="voltarParaLista()" style="margin-top:20px; background:#ffcc00; padding:10px 30px; font-weight:bold; cursor:pointer;">VOLTAR</button>
+            <button onclick="voltarParaLista()" style="margin-top:20px; background:#ffcc00; font-weight:bold;">VOLTAR</button>
         </div>
     </main>
 
@@ -196,21 +182,17 @@
                 document.getElementById(disp.idTxt).innerHTML = isON ? `<span class="status-on">[ ON ] ✅</span>` : `<span class="status-off">[ OFF ] ❌</span>`;
             });
 
-            const fiacaoConcluida = etapaAtual >= roteiro.length;
-            const lampada = document.getElementById('lamp-on');
-            const placa = document.getElementById('placa-concluido');
-
-            if (fiacaoConcluida && todosLigados) {
+            if (etapaAtual >= roteiro.length && todosLigados) {
+                const lampada = document.getElementById('lamp-on');
                 if (lampada.classList.contains('oculto')) {
                     lampada.classList.remove('oculto');
                     setTimeout(() => {
-                        placa.classList.remove('oculto');
-                        setTimeout(() => { placa.classList.add('oculto'); }, 4000);
-                    }, 1500);
+                        document.getElementById('placa-concluido').classList.remove('oculto');
+                    }, 1000);
                 }
             } else {
-                lampada.classList.add('oculto');
-                placa.classList.add('oculto');
+                document.getElementById('lamp-on').classList.add('oculto');
+                document.getElementById('placa-concluido').classList.add('oculto');
             }
         }
 
@@ -222,39 +204,14 @@
             atualizarQuadroPosicao();
         }
 
-        function abrirAnimacaoConector() {
-            const img = document.getElementById('img-tecnica-exibida');
-            const legenda = document.getElementById('instrucao-clique');
-            img.src = 'conectder_on.png'; 
-            legenda.classList.remove('oculto');
-            img.onclick = function() {
-                this.src = this.src.includes('conectder_on.png') ? 'conectder_off.png' : 'conectder_on.png';
-            };
-            document.getElementById('visualizador-tecnico').classList.remove('oculto');
-        }
-
-        function mostrarImagemTecnica(src) {
-            const img = document.getElementById('img-tecnica-exibida');
-            document.getElementById('instrucao-clique').classList.add('oculto');
-            img.src = src;
-            img.onclick = null;
-            document.getElementById('visualizador-tecnico').classList.remove('oculto');
-        }
-
-        function voltarParaLista() {
-            document.getElementById('visualizador-tecnico').classList.add('oculto');
-            document.getElementById('instrucao-clique').classList.add('oculto');
-        }
-
         function proximoPasso() {
             if (etapaAtual >= roteiro.length) {
-                document.getElementById('label-status').innerText = "FIAÇÃO CONCLUÍDA! LIGUE OS DISPOSITIVOS PARA TESTAR.";
+                document.getElementById('label-status').innerText = "FIAÇÃO CONCLUÍDA! LIGUE OS DISPOSITIVOS.";
                 document.getElementById('painel-dispositivos').classList.remove('oculto');
-                atualizarQuadroPosicao();
                 return;
             }
             const dados = roteiro[etapaAtual];
-            document.getElementById('label-status').innerText = `CLIQUE NOS PONTOS PARA CONECTAR: ${dados.nome.toUpperCase()}`;
+            document.getElementById('label-status').innerText = `CONECTAR: ${dados.nome.toUpperCase()}`;
             
             if (dados.pasta === "FASE_2") document.getElementById('con-fase').classList.remove('oculto');
             if (dados.pasta === "NEUTRO_2") document.getElementById('con-neutro').classList.remove('oculto');
@@ -270,11 +227,13 @@
         }
 
         function preCarregarCabo(dados) {
-            cacheImagens[dados.pasta] = [];
-            for (let i = 1; i <= dados.total; i++) {
-                const img = new Image();
-                img.src = `${dados.pasta}/quadro${String(i).padStart(4, '0')}.png`;
-                cacheImagens[dados.pasta].push(img);
+            if (!cacheImagens[dados.pasta]) {
+                cacheImagens[dados.pasta] = [];
+                for (let i = 1; i <= dados.total; i++) {
+                    const img = new Image();
+                    img.src = `${dados.pasta}/quadro${String(i).padStart(4, '0')}.png`;
+                    cacheImagens[dados.pasta].push(img);
+                }
             }
         }
 
@@ -289,15 +248,21 @@
         function executarAnimacaoFluida(dados) {
             const imgElemento = document.getElementById(dados.imgId);
             imgElemento.classList.remove('oculto');
-            let frameIdx = 0; const frames = cacheImagens[dados.pasta];
+            let frameIdx = 0; 
+            const frames = cacheImagens[dados.pasta];
             let contador = 0;
+
             function animar() {
                 if (frameIdx < frames.length) {
-                    if (contador % 3 === 0) { imgElemento.src = frames[frameIdx].src; frameIdx++; }
-                    contador++; requestAnimationFrame(animar);
+                    if (contador % 3 === 0) { 
+                        imgElemento.src = frames[frameIdx].src; 
+                        frameIdx++; 
+                    }
+                    contador++; 
+                    requestAnimationFrame(animar);
                 } else { 
                     tocarSom('audio-conexao');
-                    // Ativa balões específicos por etapa
+                    // Gatilhos de balões
                     if (dados.pasta === "FASE_REDE") document.getElementById('balao-fase-rede').classList.remove('oculto');
                     else if (dados.pasta === "NEUTRO_REDE") document.getElementById('balao-neutro-rede').classList.remove('oculto');
                     else if (dados.pasta === "FASE_2") document.getElementById('balao-fase-2').classList.remove('oculto');
@@ -311,9 +276,16 @@
             requestAnimationFrame(animar);
         }
 
+        function mostrarImagemTecnica(src) {
+            const img = document.getElementById('img-tecnica-exibida');
+            img.src = src;
+            document.getElementById('visualizador-tecnico').classList.remove('oculto');
+        }
+        function voltarParaLista() { document.getElementById('visualizador-tecnico').classList.add('oculto'); }
         function abrirAjuda() { document.getElementById('overlay-ajuda').classList.remove('oculto'); }
         function fecharAjuda() { document.getElementById('overlay-ajuda').classList.add('oculto'); }
         function tocarSom(id) { const s = document.getElementById(id); if(s) { s.currentTime=0; s.play().catch(()=>{}); } }
+        function abrirAnimacaoConector() { mostrarImagemTecnica('conectder_on.png'); }
 
         window.onload = proximoPasso;
     </script>
