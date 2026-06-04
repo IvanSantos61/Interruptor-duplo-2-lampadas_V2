@@ -111,7 +111,7 @@
         <img id="img-neutro-rede" class="camada oculto">
         <img id="img-fase-circuito" class="camada oculto">
         <img id="img-retorno" class="camada oculto">
-        <img id="img-retorno1" class="camada oculto">
+        <img id="img-retorno1" class="camada oculto"> 
         <img id="img-neutro-circuito" class="camada oculto">
         <img id="img-neutro-3" class="camada oculto">
         <img id="lamp-on" src="lamp_on.png" class="camada oculto">
@@ -213,6 +213,7 @@
             const dados = roteiro[etapaAtual];
             document.getElementById('label-status').innerText = `CONECTAR: ${dados.nome.toUpperCase()}`;
             
+            // Ativa conectores visuais nas etapas de derivação
             if (dados.pasta === "FASE_2") document.getElementById('con-fase').classList.remove('oculto');
             if (dados.pasta === "NEUTRO_2") document.getElementById('con-neutro').classList.remove('oculto');
             
@@ -247,6 +248,13 @@
 
         function executarAnimacaoFluida(dados) {
             const imgElemento = document.getElementById(dados.imgId);
+            if (!imgElemento) {
+                console.error("Erro: Elemento " + dados.imgId + " não encontrado no HTML.");
+                etapaAtual++;
+                proximoPasso();
+                return;
+            }
+            
             imgElemento.classList.remove('oculto');
             let frameIdx = 0; 
             const frames = cacheImagens[dados.pasta];
@@ -262,7 +270,7 @@
                     requestAnimationFrame(animar);
                 } else { 
                     tocarSom('audio-conexao');
-                    // Gatilhos de balões
+                    // Gatilhos de balões por etapa
                     if (dados.pasta === "FASE_REDE") document.getElementById('balao-fase-rede').classList.remove('oculto');
                     else if (dados.pasta === "NEUTRO_REDE") document.getElementById('balao-neutro-rede').classList.remove('oculto');
                     else if (dados.pasta === "FASE_2") document.getElementById('balao-fase-2').classList.remove('oculto');
