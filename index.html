@@ -51,7 +51,9 @@
         .retorno { background-color: #ffff00; box-shadow: 0 0 15px #ffff00; }
         .sucesso { background-color: #00ff00 !important; box-shadow: 0 0 20px #00ff00 !important; }
 
-        #lamp-on { top: 35.3%; left: 43.7%; width: 99%; }
+        /* Ajuste das lâmpadas ligadas */
+        #lamp-on-a { top: 35.3%; left: 43.7%; width: 99%; }
+        #lamp-on-b { top: 35.3%; left: 53.7%; width: 99%; } /* Posição inicial da lâmpada B (ajuste se necessário) */
 
         #placa-concluido { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #001100; border: 3px solid #00ff00; padding: 40px 100px; font-size: 3.5vw; color: #00ff00; z-index: 2000; text-align: center; border-radius: 8px; overflow: hidden; box-shadow: 0 0 30px rgba(0, 255, 0, 0.4); text-transform: uppercase; font-weight: bold; letter-spacing: 2px; }
         #placa-concluido::after { content: ''; position: absolute; top: -100%; left: 0; width: 100%; height: 2px; background: #00ff00; box-shadow: 0 0 15px #00ff00; animation: scanner 2s linear 2; }
@@ -92,7 +94,6 @@
     <main id="quadro-simulacao">
         <img src="ambiente.jpg" class="camada">
 
-        <!-- Balões de Informação -->
         <div id="balao-fase-rede" class="balao-info oculto" style="top: 93%; left: 40%;">💡<div class="texto-balao">A fase pode ser de qualquer cor <span style="color:red;">(Item 6.1.5.3.4 da NBR-5410)</span></div></div>
         <div id="balao-neutro-rede" class="balao-info oculto" style="top: 93%; left: 45%;">💡<div class="texto-balao">A seção mínima dos fios do circuito de iluminação é 1,5mm2 <span style="color:red;">(Item 6.2.6.1.1 da NBR-5410)</span></div></div>
         <div id="balao-fase-2" class="balao-info oculto" style="top: 93%; left: 50%;">💡<div class="texto-balao">O interruptor deve seccionar o condutor fase <span style="color:red;">(Item 6.3.7.2.1 da NBR-5410)</span></div></div>
@@ -101,7 +102,6 @@
         <div id="balao-final" class="balao-info oculto" style="top: 93%; left: 65%;">💡<div class="texto-balao"><span style="color:red;">LÂMPADA</span> --> Recebe Neutro e Retorno.<br><span style="color:red;">INTERRUPTOR</span> --> Recebe Fase e Retorno</div></div>
         <div id="balao-neutro-norma" class="balao-info oculto" style="top: 93%; left: 70%;">💡<div class="texto-balao">O fio neutro deve ser de cor azul-claro <span style="color:red;">(Item 6.1.5.3.1 da NBR-5410)</span></div></div>
 
-        <!-- Componentes Interativos -->
         <img id="comp-dg" src="al_dg_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dg_off.png', 'al_dg_on.png')">
         <img id="comp-dr" src="al_dr_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dr_off.png', 'al_dr_on.png')">
         <img id="comp-int" src="tec_int_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'tec_int_off.png', 'tec_int_on.png')">
@@ -109,7 +109,6 @@
         <img id="con-fase" src="con_derivacao.png" class="oculto">
         <img id="con-neutro" src="con_derivacao.png" class="oculto">
 
-        <!-- Camadas de Fiação (Ocultas Inicialmente) -->
         <img id="img-fase-rede" class="camada oculto">
         <img id="img-neutro-rede" class="camada oculto">
         <img id="img-fase-circuito" class="camada oculto">
@@ -117,7 +116,9 @@
         <img id="img-retorno1" class="camada oculto">
         <img id="img-neutro-circuito" class="camada oculto">
         <img id="img-neutro-3" class="camada oculto">
-        <img id="lamp-on" src="lamp_on.png" class="camada oculto">
+        
+        <img id="lamp-on-a" src="lamp_on.png" class="camada oculto">
+        <img id="lamp-on-b" src="lamp_on.png" class="camada oculto">
 
         <div id="placa-concluido" class="oculto">CONCLUÍDO</div>
 
@@ -138,7 +139,7 @@
             <div class="modal-ajuda">
                 <h2 style="color:#ffcc00; margin-bottom:20px;">Ajuda Técnica</h2>
                 <div class="item-ajuda" onclick="mostrarImagemTecnica('ligaint.png')">1. Ligação do interruptor simples</div>
-                <div class="item-ajuda" onclick="mostrarImagemTecnica('ligabocal.png')">2. Ligação das lâmpadas</div>
+                <div class="item-ajuda" onclick="mostrarImagemTecnica('ligabocal.png')">2. Ligação da lâmpada</div>
                 <div class="item-ajuda" onclick="mostrarImagemTecnica('inst_con_der.png')">3. Conexões e emendas</div>
                 <div class="item-ajuda" onclick="abrirAnimacaoConector()">4. Instalação do conector de derivação</div>
                 <div class="item-ajuda" onclick="mostrarImagemTecnica('listamatcp.png')">5. Lista de material</div>
@@ -157,9 +158,8 @@
     <audio id="audio-conexao" src="conexao.mp3"></audio>
 
     <script>
-        // Roteiro de Instalação - CORRIGIDO: Pasta RETORNO_1
         const roteiro = [
-            { nome: "Fase do Circuito", pasta: "FASE_REDE", total: 64, imgId: "img-fase-rede", cor: "fase", origem: { x: 27, y: 38.5 }, destino: { x: 98.5, y: 17.5 } },
+            { nome: "Fase do Circuito", pasta: "FASE_REDE", total: 64, imgId: "img-fase-rede", cor: "fase",起源: { x: 27, y: 38.5 }, destino: { x: 98.5, y: 17.5 } },
             { nome: "Neutro do Circuito", pasta: "NEUTRO_REDE", total: 76, imgId: "img-neutro-rede", cor: "neutro", origem: { x: 44.3, y: 35.2 }, destino: { x: 98.5, y: 14 } },
             { nome: "Fase do Interruptor", pasta: "FASE_2", total: 25, imgId: "img-fase-circuito", cor: "fase", origem: { x: 75, y: 19 }, destino: { x: 73.5, y: 71.0 } },
             { nome: "Retorno da Lâmpada (A)", pasta: "RETORNO", total: 35, imgId: "img-retorno", cor: "retorno", origem: { x: 73, y: 76.5 }, destino: { x: 88.5, y: 59.5 } },
@@ -185,16 +185,20 @@
                 document.getElementById(disp.idTxt).innerHTML = isON ? `<span class="status-on">[ ON ] ✅</span>` : `<span class="status-off">[ OFF ] ❌</span>`;
             });
 
+            // Lógica para acender as duas lâmpadas simultaneamente
             if (etapaAtual >= roteiro.length && todosLigados) {
-                const lampada = document.getElementById('lamp-on');
-                if (lampada.classList.contains('oculto')) {
-                    lampada.classList.remove('oculto');
+                const lampA = document.getElementById('lamp-on-a');
+                const lampB = document.getElementById('lamp-on-b');
+                if (lampA.classList.contains('oculto')) {
+                    lampA.classList.remove('oculto');
+                    lampB.classList.remove('oculto');
                     setTimeout(() => {
                         document.getElementById('placa-concluido').classList.remove('oculto');
                     }, 1000);
                 }
             } else {
-                document.getElementById('lamp-on').classList.add('oculto');
+                document.getElementById('lamp-on-a').classList.add('oculto');
+                document.getElementById('lamp-on-b').classList.add('oculto');
                 document.getElementById('placa-concluido').classList.add('oculto');
             }
         }
@@ -267,7 +271,6 @@
                     requestAnimationFrame(animar);
                 } else { 
                     tocarSom('audio-conexao');
-                    // Exibir balões específicos
                     if (dados.pasta === "FASE_REDE") document.getElementById('balao-fase-rede').classList.remove('oculto');
                     else if (dados.pasta === "NEUTRO_REDE") document.getElementById('balao-neutro-rede').classList.remove('oculto');
                     else if (dados.pasta === "FASE_2") document.getElementById('balao-fase-2').classList.remove('oculto');
