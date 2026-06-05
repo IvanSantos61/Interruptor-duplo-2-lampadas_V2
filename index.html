@@ -27,7 +27,7 @@
         
         #comp-dg { width: 4%; top: 26%; left: 12%; }
         #comp-dr { width: 5%; top: 29%; left: 23.6%; }
-        #comp-int { width: 6%; top: 67%; left: 57.5%; }
+        #comp-int { width: 6%; top: 67%; left: 63%; }
 
         #con-fase, #con-neutro { position: absolute; z-index: 50; width: 5%; transform: translate(-50%, -50%); pointer-events: none; }
         #con-fase { top: 17.5%; left: 73.5%; }
@@ -51,9 +51,9 @@
         .retorno { background-color: #ffff00; box-shadow: 0 0 15px #ffff00; }
         .sucesso { background-color: #00ff00 !important; box-shadow: 0 0 20px #00ff00 !important; }
 
-        /* Ajuste das lâmpadas ligadas */
-        #lamp-on-a { top: 29%; left: 55.9%; width: 51.5%; }
-        #lamp-on-b { top: 29%; left: 67.5%; width: 51.5%; }
+        /* Ajuste de tamanho e posição das duas lâmpadas ligadas */
+        #lamp-on-a { top: 35.3%; left: 43.7%; width: 99%; }
+        #lamp-on-b { top: 35.3%; left: 53.7%; width: 99%; }
 
         #placa-concluido { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #001100; border: 3px solid #00ff00; padding: 40px 100px; font-size: 3.5vw; color: #00ff00; z-index: 2000; text-align: center; border-radius: 8px; overflow: hidden; box-shadow: 0 0 30px rgba(0, 255, 0, 0.4); text-transform: uppercase; font-weight: bold; letter-spacing: 2px; }
         #placa-concluido::after { content: ''; position: absolute; top: -100%; left: 0; width: 100%; height: 2px; background: #00ff00; box-shadow: 0 0 15px #00ff00; animation: scanner 2s linear 2; }
@@ -137,10 +137,10 @@
 
         <div id="overlay-ajuda" class="oculto">
             <div class="modal-ajuda">
-                <h2 style="color:#ffcc00; margin-bottom:20px;">Ajuda Técnica</h2>
+                <h2 style="color:#ffcc00; margin-bottom:20px;">Ajuda Técnico</h2>
                 <div class="item-ajuda" onclick="mostrarImagemTecnica('ligaint.png')">1. Ligação do interruptor simples</div>
                 <div class="item-ajuda" onclick="mostrarImagemTecnica('ligabocal.png')">2. Ligação da lâmpada</div>
-                <div class="item-ajuda" onclick="inst_con_der.png">3. Conexões e emendas</div>
+                <div class="item-ajuda" onclick="mostrarImagemTecnica('inst_con_der.png')">3. Conexões e emendas</div>
                 <div class="item-ajuda" onclick="abrirAnimacaoConector()">4. Instalação do conector de derivação</div>
                 <div class="item-ajuda" onclick="mostrarImagemTecnica('listamatcp.png')">5. Lista de material</div>
                 <button onclick="fecharAjuda()" style="margin-top:20px;">Fechar</button>
@@ -158,7 +158,6 @@
     <audio id="audio-conexao" src="conexao.mp3"></audio>
 
     <script>
-        // Roteiro de Instalação - Corrigido o caractere especial em FASE_REDE/NEUTRO_REDE
         const roteiro = [
             { nome: "Fase do Circuito", pasta: "FASE_REDE", total: 64, imgId: "img-fase-rede", cor: "fase", origem: { x: 27, y: 38.5 }, destino: { x: 98.5, y: 17.5 } },
             { nome: "Neutro do Circuito", pasta: "NEUTRO_REDE", total: 76, imgId: "img-neutro-rede", cor: "neutro", origem: { x: 44.3, y: 35.2 }, destino: { x: 98.5, y: 14 } },
@@ -203,8 +202,14 @@
             }
         }
 
+        // Função corrigida para separar o som do Interruptor e dos Disjuntores
         function toggleComp(el, off, on) {
-            tocarSom('audio-disj');
+            if (el.id === 'comp-int') {
+                tocarSom('audio-int'); // Toca o som do interruptor
+            } else {
+                tocarSom('audio-disj'); // Toca o som do disjuntor (DG e DR)
+            }
+            
             const state = el.getAttribute('data-state') === 'off' ? 'on' : 'off';
             el.src = state === 'on' ? on : off;
             el.setAttribute('data-state', state);
@@ -250,6 +255,10 @@
             ponto.style.left = pos.x + "%"; ponto.style.top = pos.y + "%";
             ponto.onclick = (e) => { e.stopPropagation(); cliqueFn.call(ponto); };
             document.getElementById('interacao-container').appendChild(ponto);
+        }
+
+        function executingAnimacaoFluida(dados) {
+            // Mantido o roteiro de execução fluida intacto
         }
 
         function executarAnimacaoFluida(dados) {
