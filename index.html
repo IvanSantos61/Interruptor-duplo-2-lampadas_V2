@@ -148,6 +148,7 @@
         </div>
 
         <div id="visualizador-tecnico" class="oculto">
+            <div id="instrucao-clique" class="oculto">CLIQUE NO CONECTOR PARA VER A MONTAGEM</div>
             <img id="img-tecnica-exibida" src="" style="max-width:90%; max-height:80%;">
             <button onclick="voltarParaLista()" style="margin-top:20px; background:#ffcc00; font-weight:bold;">VOLTAR</button>
         </div>
@@ -194,13 +195,11 @@
                     lampA.classList.remove('oculto');
                     lampB.classList.remove('oculto');
                     
-                    // Exibe a placa após 1 segundo
                     setTimeout(() => {
                         if (!lampA.classList.contains('oculto') && !placa.dataset.placaMostrada) {
                             placa.classList.remove('oculto');
                             placa.dataset.placaMostrada = "true";
                             
-                            // Alterado: 4 segundos de animação do scanner + 2 segundos exibida = 6000ms totais
                             setTimeout(() => {
                                 placa.classList.add('oculto');
                             }, 6000);
@@ -307,15 +306,49 @@
         }
 
         function mostrarImagemTecnica(src) {
+            document.getElementById('instrucao-clique').classList.add('oculto');
             const img = document.getElementById('img-tecnica-exibida');
+            img.onclick = null;
+            img.style.cursor = "default";
             img.src = src;
             document.getElementById('visualizador-tecnico').classList.remove('oculto');
         }
-        function voltarParaLista() { document.getElementById('visualizador-tecnico').classList.add('oculto'); }
-        function abrirAjuda() { document.getElementById('overlay-ajuda').classList.remove('oculto'); }
-        function fecharAjuda() { document.getElementById('overlay-ajuda').classList.add('oculto'); }
-        function tocarSom(id) { const s = document.getElementById(id); if(s) { s.currentTime=0; s.play().catch(()=>{}); } }
-        function abrirAnimacaoConector() { mostrarImagemTecnica('conectder_on.png'); }
+
+        function voltarParaLista() { 
+            document.getElementById('visualizador-tecnico').classList.add('oculto'); 
+        }
+
+        function abrirAjuda() { 
+            document.getElementById('overlay-ajuda').classList.remove('oculto'); 
+        }
+
+        function fecharAjuda() { 
+            document.getElementById('overlay-ajuda').classList.add('oculto'); 
+        }
+
+        function tocarSom(id) { 
+            const s = document.getElementById(id); 
+            if(s) { s.currentTime=0; s.play().catch(()=>{}); } 
+        }
+
+        function abrirAnimacaoConector() {
+            document.getElementById('instrucao-clique').classList.remove('oculto');
+            const img = document.getElementById('img-tecnica-exibida');
+            img.src = 'conectder_off.png';
+            img.style.cursor = "pointer";
+            
+            img.onclick = function() {
+                if (img.src.includes('conectder_off.png')) {
+                    img.src = 'conectder_on.png';
+                    tocarSom('audio-conexao');
+                } else {
+                    img.src = 'conectder_off.png';
+                    tocarSom('audio-int');
+                }
+            };
+            
+            document.getElementById('visualizador-tecnico').classList.remove('oculto');
+        }
 
         window.onload = proximoPasso;
     </script>
