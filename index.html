@@ -237,6 +237,10 @@
             const dados = roteiro[etapaAtual];
             document.getElementById('label-status').innerText = `CONECTAR: ${dados.nome.toUpperCase()}`;
             
+            // RESTAURADO COMPLETAMENTE: Os conectores voltam a aparecer durante suas fiações normais originais
+            if (dados.pasta === "FASE_2") document.getElementById('con-fase').classList.remove('oculto');
+            if (dados.pasta === "NEUTRO_2") document.getElementById('con-neutro').classList.remove('oculto');
+            
             preCarregarCabo(dados);
             criarPonto(dados.origem, dados.cor, function() {
                 this.classList.add('sucesso');
@@ -296,7 +300,7 @@
                     else if (dados.pasta === "RETORNO_1") { document.getElementById('balao-retorno').classList.remove('oculto'); document.getElementById('balao-conector').classList.remove('oculto'); }
                     else if (dados.pasta === "NEUTRO_3") { document.getElementById('balao-final').classList.remove('oculto'); document.getElementById('balao-neutro-norma').classList.remove('oculto'); }
                     
-                    // Ajuste preciso: Exibe a imagem física na tela assim que o cabo RETORNO concluir a animação fluida.
+                    // NOVA ADIÇÃO MANTIDA COM SEGURANÇA: Garante con-fase ativo também no final da animação RETORNO
                     if (dados.pasta === "RETORNO") {
                         document.getElementById('con-fase').classList.remove('oculto');
                     }
