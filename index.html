@@ -157,7 +157,7 @@
     <audio id="audio-disj" src="disj.mp3"></audio>
     <audio id="audio-conexao" src="conexao.mp3"></audio>
 
-   <script>
+    <script>
         const roteiro = [
             { nome: "Fase do Circuito", pasta: "FASE_REDE", total: 64, imgId: "img-fase-rede", cor: "fase", origem: { x: 27, y: 38.5 }, destino: { x: 98.5, y: 17.5 } },
             { nome: "Neutro do Circuito", pasta: "NEUTRO_REDE", total: 76, imgId: "img-neutro-rede", cor: "neutro", origem: { x: 44.3, y: 35.2 }, destino: { x: 98.5, y: 14 } },
@@ -192,14 +192,7 @@
                     lampA.classList.remove('oculto');
                     lampB.classList.remove('oculto');
                     setTimeout(() => {
-                        const placaConcluido = document.getElementById('placa-concluido');
-                        placaConcluido.classList.remove('oculto');
-                        
-                        // Oculta a placa após 2 segundos (2000ms)
-                        setTimeout(() => {
-                            placaConcluido.classList.add('oculto');
-                        }, 2000);
-
+                        document.getElementById('placa-concluido').classList.remove('oculto');
                     }, 1000);
                 }
             } else {
@@ -212,9 +205,9 @@
         // Função corrigida para separar o som do Interruptor e dos Disjuntores
         function toggleComp(el, off, on) {
             if (el.id === 'comp-int') {
-                tcarSom('audio-int'); // Toca o som do interruptor
+                tocarSom('audio-int'); // Toca o som do interruptor
             } else {
-                tcarSom('audio-disj'); // Toca o som do disjuntor (DG e DR)
+                tocarSom('audio-disj'); // Toca o som do disjuntor (DG e DR)
             }
             
             const state = el.getAttribute('data-state') === 'off' ? 'on' : 'off';
@@ -314,4 +307,4 @@
         window.onload = proximoPasso;
     </script>
 </body>
-</html>
+</html> 
