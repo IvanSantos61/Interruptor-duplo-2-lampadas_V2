@@ -29,14 +29,8 @@
         #comp-dr { width: 5%; top: 29%; left: 23.6%; }
         #comp-int { width: 6%; top: 67%; left: 57.5%; }
 
-        /* Estrutura dos conectores mantida intacta */
-        #con-fase, #con-neutro, #con-retorno, #con-neutro-lamp { position: absolute; z-index: 50; width: 5%; transform: translate(-50%, -50%); pointer-events: none; }
-        #con-fase { top: 17.5%; left: 73.5%; }
-        #con-neutro { top: 14.5%; left: 93.5%; }
-        #con-retorno { top: 57%; left: 77.5%; }
-        
-        /* Posicionamento do novo conector para o término do NEUTRO_2 */
-        #con-neutro-lamp { top: 56.5%; left: 79.5%; }
+        /* Simplificado o CSS genérico removendo os valores individuais fixos que agora estão no HTML inline */
+        #con-fase, #con-neutro, #con-retorno, #con-neutro-lamp { position: absolute; z-index: 50; width: 5%; pointer-events: none; }
 
         .oculto { display: none !important; }
 
@@ -110,11 +104,10 @@
         <img id="comp-dr" src="al_dr_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dr_off.png', 'al_dr_on.png')">
         <img id="comp-int" src="tec_int_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'tec_int_off.png', 'tec_int_on.png')">
 
-        <img id="con-fase" src="con_derivacao.png" class="oculto">
-        <img id="con-neutro" src="con_derivacao.png" class="oculto">
-        
-        <img id="con-retorno" src="con_derivacao.png" class="oculto">
-        <img id="con-neutro-lamp" src="con_derivacao.png" class="oculto">
+        <img id="con-fase" src="con_derivacao.png" class="oculto" style="top: 17.5%; left: 73.5%; transform: translate(-50%, -50%) rotate(0deg);">
+        <img id="con-neutro" src="con_derivacao.png" class="oculto" style="top: 14.5%; left: 93.5%; transform: translate(-50%, -50%) rotate(0deg);">
+        <img id="con-retorno" src="con_derivacao.png" class="oculto" style="top: 57%; left: 77.5%; transform: translate(-50%, -50%) rotate(0deg);">
+        <img id="con-neutro-lamp" src="con_derivacao.png" class="oculto" style="top: 56.5%; left: 79.5%; transform: translate(-50%, -50%) rotate(0deg);">
 
         <img id="img-fase-rede" class="camada oculto">
         <img id="img-neutro-rede" class="camada oculto">
@@ -244,7 +237,6 @@
             const dados = roteiro[etapaAtual];
             document.getElementById('label-status').innerText = `CONECTAR: ${dados.nome.toUpperCase()}`;
             
-            // Lógica de ativação prévia original perfeitamente intocada
             if (dados.pasta === "FASE_2") document.getElementById('con-fase').classList.remove('oculto');
             if (dados.pasta === "NEUTRO_2") document.getElementById('con-neutro').classList.remove('oculto');
             
@@ -307,12 +299,10 @@
                     else if (dados.pasta === "RETORNO_1") { document.getElementById('balao-retorno').classList.remove('oculto'); document.getElementById('balao-conector').classList.remove('oculto'); }
                     else if (dados.pasta === "NEUTRO_3") { document.getElementById('balao-final').classList.remove('oculto'); document.getElementById('balao-neutro-norma').classList.remove('oculto'); }
                     
-                    // Exclusivo: Surge o conector do término do cabo RETORNO
                     if (dados.pasta === "RETORNO") {
                         document.getElementById('con-retorno').classList.remove('oculto');
                     }
                     
-                    // Alteração pontual solicitada: Faz surgir de forma independente o conector no término do NEUTRO_2
                     if (dados.pasta === "NEUTRO_2") {
                         document.getElementById('con-neutro-lamp').classList.remove('oculto');
                     }
