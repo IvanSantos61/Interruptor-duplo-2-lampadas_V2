@@ -29,7 +29,6 @@
         #comp-dr { width: 5%; top: 29%; left: 23.6%; }
         #comp-int { width: 6%; top: 67%; left: 57.5%; }
 
-        /* Simplificado o CSS genérico removendo os valores individuais fixos que agora estão no HTML inline */
         #con-fase, #con-neutro, #con-retorno, #con-neutro-lamp { position: absolute; z-index: 50; width: 5%; pointer-events: none; }
 
         .oculto { display: none !important; }
@@ -38,26 +37,63 @@
         .texto-balao { visibility: hidden; position: absolute; bottom: 50px; left: 0; width: 300px; background: white; color: black; padding: 12px; border-radius: 8px; font-size: 18px; z-index: 999; text-transform: none; font-weight: normal; white-space: normal; line-height: 1.4; border: 2px solid #00f2ff; }
         .balao-info:hover .texto-balao { visibility: visible; }
 
-        /* ALTERAÇÃO CRUCIAL: Intensificação do destaque com neon interno e externo visível */
+        /* NOVO EFEITO: Interface Fluida de Vidro Fumê com Brilho de Fundo Integrado */
         #painel-dispositivos { 
             position: absolute; 
             top: 54.2%; 
             left: 10%; 
             width: 15%; 
-            background: rgba(4, 10, 20, 0.98); 
-            border: 2.5px solid #00f2ff; 
-            border-radius: 16px; 
-            /* Multiplas camadas de sombra puras e intensas para ignorar o fundo escuro */
-            box-shadow: 0 0 25px rgba(0, 242, 255, 0.6), 
-                        inset 0 0 20px rgba(0, 242, 255, 0.3);
+            /* Fundo escuro com sutil transparência e desfoque de fundo (Glassmorphism) */
+            background: rgba(3, 8, 16, 0.92);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            /* Sem bordas duras nas laterais, cantos limpos e muito arredondados */
+            border: none;
+            border-radius: 20px; 
+            /* Brilho neon suave e difuso atuando como uma aura por trás do painel */
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 
+                        0 0 30px rgba(0, 242, 255, 0.15);
             overflow: hidden;
-            padding-bottom: 12px;
+            padding-bottom: 15px;
             z-index: 500; 
+            animation: pulsoAura 4s infinite ease-in-out;
         }
-        #painel-dispositivos h3 { background: #008899; color: white; text-align: center; font-size: 1.1vw; padding: 8px; text-transform: uppercase; border-bottom: 2px solid #00f2ff; text-shadow: 0 0 5px #fff; }
-        .linha-dispositivo { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; margin-bottom: 5px; background: rgba(255, 255, 255, 0.05); border-left: 4px solid #00f2ff; font-weight: bold; font-size: 1vw; }
-        .status-on { color: #00ff00; text-shadow: 0 0 10px rgba(0, 255, 0, 0.8); }
-        .status-off { color: #ff3333; text-shadow: 0 0 10px rgba(255, 51, 51, 0.8); }
+
+        /* Animação sutil para dar vida ao painel elétrico sem poluir visualmente */
+        @keyframes pulsoAura {
+            0%, 100% { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 242, 255, 0.12); }
+            50% { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 242, 255, 0.22); }
+        }
+
+        #painel-dispositivos h3 { 
+            background: rgba(0, 136, 153, 0.3); 
+            color: #00f2ff; 
+            text-align: center; 
+            font-size: 1vw; 
+            padding: 12px; 
+            text-transform: uppercase; 
+            font-weight: 800;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(0, 242, 255, 0.15);
+            text-shadow: 0 0 8px rgba(0, 242, 255, 0.5);
+        }
+        
+        .linha-dispositivo { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 12px 18px; 
+            margin: 6px 10px; 
+            background: rgba(255, 255, 255, 0.03); 
+            border-radius: 8px;
+            border-left: 3px solid rgba(0, 242, 255, 0.4); 
+            font-weight: 600; 
+            font-size: 0.95vw; 
+            transition: all 0.2s ease;
+        }
+        
+        .status-on { color: #00ff00; text-shadow: 0 0 8px rgba(0, 255, 0, 0.6); font-weight: 800; }
+        .status-off { color: #ff3333; text-shadow: 0 0 8px rgba(255, 51, 51, 0.6); font-weight: 800; }
 
         .ponto { position: absolute; width: 1.8%; aspect-ratio: 1/1; border-radius: 50%; border: 2px solid #fff; cursor: pointer; z-index: 100; transform: translate(-50%, -50%); }
         .fase { background-color: #ff0000; box-shadow: 0 0 15px #ff0000; }
