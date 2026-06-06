@@ -237,9 +237,6 @@
             const dados = roteiro[etapaAtual];
             document.getElementById('label-status').innerText = `CONECTAR: ${dados.nome.toUpperCase()}`;
             
-            if (dados.pasta === "FASE_2") document.getElementById('con-fase').classList.remove('oculto');
-            if (dados.pasta === "NEUTRO_2") document.getElementById('con-neutro').classList.remove('oculto');
-            
             preCarregarCabo(dados);
             criarPonto(dados.origem, dados.cor, function() {
                 this.classList.add('sucesso');
@@ -292,11 +289,18 @@
                     requestAnimationFrame(animar);
                 } else { 
                     tocarSom('audio-conexao');
+                    
+                    // Condicionais originais dos balões técnico-normativos
                     if (dados.pasta === "FASE_REDE") document.getElementById('balao-fase-rede').classList.remove('oculto');
                     else if (dados.pasta === "NEUTRO_REDE") document.getElementById('balao-neutro-rede').classList.remove('oculto');
                     else if (dados.pasta === "FASE_2") document.getElementById('balao-fase-2').classList.remove('oculto');
                     else if (dados.pasta === "RETORNO_1") { document.getElementById('balao-retorno').classList.remove('oculto'); document.getElementById('balao-conector').classList.remove('oculto'); }
                     else if (dados.pasta === "NEUTRO_3") { document.getElementById('balao-final').classList.remove('oculto'); document.getElementById('balao-neutro-norma').classList.remove('oculto'); }
+                    
+                    // REGRA ADICIONADA: Ativa o conector quando o cabo RETORNO finaliza
+                    if (dados.pasta === "RETORNO") {
+                        document.getElementById('con-fase').classList.remove('oculto');
+                    }
                     
                     etapaAtual++; 
                     setTimeout(proximoPasso, 400); 
@@ -335,19 +339,16 @@
             document.getElementById('instrucao-clique').classList.remove('oculto');
             const img = document.getElementById('img-tecnica-exibida');
             
-            // Início fixado como ABERTO baseado na lógica do projeto (on)
             img.src = 'conectder_on.png';
             img.style.cursor = "pointer";
             
             img.onclick = function() {
-                // Se estiver aberto (on), o clique FECHA o conector (off)
                 if (img.src.includes('conectder_on.png')) {
                     img.src = 'conectder_off.png';
-                    tocarSom('audio-conexao'); // Som de fechamento/conexão
+                    tocarSom('audio-conexao');
                 } else {
-                    // Se clicar de novo, ele ABRE novamente (on)
                     img.src = 'conectder_on.png';
-                    tocarSom('audio-int'); // Som de reabertura
+                    tocarSom('audio-int');
                 }
             };
             
