@@ -334,10 +334,11 @@
         function abrirAnimacaoConector() {
             document.getElementById('instrucao-clique').classList.remove('oculto');
             const img = document.getElementById('img-tecnica-exibida');
-            img.src = 'conectder_off.png';
+            img.src = 'conectder_off.png'; // Inicia aberto
             img.style.cursor = "pointer";
             
             img.onclick = function() {
+                // Se a string contiver 'off', muda para 'on' (fecha)
                 if (img.src.includes('conectder_off.png')) {
                     img.src = 'conectder_on.png';
                     tocarSom('audio-conexao');
