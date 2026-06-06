@@ -261,9 +261,9 @@
             }
         }
 
-        function criarPonto(pos, corClasse, cliqueFn) {
+        function criarPonto(pos, coreClasse, cliqueFn) {
             const ponto = document.createElement('div');
-            ponto.className = `ponto ${corClasse}`;
+            ponto.className = `ponto ${coreClasse}`;
             ponto.style.left = pos.x + "%"; ponto.style.top = pos.y + "%";
             ponto.onclick = (e) => { e.stopPropagation(); cliqueFn.call(ponto); };
             document.getElementById('interacao-container').appendChild(ponto);
@@ -353,7 +353,7 @@
                     tocarSom('audio-conexao');
                 } else {
                     img.src = 'conectder_on.png';
-                    tocarSom('audio-int');
+                    tocarSom('audio-conexao'); // MODIFICAÇÃO CIRÚRGICA: Alterado de 'audio-int' para 'audio-conexao'
                 }
             };
             
