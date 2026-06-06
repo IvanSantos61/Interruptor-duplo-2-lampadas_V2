@@ -335,19 +335,19 @@
             document.getElementById('instrucao-clique').classList.remove('oculto');
             const img = document.getElementById('img-tecnica-exibida');
             
-            // Força o início como ABERTO (off)
-            img.src = 'conectder_off.png';
+            // Início fixado como ABERTO baseado na lógica do projeto (on)
+            img.src = 'conectder_on.png';
             img.style.cursor = "pointer";
             
             img.onclick = function() {
-                // Se estiver aberto, clica e ele FECHA
-                if (img.src.includes('conectder_off.png')) {
-                    img.src = 'conectder_on.png';
-                    tocarSom('audio-conexao');
-                } else {
-                    // Se clicar de novo, ele ABRE
+                // Se estiver aberto (on), o clique FECHA o conector (off)
+                if (img.src.includes('conectder_on.png')) {
                     img.src = 'conectder_off.png';
-                    tocarSom('audio-int');
+                    tocarSom('audio-conexao'); // Som de fechamento/conexão
+                } else {
+                    // Se clicar de novo, ele ABRE novamente (on)
+                    img.src = 'conectder_on.png';
+                    tocarSom('audio-int'); // Som de reabertura
                 }
             };
             
