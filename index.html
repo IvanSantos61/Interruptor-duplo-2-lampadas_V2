@@ -290,14 +290,13 @@
                 } else { 
                     tocarSom('audio-conexao');
                     
-                    // Condicionais originais dos balões técnico-normativos
                     if (dados.pasta === "FASE_REDE") document.getElementById('balao-fase-rede').classList.remove('oculto');
                     else if (dados.pasta === "NEUTRO_REDE") document.getElementById('balao-neutro-rede').classList.remove('oculto');
                     else if (dados.pasta === "FASE_2") document.getElementById('balao-fase-2').classList.remove('oculto');
                     else if (dados.pasta === "RETORNO_1") { document.getElementById('balao-retorno').classList.remove('oculto'); document.getElementById('balao-conector').classList.remove('oculto'); }
                     else if (dados.pasta === "NEUTRO_3") { document.getElementById('balao-final').classList.remove('oculto'); document.getElementById('balao-neutro-norma').classList.remove('oculto'); }
                     
-                    // REGRA ADICIONADA: Ativa o conector quando o cabo RETORNO finaliza
+                    // Ajuste preciso: Exibe a imagem física na tela assim que o cabo RETORNO concluir a animação fluida.
                     if (dados.pasta === "RETORNO") {
                         document.getElementById('con-fase').classList.remove('oculto');
                     }
