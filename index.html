@@ -188,17 +188,32 @@
             if (etapaAtual >= roteiro.length && todosLigados) {
                 const lampA = document.getElementById('lamp-on-a');
                 const lampB = document.getElementById('lamp-on-b');
+                const placa = document.getElementById('placa-concluido');
+                
                 if (lampA.classList.contains('oculto')) {
                     lampA.classList.remove('oculto');
                     lampB.classList.remove('oculto');
+                    
+                    // Exibe a placa após 1 segundo
                     setTimeout(() => {
-                        document.getElementById('placa-concluido').classList.remove('oculto');
+                        // Só exibe se as lâmpadas ainda continuarem ligadas
+                        if (!lampA.classList.contains('oculto') && !placa.dataset.placaMostrada) {
+                            placa.classList.remove('oculto');
+                            placa.dataset.placaMostrada = "true"; // Sinaliza que a placa foi exibida
+                            
+                            // Adicionado: Remove a placa de forma limpa após 2 segundos (2000ms)
+                            setTimeout(() => {
+                                placa.classList.add('oculto');
+                            }, 2000);
+                        }
                     }, 1000);
                 }
             } else {
+                const placa = document.getElementById('placa-concluido');
                 document.getElementById('lamp-on-a').classList.add('oculto');
                 document.getElementById('lamp-on-b').classList.add('oculto');
-                document.getElementById('placa-concluido').classList.add('oculto');
+                placa.classList.add('oculto');
+                delete placa.dataset.placaMostrada; // Reseta a permissão caso desligue/religue as teclas
             }
         }
 
@@ -307,4 +322,4 @@
         window.onload = proximoPasso;
     </script>
 </body>
-</html> 
+</html>
