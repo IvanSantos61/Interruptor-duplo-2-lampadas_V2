@@ -151,6 +151,7 @@
         <div id="balao-conector" class="balao-info oculto" style="top: 93%; left: 60%;">💡<div class="texto-balao">Conectores de emenda garantem conexões firmes e energia sem interrupção</div></div>
         <div id="balao-final" class="balao-info oculto" style="top: 93%; left: 65%;">💡<div class="texto-balao"><span style="color:red;">LÂMPADA</span> --> Recebe Neutro e Retorno.<br><span style="color:red;">INTERRUPTOR</span> --> Recebe Fase e Retorno</div></div>
         <div id="balao-neutro-norma" class="balao-info oculto" style="top: 93%; left: 70%;">💡<div class="texto-balao">O fio neutro deve ser de cor azul-claro <span style="color:red;">(Item 6.1.5.3.1 da NBR-5410)</span></div></div>
+        <div id="balao-neutro-concluido" class="balao-info oculto" style="top: 93%; left: 75%;">💡<div class="texto-balao">Ambas as lâmpadas agora estão devidamente aterradas ao condutor neutro do circuito.</div></div>
 
         <img id="comp-dg" src="al_dg_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dg_off.png', 'al_dg_on.png')">
         <img id="comp-dr" src="al_dr_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dr_off.png', 'al_dr_on.png')">
@@ -321,10 +322,6 @@
             document.getElementById('interacao-container').appendChild(ponto);
         }
 
-        function executingAnimacaoFluida(dados) {
-            // Mantido o roteiro de execução fluida intacto
-        }
-
         function executarAnimacaoFluida(dados) {
             const imgElemento = document.getElementById(dados.imgId);
             if(!imgElemento) return;
@@ -348,10 +345,14 @@
                     if (dados.pasta === "FASE_REDE") document.getElementById('balao-fase-rede').classList.remove('oculto');
                     else if (dados.pasta === "NEUTRO_REDE") document.getElementById('balao-neutro-rede').classList.remove('oculto');
                     else if (dados.pasta === "FASE_2") document.getElementById('balao-fase-2').classList.remove('oculto');
-                    /* INSERÇÃO CIRÚRGICA: Ativando o balão solicitado assim que finaliza o condutor 'RETORNO' */
                     else if (dados.pasta === "RETORNO") document.getElementById('balao-retorno-inicial').classList.remove('oculto');
                     else if (dados.pasta === "RETORNO_1") { document.getElementById('balao-retorno').classList.remove('oculto'); document.getElementById('balao-conector').classList.remove('oculto'); }
-                    else if (dados.pasta === "NEUTRO_3") { document.getElementById('balao-final').classList.remove('oculto'); document.getElementById('balao-neutro-norma').classList.remove('oculto'); }
+                    /* MODIFICAÇÃO CIRÚRGICA: Ativando também o novo balão ao finalizar o condutor NEUTRO_3 */
+                    else if (dados.pasta === "NEUTRO_3") { 
+                        document.getElementById('balao-final').classList.remove('oculto'); 
+                        document.getElementById('balao-neutro-norma').classList.remove('oculto'); 
+                        document.getElementById('balao-neutro-concluido').classList.remove('oculto'); 
+                    }
                     
                     if (dados.pasta === "RETORNO") {
                         document.getElementById('con-retorno').classList.remove('oculto');
@@ -407,7 +408,7 @@
                     tocarSom('audio-conexao');
                 } else {
                     img.src = 'conectder_on.png';
-                    tocarSom('audio-conexao'); // MODIFICAÇÃO CIRÚRGICA: Alterado de 'audio-int' para 'audio-conexao'
+                    tocarSom('audio-conexao');
                 }
             };
             
