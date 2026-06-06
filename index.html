@@ -146,6 +146,7 @@
         <div id="balao-fase-rede" class="balao-info oculto" style="top: 93%; left: 40%;">💡<div class="texto-balao">A fase pode ser de qualquer cor <span style="color:red;">(Item 6.1.5.3.4 da NBR-5410)</span></div></div>
         <div id="balao-neutro-rede" class="balao-info oculto" style="top: 93%; left: 45%;">💡<div class="texto-balao">A seção mínima dos fios do circuito de iluminação é 1,5mm2 <span style="color:red;">(Item 6.2.6.1.1 da NBR-5410)</span></div></div>
         <div id="balao-fase-2" class="balao-info oculto" style="top: 93%; left: 50%;">💡<div class="texto-balao">O interruptor deve seccionar o condutor fase <span style="color:red;">(Item 6.3.7.2.1 da NBR-5410)</span></div></div>
+        <div id="balao-retorno-inicial" class="balao-info oculto" style="top: 93%; left: 53%;">💡<div class="texto-balao">O retorno também pode ser de qualquer cor. (Continuidade da fase NBR-5410)</div></div>
         <div id="balao-retorno" class="balao-info oculto" style="top: 93%; left: 55%;">💡<div class="texto-balao">O retorno, também, pode ser de qualquer cor <span style="color:red;">(Continuidade da fase NBR-5410)</span></div></div>
         <div id="balao-conector" class="balao-info oculto" style="top: 93%; left: 60%;">💡<div class="texto-balao">Conectores de emenda garantem conexões firmes e energia sem interrupção</div></div>
         <div id="balao-final" class="balao-info oculto" style="top: 93%; left: 65%;">💡<div class="texto-balao"><span style="color:red;">LÂMPADA</span> --> Recebe Neutro e Retorno.<br><span style="color:red;">INTERRUPTOR</span> --> Recebe Fase e Retorno</div></div>
@@ -347,6 +348,8 @@
                     if (dados.pasta === "FASE_REDE") document.getElementById('balao-fase-rede').classList.remove('oculto');
                     else if (dados.pasta === "NEUTRO_REDE") document.getElementById('balao-neutro-rede').classList.remove('oculto');
                     else if (dados.pasta === "FASE_2") document.getElementById('balao-fase-2').classList.remove('oculto');
+                    /* INSERÇÃO CIRÚRGICA: Ativando o balão solicitado assim que finaliza o condutor 'RETORNO' */
+                    else if (dados.pasta === "RETORNO") document.getElementById('balao-retorno-inicial').classList.remove('oculto');
                     else if (dados.pasta === "RETORNO_1") { document.getElementById('balao-retorno').classList.remove('oculto'); document.getElementById('balao-conector').classList.remove('oculto'); }
                     else if (dados.pasta === "NEUTRO_3") { document.getElementById('balao-final').classList.remove('oculto'); document.getElementById('balao-neutro-norma').classList.remove('oculto'); }
                     
