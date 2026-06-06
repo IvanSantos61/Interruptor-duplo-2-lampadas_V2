@@ -196,15 +196,14 @@
                     
                     // Exibe a placa após 1 segundo
                     setTimeout(() => {
-                        // Só exibe se as lâmpadas ainda continuarem ligadas
                         if (!lampA.classList.contains('oculto') && !placa.dataset.placaMostrada) {
                             placa.classList.remove('oculto');
-                            placa.dataset.placaMostrada = "true"; // Sinaliza que a placa foi exibida
+                            placa.dataset.placaMostrada = "true";
                             
-                            // Adicionado: Remove a placa de forma limpa após 2 segundos (2000ms)
+                            // Alterado: 4 segundos de animação do scanner + 3 segundos exibida = 7000ms totais
                             setTimeout(() => {
                                 placa.classList.add('oculto');
-                            }, 2000);
+                            }, 7000);
                         }
                     }, 1000);
                 }
@@ -213,16 +212,15 @@
                 document.getElementById('lamp-on-a').classList.add('oculto');
                 document.getElementById('lamp-on-b').classList.add('oculto');
                 placa.classList.add('oculto');
-                delete placa.dataset.placaMostrada; // Reseta a permissão caso desligue/religue as teclas
+                delete placa.dataset.placaMostrada; 
             }
         }
 
-        // Função corrigida para separar o som do Interruptor e dos Disjuntores
         function toggleComp(el, off, on) {
             if (el.id === 'comp-int') {
-                tocarSom('audio-int'); // Toca o som do interruptor
+                tocarSom('audio-int'); 
             } else {
-                tocarSom('audio-disj'); // Toca o som do disjuntor (DG e DR)
+                tocarSom('audio-disj'); 
             }
             
             const state = el.getAttribute('data-state') === 'off' ? 'on' : 'off';
