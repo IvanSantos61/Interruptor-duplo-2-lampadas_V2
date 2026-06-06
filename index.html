@@ -200,7 +200,6 @@
                             placa.classList.remove('oculto');
                             placa.dataset.placaMostrada = "true";
                             
-                            // Aguarda os 4 segundos do scanner + 1 segundo fixo exibido
                             setTimeout(() => {
                                 placa.classList.add('oculto');
                             }, 5000); 
@@ -335,14 +334,18 @@
         function abrirAnimacaoConector() {
             document.getElementById('instrucao-clique').classList.remove('oculto');
             const img = document.getElementById('img-tecnica-exibida');
+            
+            // Força o início como ABERTO (off)
             img.src = 'conectder_off.png';
             img.style.cursor = "pointer";
             
             img.onclick = function() {
+                // Se estiver aberto, clica e ele FECHA
                 if (img.src.includes('conectder_off.png')) {
                     img.src = 'conectder_on.png';
                     tocarSom('audio-conexao');
                 } else {
+                    // Se clicar de novo, ele ABRE
                     img.src = 'conectder_off.png';
                     tocarSom('audio-int');
                 }
