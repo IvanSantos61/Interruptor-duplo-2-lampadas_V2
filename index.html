@@ -27,7 +27,8 @@
         
         #comp-dg { width: 4%; top: 26%; left: 12%; }
         #comp-dr { width: 5%; top: 29%; left: 23.6%; }
-       /* #comp-int { width: 6%; top: 67%; left: 57.5%; } */
+        #comp-int1 { width: 3%; top: 67%; left: 60.5%; }
+        #comp-int2 { width: 3%; top: 67%; left: 63.5%; }
 
         #con-fase, #con-neutro, #con-retorno, #con-neutro-lamp { position: absolute; z-index: 50; width: 5%; pointer-events: none; }
 
@@ -138,13 +139,11 @@
             visibility: hidden;
             position: absolute;
             background: rgba(0, 0, 0, 0.9);
-          /*  color: #00f2ff; */
-			color: yellow;
+            color: yellow;
             padding: 8px 15px;
             border-radius: 5px;
             border: 1px solid #00f2ff;
             font-size: 16px;
-        /*    font-weight: bold; */
             white-space: nowrap;
             bottom: 110%;
             left: 50%;
@@ -180,44 +179,34 @@
          
         <img src="ambiente.jpg" class="camada">
 
-        <!-- HOTSPOTS SOLICITADOS - GARANTINDO TODOS -->
-        
-        <!-- 1. REDE ELÉTRICA -->
         <div class="hotspot" style="top: 58%; left: 5%; width: 5%; height: 20%;" title="REDE ELÉTRICA">
             <div class="tooltip">REDE ELÉTRICA</div>
         </div>
 
-        <!-- 2. BARRA DE ATERRAMENTO -->
         <div class="hotspot" style="top: 10%; left: 6.4%; width: 3%; height: 35%;" title="BARRA DE ATERRAMENTO">
             <div class="tooltip">BARRA DE ATERRAMENTO</div>
         </div>
 
-        <!-- 3. DISJUNTOR GERAL -->
         <div class="hotspot" style="top: 13%; left: 11.8%; width: 4%; height: 27%;" title="DISJUNTOR GERAL">
             <div class="tooltip">DISJUNTOR GERAL</div>
         </div>
 
-        <!-- 4. DPS -->
         <div class="hotspot" style="top: 13%; left: 15.6%; width: 4%; height: 27%;" title="DPS">
             <div class="tooltip">DPS</div>
         </div>
 
-        <!-- 5. DISPOSITIVO RESIDUAL -->
         <div class="hotspot" style="top: 12.6%; left: 19.5%; width: 9%; height: 30%;" title="DISPOSITIVO RESIDUAL (DR)">
             <div class="tooltip">DISPOSITIVO RESIDUAL (DR)</div>
         </div>
 
-        <!-- 6. DISJUNTORES DOS CIRCUITOS -->
         <div class="hotspot" style="top: 12.6%; left: 28.5%; width: 11.5%; height: 28%;" title="DISJUNTORES DOS CIRCUITOS">
             <div class="tooltip">DISJUNTORES DOS CIRCUITOS</div>
         </div>
 
-        <!-- 7. BARRA DE NEUTRO -->
         <div class="hotspot" style="top: 10%; left: 42.9%; width: 3%; height: 35%;" title="BARRA DE NEUTRO">
             <div class="tooltip">BARRA DE NEUTRO</div>
         </div>
         
-        <!-- 8. LÂMPADA LED 127V (2 hotspots) -->
         <div class="hotspot" style="top: 73.5%; left: 75.5%; width: 8%; height: 18%;" title="LÂMPADA LED 127V">
             <div class="tooltip">LÂMPADA LED 127V</div>
         </div>
@@ -225,7 +214,6 @@
             <div class="tooltip">LÂMPADA LED 127V</div>
         </div>
 
-        <!-- 9. BOCAL E-27 (2 hotspots) -->
         <div class="hotspot" style="top: 62%; left: 76.4%; width: 6%; height: 12%;" title="BOCAL E-27">
             <div class="tooltip">BOCAL E-27</div>
         </div>
@@ -233,12 +221,10 @@
             <div class="tooltip">BOCAL E-27</div>
         </div>
 
-        <!-- 10. INTERRUPTOR SIMPLES -->
         <div class="hotspot" style="top: 56.9%; left: 58%; width: 10.5%; height: 34%;" title="INTERRUPTOR SIMPLES">
             <div class="tooltip">INTERRUPTOR SIMPLES</div>
         </div>
 
-        <!-- 11. CAIXA DE PASSAGEM 4x2" (4 CAIXAS) -->
         <div class="hotspot" style="top: 59%; left: 35%; width: 12%; height: 32%;" title="CAIXA DE PASSAGEM 4x2">
             <div class="tooltip">CAIXA DE PASSAGEM 4x2"</div>
         </div>
@@ -252,23 +238,24 @@
             <div class="tooltip">CAIXA DE PASSAGEM 4x2"</div>
         </div>
 
-<div id="placa-dicas" class="oculto" style="position: absolute; bottom: 0.5%; left: 29%; background: rgba(3, 8, 16, 0.9); border: 1px solid #00f2ff; border-radius: 6px; padding: 4px 15px; box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); z-index: 200;">
-		    <span style="color: #00f2ff; font-weight: 400; font-size: 1vw; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 0 5px rgba(0, 242, 255, 0.6);">💡 Dicas ➜ </span>
-</div>
+        <div id="placa-dicas" class="oculto" style="position: absolute; bottom: 0.5%; left: 29%; background: rgba(3, 8, 16, 0.9); border: 1px solid #00f2ff; border-radius: 6px; padding: 4px 15px; box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); z-index: 200;">
+             <span style="color: #00f2ff; font-weight: 400; font-size: 1vw; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 0 5px rgba(0, 242, 255, 0.6);">💡 Dicas ➜ </span>
+        </div>
         
         <div id="balao-fase-rede" class="balao-info oculto" style="top: 94.5%; left: 40%;">💡<div class="texto-balao">A fase pode ser de qualquer cor <span style="color:red;">(Item 6.1.5.3.4 da NBR-5410)</span></div></div>
         <div id="balao-neutro-rede" class="balao-info oculto" style="top: 94.5%; left: 45%;">💡<div class="texto-balao">A seção mínima dos fios do circuito de iluminação é 1,5mm2 <span style="color:red;">(Item 6.2.6.1.1 da NBR-5410)</span></div></div>
         <div id="balao-fase-2" class="balao-info oculto" style="top: 94.5%; left: 50%;">💡<div class="texto-balao">O interruptor deve seccionar o condutor fase <span style="color:red;">(Item 6.3.7.2.1 da NBR-5410)</span></div></div>
-       <div id="balao-retorno-inicial" class="balao-info oculto" style="top: 94.5%; left: 55%;">💡<div class="texto-balao">O retorno também pode ser de qualquer cor. <span style="color: red;">(Continuidade da fase NBR-5410)</span></div></div>
+        <div id="balao-retorno-inicial" class="balao-info oculto" style="top: 94.5%; left: 55%;">💡<div class="texto-balao">O retorno também pode ser de qualquer cor. <span style="color: red;">(Continuidade da fase NBR-5410)</span></div></div>
         <div id="balao-retorno" class="balao-info oculto" style="top: 94.5%; left: 60%;">💡<div class="texto-balao">O retorno, é comum às 2 lâmpadas <span style="color:red;">(Continuidade da fase NBR-5410)</span></div></div>
         <div id="balao-conector" class="balao-info oculto" style="top: 94.5%; left: 65%;">💡<div class="texto-balao"><span style="color:red;">Conectores de emenda</span> garantem conexões firmes e energia sem interrupção</div></div>
         <div id="balao-final" class="balao-info oculto" style="top: 94.5%; left: 70%;">💡<div class="texto-balao"><span style="color:red;">LÂMPADAS</span> --> Recebem Neutro e Retorno.<br><span style="color:red;">INTERRUPTOR</span> --> Recebe Fase e Retorno</div></div>
-       <div id="balao-neutro-norma" class="balao-info oculto" style="top: 94.5%; left: 75%;">💡<div class="texto-balao">O fio neutro deve ser de cor azul-claro <span style="color:red;">(Item 6.1.5.3.1 da NBR-5410)</span></div></div> 
+        <div id="balao-neutro-norma" class="balao-info oculto" style="top: 94.5%; left: 75%;">💡<div class="texto-balao">O fio neutro deve ser de cor azul-claro <span style="color:red;">(Item 6.1.5.3.1 da NBR-5410)</span></div></div> 
         <div id="balao-neutro-concluido" class="balao-info oculto" style="top: 94.5%; left: 80%;">💡<div class="texto-balao"><span style="color: blue;">O fio neutro</span>, também é comum às 2 lâmpadas do circuito.</div></div>
        
         <img id="comp-dg" src="al_dg_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dg_off.png', 'al_dg_on.png')">
         <img id="comp-dr" src="al_dr_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dr_off.png', 'al_dr_on.png')">
-      <!--  <img  id="comp-int" src="tec_int_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'tec_int_off.png', 'tec_int_on.png')">  -->
+        <img id="comp-int1" src="intum_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'intum_off.png', 'intum_on.png')">
+        <img id="comp-int2" src="intdois_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'intdois_off.png', 'intdois_on.png')">
 
         <img id="con-fase" src="con_derivacao.png" class="oculto" style="top: 17.5%; left: 73.5%; transform: translate(-50%, -50%) rotate(0deg);">
         <img id="con-neutro" src="con_derivacao.png" class="oculto" style="top: 14.5%; left: 76.5%; transform: translate(-50%, -50%) rotate(0deg);">
@@ -293,7 +280,8 @@
             <div class="lista-status">
                 <div class="linha-dispositivo"><span>DG</span><span id="txt-dg">[ OFF ] ❌</span></div>
                 <div class="linha-dispositivo"><span>DR</span><span id="txt-dr">[ OFF ] ❌</span></div>
-                <div class="linha-dispositivo"><span>INT.</span><span id="txt-int">[ OFF ] ❌</span></div>
+                <div class="linha-dispositivo"><span>INT. 1</span><span id="txt-int1">[ OFF ] ❌</span></div>
+                <div class="linha-dispositivo"><span>INT. 2</span><span id="txt-int2">[ OFF ] ❌</span></div>
             </div>
         </div>
 
@@ -339,50 +327,62 @@
         const cacheImagens = {};
 
         function atualizarQuadroPosicao() {
-            const dispositivos = [
-                { idComp: 'comp-dg', idTxt: 'txt-dg' },
-                { idComp: 'comp-dr', idTxt: 'txt-dr' },
-                { idComp: 'comp-int', idTxt: 'txt-int' }
-            ];
-            let todosLigados = true;
-            dispositivos.forEach(disp => {
-                const el = document.getElementById(disp.idComp);
-                const isON = el.getAttribute('data-state') === 'on';
-                if (!isON) todosLigados = false;
-                document.getElementById(disp.idTxt).innerHTML = isON ? `<span class="status-on">[ ON ] ✅</span>` : `<span class="status-off">[ OFF ] ❌</span>`;
-            });
+            const elDg = document.getElementById('comp-dg');
+            const elDr = document.getElementById('comp-dr');
+            const elInt1 = document.getElementById('comp-int1');
+            const elInt2 = document.getElementById('comp-int2');
 
-            if (etapaAtual >= roteiro.length && todosLigados) {
+            const dgOn = elDg.getAttribute('data-state') === 'on';
+            const drOn = elDr.getAttribute('data-state') === 'on';
+            const int1On = elInt1.getAttribute('data-state') === 'on';
+            const int2On = elInt2.getAttribute('data-state') === 'on';
+
+            document.getElementById('txt-dg').innerHTML = dgOn ? `<span class="status-on">[ ON ] ✅</span>` : `<span class="status-off">[ OFF ] ❌</span>`;
+            document.getElementById('txt-dr').innerHTML = drOn ? `<span class="status-on">[ ON ] ✅</span>` : `<span class="status-off">[ OFF ] ❌</span>`;
+            document.getElementById('txt-int1').innerHTML = int1On ? `<span class="status-on">[ ON ] ✅</span>` : `<span class="status-off">[ OFF ] ❌</span>`;
+            document.getElementById('txt-int2').innerHTML = int2On ? `<span class="status-on">[ ON ] ✅</span>` : `<span class="status-off">[ OFF ] ❌</span>`;
+
+            if (etapaAtual >= roteiro.length) {
                 const lampA = document.getElementById('lamp-on-a');
                 const lampB = document.getElementById('lamp-on-b');
                 const placa = document.getElementById('placa-concluido');
-                
-                if (lampA.classList.contains('oculto')) {
+
+                // Lâmpada A responde ao Disjuntor Geral, Dispositivo Residual e Seção 1 do Interruptor
+                if (dgOn && drOn && int1On) {
                     lampA.classList.remove('oculto');
+                } else {
+                    lampA.classList.add('oculto');
+                }
+
+                // Lâmpada B responde ao Disjuntor Geral, Dispositivo Residual e Seção 2 do Interruptor
+                if (dgOn && drOn && int2On) {
                     lampB.classList.remove('oculto');
-                    
-                    setTimeout(() => {
-                        if (!lampA.classList.contains('oculto') && !placa.dataset.placaMostrada) {
-                            placa.classList.remove('oculto');
-                            placa.dataset.placaMostrada = "true";
-                            
-                            setTimeout(() => {
-                                placa.classList.add('oculto');
-                            }, 5000); 
-                        }
-                    }, 1000);
+                } else {
+                    lampB.classList.add('oculto');
+                }
+
+                // Exibe a placa de conclusão se ambas as seções forem testadas com sucesso simultaneamente
+                if (dgOn && drOn && int1On && int2On) {
+                    if (!placa.dataset.placaMostrada) {
+                        placa.classList.remove('oculto');
+                        placa.dataset.placaMostrada = "true";
+                        setTimeout(() => {
+                            placa.classList.add('oculto');
+                        }, 5000);
+                    }
+                } else {
+                    placa.classList.add('oculto');
+                    delete placa.dataset.placaMostrada;
                 }
             } else {
-                const placa = document.getElementById('placa-concluido');
                 document.getElementById('lamp-on-a').classList.add('oculto');
                 document.getElementById('lamp-on-b').classList.add('oculto');
-                placa.classList.add('oculto');
-                delete placa.dataset.placaMostrada; 
+                document.getElementById('placa-concluido').classList.add('oculto');
             }
         }
 
         function toggleComp(el, off, on) {
-            if (el.id === 'comp-int') {
+            if (el.id === 'comp-int1' || el.id === 'comp-int2') {
                 tocarSom('audio-int'); 
             } else {
                 tocarSom('audio-disj'); 
@@ -396,7 +396,7 @@
 
         function proximoPasso() {
             if (etapaAtual >= roteiro.length) {
-                document.getElementById('label-status').innerText = "FIAÇÃO CONCLUÍDA! LIGUE O DG, O DR E O INTERRUPTOR, PARA TESTAR O CIRCUITO.";
+                document.getElementById('label-status').innerText = "FIAÇÃO CONCLUÍDA! LIGUE O DG, O DR E AS SEÇÕES DO INTERRUPTOR PARA TESTAR.";
                 document.getElementById('painel-dispositivos').classList.remove('oculto');
                 return;
             }
@@ -435,7 +435,7 @@
             document.getElementById('interacao-container').appendChild(ponto);
         }
 
-        function executarAnimacaoFluida(dados) {
+        function ejecutarAnimacaoFluida(dados) {
             const imgElemento = document.getElementById(dados.imgId);
             if(!imgElemento) return;
             
@@ -456,19 +456,18 @@
                     tocarSom('audio-conexao');
                     
                     if (dados.pasta === "FASE_REDE") {
-		                        document.getElementById('balao-fase-rede').classList.remove('oculto');
-		                        document.getElementById('placa-dicas').classList.remove('oculto');
-		                    }
-	                    else if (dados.pasta === "NEUTRO_REDE") document.getElementById('balao-neutro-rede').classList.remove('oculto');
-	                    else if (dados.pasta === "FASE_2") document.getElementById('balao-fase-2').classList.remove('oculto');
-	                    else if (dados.pasta === "RETORNO") document.getElementById('balao-retorno-inicial').classList.remove('oculto');
-	                    else if (dados.pasta === "RETORNO_1") { document.getElementById('balao-retorno').classList.remove('oculto'); document.getElementById('balao-conector').classList.remove('oculto'); }
-	                    /* MODIFICAÇÃO CIRÚRGICA: Ativando também o novo balão ao finalizar o condutor NEUTRO_3 */
-	                    else if (dados.pasta === "NEUTRO_3") { 
-	                        document.getElementById('balao-final').classList.remove('oculto'); 
-	                        document.getElementById('balao-neutro-norma').classList.remove('oculto'); 
-	                        document.getElementById('balao-neutro-concluido').classList.remove('oculto'); 
-	                    }
+                        document.getElementById('balao-fase-rede').classList.remove('oculto');
+                        document.getElementById('placa-dicas').classList.remove('oculto');
+                    }
+                    else if (dados.pasta === "NEUTRO_REDE") document.getElementById('balao-neutro-rede').classList.remove('oculto');
+                    else if (dados.pasta === "FASE_2") document.getElementById('balao-fase-2').classList.remove('oculto');
+                    else if (dados.pasta === "RETORNO") document.getElementById('balao-retorno-inicial').classList.remove('oculto');
+                    else if (dados.pasta === "RETORNO_1") { document.getElementById('balao-retorno').classList.remove('oculto'); document.getElementById('balao-conector').classList.remove('oculto'); }
+                    else if (dados.pasta === "NEUTRO_3") { 
+                        document.getElementById('balao-final').classList.remove('oculto'); 
+                        document.getElementById('balao-neutro-norma').classList.remove('oculto'); 
+                        document.getElementById('balao-neutro-concluido').classList.remove('oculto'); 
+                    }
                     
                     if (dados.pasta === "RETORNO") {
                         document.getElementById('con-retorno').classList.remove('oculto');
