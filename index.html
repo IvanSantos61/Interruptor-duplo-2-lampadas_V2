@@ -38,20 +38,17 @@
         .texto-balao { visibility: hidden; position: absolute; bottom: 50px; left: 0; width: 300px; background: white; color: black; padding: 12px; border-radius: 8px; font-size: 18px; z-index: 999; text-transform: none; font-weight: normal; white-space: normal; line-height: 1.4; border: 2px solid #00f2ff; }
         .balao-info:hover .texto-balao { visibility: visible; }
 
-        /* NOVO EFEITO: Interface Fluida de Vidro Fumê com Brilho de Fundo Integrado */
+        /* Interface Fluida de Vidro Fumê com Brilho de Fundo Integrado */
         #painel-dispositivos { 
             position: absolute; 
             top: 54.2%; 
             left: 10%; 
             width: 15%; 
-            /* Fundo escuro com sutil transparência e desfoque de fundo (Glassmorphism) */
             background: rgba(3, 8, 16, 0.92);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            /* Sem bordas duras nas laterais, cantos limpos e muito arredondados */
             border: none;
             border-radius: 20px; 
-            /* Brilho neon suave e difuso atuando como uma aura por trás do painel */
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 
                         0 0 30px rgba(0, 242, 255, 0.15);
             overflow: hidden;
@@ -60,7 +57,6 @@
             animation: pulsoAura 4s infinite ease-in-out;
         }
 
-        /* Animação sutil para dar vida ao painel elétrico sem poluir visualmente */
         @keyframes pulsoAura {
             0%, 100% { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 242, 255, 0.12); }
             50% { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 242, 255, 0.22); }
@@ -122,7 +118,6 @@
         .modal-ajuda button { border-radius: 50px !important; padding: 12px 30px !important; border: none !important; cursor: pointer !important; background-color: yellow !important; color: black !important; }
         #visualizador-tecnico button { border-radius: 50px !important; padding: 10px 30px !important; border: none !important; cursor: pointer !important; }
 
-        /* ESTILOS PARA OS NOVOS HOTSPOTS */
         .hotspot {
             position: absolute;
             background: rgba(255, 255, 255, 0);
@@ -165,7 +160,7 @@
             <h2 class="splash-subtitulo">INTERRUPTOR DUPLO<br>(PARA 2 LÂMPADAS)</h2>
             <p class="splash-info">CIRCUITO MONOFÁSICO - 127V</p>
             <p class="splash-footer">© Desenvolvido por Ivan Santos - ConectaeadPLUS - 2026</p>
-            <button class="btn-iniciar" onclick="document.getElementById('splash-screen').style.display='none'">CLIQUE PARA INICIAR O LABORATÓRIO</button>
+            <button class="btn-iniciar" onclick="fecharSplash()">CLIQUE PARA INICIAR O LABORATÓRIO</button>
         </div>
     </div>
 
@@ -178,7 +173,7 @@
     <main id="quadro-simulacao">
          
         <img src="ambiente.jpg" class="camada">
-
+        
         <div class="hotspot" style="top: 58%; left: 5%; width: 5%; height: 20%;" title="REDE ELÉTRICA">
             <div class="tooltip">REDE ELÉTRICA</div>
         </div>
@@ -326,6 +321,11 @@
         let etapaAtual = 0;
         const cacheImagens = {};
 
+        function fecharSplash() {
+            document.getElementById('splash-screen').style.display = 'none';
+            proximoPasso();
+        }
+
         function atualizarQuadroPosicao() {
             const elDg = document.getElementById('comp-dg');
             const elDr = document.getElementById('comp-dr');
@@ -347,21 +347,18 @@
                 const lampB = document.getElementById('lamp-on-b');
                 const placa = document.getElementById('placa-concluido');
 
-                // Lâmpada A responde ao Disjuntor Geral, Dispositivo Residual e Seção 1 do Interruptor
                 if (dgOn && drOn && int1On) {
                     lampA.classList.remove('oculto');
                 } else {
                     lampA.classList.add('oculto');
                 }
 
-                // Lâmpada B responde ao Disjuntor Geral, Dispositivo Residual e Seção 2 do Interruptor
                 if (dgOn && drOn && int2On) {
                     lampB.classList.remove('oculto');
                 } else {
                     lampB.classList.add('oculto');
                 }
 
-                // Exibe a placa de conclusão se ambas as seções forem testadas com sucesso simultaneamente
                 if (dgOn && drOn && int1On && int2On) {
                     if (!placa.dataset.placaMostrada) {
                         placa.classList.remove('oculto');
@@ -435,7 +432,7 @@
             document.getElementById('interacao-container').appendChild(ponto);
         }
 
-        function ejecutarAnimacaoFluida(dados) {
+        function executarAnimacaoFluida(dados) {
             const imgElemento = document.getElementById(dados.imgId);
             if(!imgElemento) return;
             
@@ -529,8 +526,6 @@
             
             document.getElementById('visualizador-tecnico').classList.remove('oculto');
         }
-
-        window.onload = proximoPasso;
     </script>
 </body>
 </html>
