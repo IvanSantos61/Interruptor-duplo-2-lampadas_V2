@@ -315,7 +315,7 @@
             { nome: "Retorno da Lâmpada (A) - Clique nos pontos indicados", pasta: "RETORNO", total: 45, imgId: "img-retorno", cor: "retorno", origem: { x: 67, y: 76.5 }, destino: { x: 77.5, y: 57 } },
             { nome: "Retorno da Lâmpada (B) - Clique nos pontos indicados", pasta: "RETORNO_1", total: 36, imgId: "img-retorno1", cor: "retorno", origem: { x: 77.7, y: 34 }, destino: { x: 89, y: 58 } },
             { nome: "Neutro da Lâmpada (A) - Clique nos pontos indicados", pasta: "NEUTRO_2", total: 25, imgId: "img-neutro-circuito", cor: "neutro", origem: { x: 77.8, y: 14.2 }, destino: { x: 79.5, y: 56.5 } },
-            { nome: "Neutro da Lâmpada (B) - Clique nos pontos indicados", pasta: "NEUTRO_3", total: 26, imgId: "img-neutro-3", cor: "neutro", origem: { x: 92.5, y: 15.8 }, destino: { x: 90.6, y: 58 } }
+            { network: "Neutro da Lâmpada (B) - Clique nos pontos indicados", pasta: "NEUTRO_3", total: 26, imgId: "img-neutro-3", cor: "neutro", origem: { x: 92.5, y: 15.8 }, destino: { x: 90.6, y: 58 } }
         ];
 
         let etapaAtual = 0;
@@ -398,7 +398,8 @@
                 return;
             }
             const dados = roteiro[etapaAtual];
-            document.getElementById('label-status').innerText = `CONECTE: ${dados.nome.toUpperCase()}`;
+            const nomeExibicao = dados.nome || dados.network;
+            document.getElementById('label-status').innerText = `CONECTE: ${nomeExibicao.toUpperCase()}`;
             
             if (dados.pasta === "FASE_2") document.getElementById('con-fase').classList.remove('oculto');
             if (dados.pasta === "NEUTRO_2") document.getElementById('con-neutro').classList.remove('oculto');
@@ -426,13 +427,15 @@
 
         function criarPonto(pos, coreClasse, cliqueFn) {
             const ponto = document.createElement('div');
+            const container = document.getElementById('interacao-container');
+            if(!container) return;
             ponto.className = `ponto ${coreClasse}`;
             ponto.style.left = pos.x + "%"; ponto.style.top = pos.y + "%";
             ponto.onclick = (e) => { e.stopPropagation(); cliqueFn.call(ponto); };
-            document.getElementById('interacao-container').appendChild(ponto);
+            container.appendChild(ponto);
         }
 
-        function ejecutarAnimacaoFluida(dados) {
+        function executarAnimacaoFluida(dados) {
             const imgElemento = document.getElementById(dados.imgId);
             if(!imgElemento) return;
             
@@ -442,10 +445,16 @@
             let contador = 0;
 
             function animar() {
+                // CORREÇÃO CRÍTICA: impede o loop de buscar um índice inexistente (undefined) além da lista carregada
                 if (frameIdx < frames.length) {
                     if (contador % 3 === 0) { 
-                        imgElemento.src = frames[frameIdx].src; 
-                        frameIdx++; 
+                        if (frames[frameIdx] && frames[frameIdx].src) {
+                            imgElemento.src = frames[frameIdx].src; 
+                            frameIdx++; 
+                        } else {
+                            // Salvaguarda se a imagem falhar fisicamente
+                            frameIdx = frames.length; 
+                        }
                     }
                     contador++; 
                     requestAnimationFrame(animar);
