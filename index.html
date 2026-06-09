@@ -3,363 +3,538 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMT - Treinamento de Conexão</title>
+    <title>Laboratório SMT Pro</title>
     <style>
-        /* Estilização Base - Identidade Visual Dark Electric */
-        :root {
-            --bg-color: #0d0f12;
-            --container-bg: #14181f;
-            --neon-cyan: #00f3ff;
-            --neon-red: #ff0055;
-            --text-color: #e2e8f0;
-            --border-radius: 16px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body { background-color: #05070a; color: white; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #05070a; z-index: 5000; display: flex; justify-content: center; align-items: center; }
+        .moldura-neon { border: 2.4px solid #00f2ff; padding: 72px; border-radius: 24px; text-align: center; box-shadow: 0 0 48px rgba(0, 242, 255, 0.5), inset 0 0 24px rgba(0, 242, 255, 0.2); }
+        .splash-titulo { font-size: 3.6em; color: rgba(0, 242, 255, 0.4); text-transform: uppercase; margin-bottom: 12px; font-weight: normal; }
+        .splash-subtitulo { font-size: 2.64em; color: #00f2ff; text-transform: uppercase; margin-bottom: 24px; font-weight: normal; }
+        .splash-info { font-size: 1.8em; color: #00f2ff; margin-bottom: 48px; }
+        .splash-footer { color: #808080; font-size: 1.08em; margin-bottom: 48px; }
+        .btn-iniciar { background: transparent; color: #00f2ff; border: 2.4px solid #00f2ff; padding: 18px 48px; border-radius: 60px; font-size: 1.44em; cursor: pointer; animation: piscar 1.5s infinite; }
+        @keyframes piscar { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        body {
-            margin: 0;
-            padding: 20px;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
+        #titulo-projeto { color: #00f2ff; font-size: clamp(24px, 5vw, 48px); font-weight: 900; text-transform: uppercase; margin-bottom: 15px; text-shadow: 0 0 15px rgba(0, 242, 255, 0.5); }
+        #linha-status { background: rgba(10, 15, 20, 0.9); border: 1px solid #1a3a5a; padding: 15px 30px; border-radius: 8px; margin-bottom: 20px; width: 100%; max-width: 1200px; text-align: center; }
+        .texto-status { color: #ffcc00; font-size: clamp(16px, 2.5vw, 24px); font-weight: bold; text-transform: uppercase; }
+        
+        #quadro-simulacao { position: relative; width: 100%; max-width: 1600px; aspect-ratio: 1920 / 1080; background-color: #000; border: 2px solid #333; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+        .camada { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+        .tecla-interativa { position: absolute; z-index: 900; cursor: pointer; transition: transform 0.1s; }
+        
+        #comp-dg { width: 4%; top: 26%; left: 12%; }
+        #comp-dr { width: 5%; top: 29%; left: 23.6%; }
+        #comp-int1 { width: 6.2%; top: 67.7%; left: 63.3%; }
+        #comp-int2 { width: 6.2%; top: 73%; left: 63.5%; }
 
-        /* Container Principal do Simulador */
-        .simulador-container {
-            background-color: var(--container-bg);
-            border: 2px solid var(--neon-cyan);
-            border-radius: var(--border-radius);
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
-            padding: 20px;
-            width: 100%;
-            max-width: 1024px;
-            text-align: center;
-            box-sizing: border-box;
-            position: relative;
-        }
+        #con-fase, #con-neutro, #con-retorno, #con-neutro-lamp { position: absolute; z-index: 50; width: 5%; pointer-events: none; }
 
-        h2 {
-            color: var(--neon-cyan);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-top: 0;
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
-        }
+        .oculto { display: none !important; }
 
-        /* Instruções e Status */
-        .status-box {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-weight: bold;
-            border-left: 4px solid var(--neon-cyan);
-        }
+        .balao-info { position: absolute; width: 45px; height: 45px; background: #000; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: help; z-index: 900; font-size: 24px; }
+        .texto-balao { visibility: hidden; position: absolute; bottom: 50px; left: 0; width: 300px; background: white; color: black; padding: 12px; border-radius: 8px; font-size: 18px; z-index: 999; text-transform: none; font-weight: normal; white-space: normal; line-height: 1.4; border: 2px solid #00f2ff; }
+        .balao-info:hover .texto-balao { visibility: visible; }
 
-        /* Área do Canvas */
-        .canvas-wrapper {
-            position: relative;
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-            background: #000;
-            border-radius: 8px;
+        /* Interface Fluida de Vidro Fumê com Brilho de Fundo Integrado */
+        #painel-dispositivos { 
+            position: absolute; 
+            top: 54.2%; 
+            left: 10%; 
+            width: 15%; 
+            background: rgba(3, 8, 16, 0.92);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: none;
+            border-radius: 20px; 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 
+                        0 0 30px rgba(0, 242, 255, 0.15);
             overflow: hidden;
+            padding-bottom: 15px;
+            z-index: 500; 
+            animation: pulsoAura 4s infinite ease-in-out;
         }
 
-        canvas {
-            display: block;
-            width: 100%;
-            height: auto;
-            cursor: crosshair;
+        @keyframes pulsoAura {
+            0%, 100% { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 242, 255, 0.12); }
+            50% { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 242, 255, 0.22); }
         }
 
-        /* Painel de Controle de Acesso / Botões */
-        .control-panel {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
+        #painel-dispositivos h3 { 
+            background: rgba(0, 136, 153, 0.3); 
+            color: #00f2ff; 
+            text-align: center; 
+            font-size: 1vw; 
+            padding: 12px; 
+            text-transform: uppercase; 
+            font-weight: 800;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(0, 242, 255, 0.15);
+            text-shadow: 0 0 8px rgba(0, 242, 255, 0.5);
         }
-
-        .btn {
-            background: transparent;
-            border: 2px solid var(--neon-red);
-            color: var(--neon-red);
-            padding: 10px 20px;
+        
+        .linha-dispositivo { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 12px 18px; 
+            margin: 6px 10px; 
+            background: rgba(255, 255, 255, 0.03); 
             border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
+            border-left: 3px solid rgba(0, 242, 255, 0.4); 
+            font-weight: 600; 
+            font-size: 0.95vw; 
+            transition: all 0.2s ease;
         }
+        
+        .status-on { color: #00ff00; text-shadow: 0 0 8px rgba(0, 255, 0, 0.6); font-weight: 800; }
+        .status-off { color: #ff3333; text-shadow: 0 0 8px rgba(255, 51, 51, 0.6); font-weight: 800; }
 
-        .btn:hover {
-            background: var(--neon-red);
-            color: #fff;
-            box-shadow: 0 0 15px var(--neon-red);
+        .ponto { position: absolute; width: 1.8%; aspect-ratio: 1/1; border-radius: 50%; border: 2px solid #fff; cursor: pointer; z-index: 900; transform: translate(-50%, -50%); }
+        .fase { background-color: #ff0000; box-shadow: 0 0 15px #ff0000; }
+        .neutro { background-color: #0066ff; box-shadow: 0 0 15px #0066ff; }
+        .retorno { background-color: #ffff00; box-shadow: 0 0 15px #ffff00; }
+        .sucesso { background-color: #00ff00 !important; box-shadow: 0 0 20px #00ff00 !important; }
+
+        #lamp-on-a { top: 29%; left: 55.9%; width: 51.5%; }
+        #lamp-on-b { top: 29%; left: 67.5%; width: 51.5%; }
+
+        #placa-concluido { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #001100; border: 3px solid #00ff00; padding: 40px 100px; font-size: 3.5vw; color: #00ff00; z-index: 2000; text-align: center; border-radius: 8px; overflow: hidden; box-shadow: 0 0 30px rgba(0, 255, 0, 0.4); text-transform: uppercase; font-weight: bold; letter-spacing: 2px; }
+        #placa-concluido::after { content: ''; position: absolute; top: -100%; left: 0; width: 100%; height: 2px; background: #00ff00; box-shadow: 0 0 15px #00ff00; animation: scanner 2s linear 2; }
+        @keyframes scanner { 0% { top: 0%; } 100% { top: 100%; } }
+
+        #btn-ajuda { position: absolute; bottom: 10.5%; left: 15%; background: linear-gradient(180deg, #008899, #004455); color: white; border: 1px solid #00f2ff; padding: 0.6% 3.5%; font-size: 1.1vw; font-weight: bold; border-radius: 50px; cursor: pointer; z-index: 200; }
+        #btn-reiniciar { position: absolute; bottom: 3%; left: 13.5%; background: linear-gradient(180deg, #cc0000, #880000); color: white; border: 1px solid #500; padding: 0.6% 3.5%; font-size: 1.1vw; font-weight: bold; border-radius: 50px; cursor: pointer; z-index: 200; }
+
+        #overlay-ajuda { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; }
+        .modal-ajuda { background: #0a1015; border: 2px solid #1a3a5a; width: 40%; padding: 30px; border-radius: 12px; text-align: center; }
+        .item-ajuda { background: rgba(255, 255, 255, 0.03); border: 1px solid #1a3a5a; margin-bottom: 10px; padding: 15px; color: white; text-align: left; cursor: pointer; font-weight: normal; font-size: 1.1vw; }
+        #visualizador-tecnico { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1100; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        #instrucao-clique { background: #ffcc00; color: #000; padding: 5px 15px; font-weight: bold; border-radius: 4px; margin-bottom: 15px; text-transform: uppercase; font-size: 1vw; animation: blink 1.5s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        .modal-ajuda button { border-radius: 50px !important; padding: 12px 30px !important; border: none !important; cursor: pointer !important; background-color: yellow !important; color: black !important; }
+        #visualizador-tecnico button { border-radius: 50px !important; padding: 10px 30px !important; border: none !important; cursor: pointer !important; }
+
+        .hotspot {
+            position: absolute;
+            background: rgba(255, 255, 255, 0);
+            border: 1px dashed rgba(0, 242, 255, 0.2);
+            cursor: help;
+            z-index: 800;
+            transition: background 0.3s ease;
         }
-
-        /* Painel de Login/Senha */
-        .auth-box {
-            display: flex;
-            gap: 10px;
-            align-items: center;
+        .hotspot:hover {
+            background: rgba(0, 242, 255, 0.15);
+            border: 1px solid rgba(0, 242, 255, 0.5);
         }
-
-        .input-senha {
-            background: #1a1f29;
-            border: 1px solid var(--neon-cyan);
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 6px;
-            outline: none;
+        .hotspot .tooltip {
+            visibility: hidden;
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: yellow;
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: 1px solid #00f2ff;
+            font-size: 16px;
+            white-space: nowrap;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            pointer-events: none;
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+        }
+        .hotspot:hover .tooltip {
+            visibility: visible;
         }
     </style>
 </head>
 <body>
 
-    <div class="simulador-container">
-        <h2>Simulador SMT Pro</h2>
-        
-        <div class="status-box" id="instrucao">
-            Carregando simulador...
-        </div>
-
-        <div class="canvas-wrapper">
-            <canvas id="cenarioCanvas" width="1024" height="576"></canvas>
-        </div>
-
-        <div class="control-panel">
-            <button class="btn" id="btn-reset" onclick="resetarSimulador()">Reiniciar Tela</button>
-            
-            <div class="auth-box" id="painel-auth">
-                <input type="password" id="campo-senha" class="input-senha" placeholder="Senha do Painel">
-                <button class="btn" style="border-color: var(--neon-cyan); color: var(--neon-cyan);" onclick="logoutSeguro()">Sair</button>
-            </div>
+    <div id="splash-screen">
+        <div class="moldura-neon">
+            <h1 class="splash-titulo">LABORATÓRIO SMT PRO</h1>
+            <h2 class="splash-subtitulo">INTERRUPTOR DUPLO<br>(PARA 2 LÂMPADAS)</h2>
+            <p class="splash-info">CIRCUITO MONOFÁSICO - 127V</p>
+            <p class="splash-footer">© Desenvolvido por Ivan Santos - ConectaeadPLUS - 2026</p>
+            <button class="btn-iniciar" onclick="fecharSplash()">CLIQUE PARA INICIAR O LABORATÓRIO</button>
         </div>
     </div>
 
+    <h1 id="titulo-projeto">LABORATÓRIO SMT PRO</h1>
+
+    <div id="linha-status">
+        <span id="label-status" class="texto-status">SISTEMA PRONTO</span>
+    </div>
+
+    <main id="quadro-simulacao">
+         
+        <img src="ambiente.jpg" class="camada">
+        
+        <div class="hotspot" style="top: 58%; left: 5%; width: 5%; height: 20%;" title="REDE ELÉTRICA">
+            <div class="tooltip">REDE ELÉTRICA</div>
+        </div>
+
+        <div class="hotspot" style="top: 10%; left: 6.4%; width: 3%; height: 35%;" title="BARRA DE ATERRAMENTO">
+            <div class="tooltip">BARRA DE ATERRAMENTO</div>
+        </div>
+
+        <div class="hotspot" style="top: 13%; left: 11.8%; width: 4%; height: 27%;" title="DISJUNTOR GERAL">
+            <div class="tooltip">DISJUNTOR GERAL</div>
+        </div>
+
+        <div class="hotspot" style="top: 13%; left: 15.6%; width: 4%; height: 27%;" title="DPS">
+            <div class="tooltip">DPS</div>
+        </div>
+
+        <div class="hotspot" style="top: 12.6%; left: 19.5%; width: 9%; height: 30%;" title="DISPOSITIVO RESIDUAL (DR)">
+            <div class="tooltip">DISPOSITIVO RESIDUAL (DR)</div>
+        </div>
+
+        <div class="hotspot" style="top: 12.6%; left: 28.5%; width: 11.5%; height: 28%;" title="DISJUNTORES DOS CIRCUITOS">
+            <div class="tooltip">DISJUNTORES DOS CIRCUITOS</div>
+        </div>
+
+        <div class="hotspot" style="top: 10%; left: 42.9%; width: 3%; height: 35%;" title="BARRA DE NEUTRO">
+            <div class="tooltip">BARRA DE NEUTRO</div>
+        </div>
+        
+        <div class="hotspot" style="top: 73.5%; left: 75.5%; width: 8%; height: 18%;" title="LÂMPADA LED 127V">
+            <div class="tooltip">LÂMPADA LED 127V</div>
+        </div>
+        <div class="hotspot" style="top: 73.5%; left: 87%; width: 8%; height: 18%;" title="LÂMPADA LED 127V">
+            <div class="tooltip">LÂMPADA LED 127V</div>
+        </div>
+
+        <div class="hotspot" style="top: 62%; left: 76.4%; width: 6%; height: 12%;" title="BOCAL E-27">
+            <div class="tooltip">BOCAL E-27</div>
+        </div>
+        <div class="hotspot" style="top: 62%; left: 88%; width: 6%; height: 12%;" title="BOCAL E-27">
+            <div class="tooltip">BOCAL E-27</div>
+        </div>
+
+        <div class="hotspot" style="top: 56.9%; left: 58%; width: 10.5%; height: 34%;" title="INTERRUPTOR SIMPLES">
+            <div class="tooltip">INTERRUPTOR SIMPLES</div>
+        </div>
+
+        <div class="hotspot" style="top: 59%; left: 35%; width: 12%; height: 32%;" title="CAIXA DE PASSAGEM 4x2">
+            <div class="tooltip">CAIXA DE PASSAGEM 4x2"</div>
+        </div>
+        <div class="hotspot" style="top: 10.4%; left: 51.8%; width: 12%; height: 32%;" title="CAIXA DE PASSAGEM 4x2">
+            <div class="tooltip">CAIXA DE PASSAGEM 4x2"</div>
+        </div>
+        <div class="hotspot" style="top: 10.4%; left: 69.6%; width: 12%; height: 32%;" title="CAIXA DE PASSAGEM 4x2">
+            <div class="tooltip">CAIXA DE PASSAGEM 4x2"</div>
+        </div>
+        <div class="hotspot" style="top: 10.4%; left: 86.4%; width: 12%; height: 32%;" title="CAIXA DE PASSAGEM 4x2">
+            <div class="tooltip">CAIXA DE PASSAGEM 4x2"</div>
+        </div>
+
+        <div id="placa-dicas" class="oculto" style="position: absolute; bottom: 0.5%; left: 29%; background: rgba(3, 8, 16, 0.9); border: 1px solid #00f2ff; border-radius: 6px; padding: 4px 15px; box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); z-index: 200;">
+             <span style="color: #00f2ff; font-weight: 400; font-size: 1vw; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 0 5px rgba(0, 242, 255, 0.6);">💡 Dicas ➜ </span>
+        </div>
+        
+        <div id="balao-fase-rede" class="balao-info oculto" style="top: 94.5%; left: 40%;">💡<div class="texto-balao">A fase pode ser de qualquer cor <span style="color:red;">(Item 6.1.5.3.4 da NBR-5410)</span></div></div>
+        <div id="balao-neutro-rede" class="balao-info oculto" style="top: 94.5%; left: 45%;">💡<div class="texto-balao">A seção mínima dos fios do circuito de iluminação é 1,5mm2 <span style="color:red;">(Item 6.2.6.1.1 da NBR-5410)</span></div></div>
+        <div id="balao-fase-2" class="balao-info oculto" style="top: 94.5%; left: 50%;">💡<div class="texto-balao">O interruptor deve seccionar o condutor fase <span style="color:red;">(Item 6.3.7.2.1 da NBR-5410)</span></div></div>
+        <div id="balao-retorno-inicial" class="balao-info oculto" style="top: 94.5%; left: 55%;">💡<div class="texto-balao">O retorno também pode ser de qualquer cor. <span style="color: red;">(Continuidade da fase NBR-5410)</span></div></div>
+        <div id="balao-retorno" class="balao-info oculto" style="top: 94.5%; left: 60%;">💡<div class="texto-balao">O retorno, é comum às 2 lâmpadas <span style="color:red;">(Continuidade da fase NBR-5410)</span></div></div>
+        <div id="balao-conector" class="balao-info oculto" style="top: 94.5%; left: 65%;">💡<div class="texto-balao"><span style="color:red;">Conectores de emenda</span> garantem conexões firmes e energia sem interrupção</div></div>
+        <div id="balao-final" class="balao-info oculto" style="top: 94.5%; left: 70%;">💡<div class="texto-balao"><span style="color:red;">LÂMPADAS</span> --> Recebem Neutro e Retorno.<br><span style="color:red;">INTERRUPTOR</span> --> Recebe Fase e Retorno</div></div>
+        <div id="balao-neutro-norma" class="balao-info oculto" style="top: 94.5%; left: 75%;">💡<div class="texto-balao">O fio neutro deve ser de cor azul-claro <span style="color:red;">(Item 6.1.5.3.1 da NBR-5410)</span></div></div> 
+        <div id="balao-neutro-concluido" class="balao-info oculto" style="top: 94.5%; left: 80%;">💡<div class="texto-balao"><span style="color: blue;">O fio neutro</span>, também é comum às 2 lâmpadas do circuito.</div></div>
+       
+        <img id="comp-dg" src="al_dg_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dg_off.png', 'al_dg_on.png')">
+        <img id="comp-dr" src="al_dr_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'al_dr_off.png', 'al_dr_on.png')">
+        <img id="comp-int1" src="intum_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'intum_off.png', 'intum_on.png')">
+        <img id="comp-int2" src="intdois_off.png" data-state="off" class="tecla-interativa" onclick="toggleComp(this, 'intdois_off.png', 'intdois_on.png')">
+
+        <img id="con-fase" src="con_derivacao.png" class="oculto" style="top: 17.5%; left: 60.8%; transform: translate(-50%, -50%) rotate(0deg);">
+        <img id="con-neutro" src="con_derivacao.png" class="oculto" style="top: 14.5%; left: 76.5%; transform: translate(-50%, -50%) rotate(0deg);">
+        <img id="con-retorno" src="con_derivacao.png" class="oculto" style="top: 37%; left: 76.9%; transform: translate(-50%, -50%) rotate(90deg);">
+        <img id="con-neutro-lamp" src="con_derivacao.png" class="oculto" style="top: 14.5%; left: 94.5%; transform: translate(-50%, -50%) rotate(0deg);">
+
+        <img id="img-fase-rede" class="camada oculto">
+        <img id="img-neutro-rede" class="camada oculto">
+        <img id="img-fase-circuito" class="camada oculto">
+        <img id="img-retorno" class="camada oculto">
+        <img id="img-retorno1" class="camada oculto">
+        <img id="img-neutro-circuito" class="camada oculto">
+        <img id="img-neutro-3" class="camada oculto">
+        
+        <img id="lamp-on-a" src="lamp_on.png" class="camada oculto">
+        <img id="lamp-on-b" src="lamp_on.png" class="camada oculto">
+
+        <div id="placa-concluido" class="oculto">CONCLUÍDO</div>
+
+        <div id="painel-dispositivos" class="oculto">
+            <h3>Posição dos Dispositivos</h3>
+            <div class="lista-status">
+                <div class="linha-dispositivo"><span>DG</span><span id="txt-dg">[ OFF ] ❌</span></div>
+                <div class="linha-dispositivo"><span>DR</span><span id="txt-dr">[ OFF ] ❌</span></div>
+                <div class="linha-dispositivo"><span>INT. 1</span><span id="txt-int1">[ OFF ] ❌</span></div>
+                <div class="linha-dispositivo"><span>INT. 2</span><span id="txt-int2">[ OFF ] ❌</span></div>
+            </div>
+        </div>
+
+        <div id="interacao-container"></div>
+        <button id="btn-ajuda" onclick="abrirAjuda()">AJUDA</button>
+        <button id="btn-reiniciar" onclick="location.reload()">REINICIAR</button>
+
+        <div id="overlay-ajuda" class="oculto">
+            <div class="modal-ajuda">
+                <h2 style="color:#ffcc00; margin-bottom:20px;">Ajuda Técnico</h2>
+                <div class="item-ajuda" onclick="mostrarImagemTecnica('ligaint.png')">1. Ligação do interruptor simples</div>
+                <div class="item-ajuda" onclick="mostrarImagemTecnica('ligabocal.png')">2. Ligação da lâmpada</div>
+                <div class="item-ajuda" onclick="mostrarImagemTecnica('inst_con_der.png')">3. Conexões e emendas</div>
+                <div class="item-ajuda" onclick="abrirAnimacaoConector()">4. Instalação do conector de derivação</div>
+                <div class="item-ajuda" onclick="mostrarImagemTecnica('listamatcp.png')">5. Lista de material</div>
+                <button onclick="fecharAjuda()" style="margin-top:20px;">Fechar</button>
+            </div>
+        </div>
+
+        <div id="visualizador-tecnico" class="oculto">
+            <div id="instrucao-clique" class="oculto">CLIQUE NO CONECTOR PARA VER A MONTAGEM</div>
+            <img id="img-tecnica-exibida" src="" style="max-width:90%; max-height:80%;">
+            <button onclick="voltarParaLista()" style="margin-top:20px; background:#ffcc00; font-weight:bold;">VOLTAR</button>
+        </div>
+    </main>
+
+    <audio id="audio-int" src="int.mp3"></audio>
+    <audio id="audio-disj" src="disj.mp3"></audio>
+    <audio id="audio-conexao" src="conexao.mp3"></audio>
+
     <script>
-        const canvas = document.getElementById('cenarioCanvas');
-        const ctx = canvas.getContext('2d');
-        const instrucaoTxt = document.getElementById('instrucao');
-        const campoSenha = document.getElementById('campo-senha');
+        const roteiro = [
+            { nome: "Fase do Circuito - Clique nos pontos indicados", pasta: "FASE_REDE", total: 64, imgId: "img-fase-rede", cor: "fase", origem: { x: 27, y: 38.5 }, destino: { x: 98.5, y: 17.5 } },
+            { nome: "Neutro do Circuito - Clique nos pontos indicados", pasta: "NEUTRO_REDE", total: 76, imgId: "img-neutro-rede", cor: "neutro", origem: { x: 44.3, y: 35.2 }, destino: { x: 98.5, y: 14 } },
+            { nome: "Fase do Interruptor - Clique nos pontos indicados", pasta: "FASE_2", total: 33, imgId: "img-fase-circuito", cor: "fase", origem: { x: 72, y: 19 }, destino: { x: 67, y: 70 } },
+            { nome: "Retorno da Lâmpada (A) - Clique nos pontos indicados", pasta: "RETORNO", total: 45, imgId: "img-retorno", cor: "retorno", origem: { x: 67, y: 76.5 }, destino: { x: 77.5, y: 57 } },
+            { nome: "Retorno da Lâmpada (B) - Clique nos pontos indicados", pasta: "RETORNO_1", total: 36, imgId: "img-retorno1", cor: "retorno", origem: { x: 77.7, y: 34 }, destino: { x: 89, y: 58 } },
+            { nome: "Neutro da Lâmpada (A) - Clique nos pontos indicados", pasta: "NEUTRO_2", total: 25, imgId: "img-neutro-circuito", cor: "neutro", origem: { x: 77.8, y: 14.2 }, destino: { x: 79.5, y: 56.5 } },
+            { network: "Neutro da Lâmpada (B) - Clique nos pontos indicados", pasta: "NEUTRO_3", total: 26, imgId: "img-neutro-3", cor: "neutro", origem: { x: 92.5, y: 15.8 }, destino: { x: 90.6, y: 58 } }
+        ];
 
-        // Configuração do Roteiro (Atualizado estritamente para 39 frames no RETORNO_1)
-const roteiro = [
-    { nome: "Fase do Circuito - Clique nos pontos indicados", pasta: "FASE_REDE", total: 64, imgId: "img-fase-rede", cor: "fase", origem: { x: 27, y: 38.5 }, destino: { x: 98.5, y: 17.5 } },
-    { nome: "Neutro do Circuito - Clique nos pontos indicados", pasta: "NEUTRO_REDE", total: 76, imgId: "img-neutro-rede", cor: "neutro", origem: { x: 44.3, y: 35.2 }, destino: { x: 98.5, y: 14 } },
-    { nome: "Fase do Interruptor - Clique nos pontos indicados", pasta: "FASE_2", total: 33, imgId: "img-fase-circuito", cor: "fase", origem: { x: 72, y: 19 }, destino: { x: 67, y: 70 } },
-    { nome: "Retorno da Lâmpada (A) - Clique nos pontos indicados", pasta: "RETORNO", total: 45, imgId: "img-retorno", cor: "retorno", origem: { x: 67, y: 76.5 }, destino: { x: 77.5, y: 57 } },
-    { nome: "Retorno da Lâmpada (B) - Clique nos pontos indicados", pasta: "RETORNO_1", total: 39, imgId: "img-retorno1", cor: "retorno", origem: { x: 77.7, y: 34 }, destino: { x: 89, y: 58 } },
-    { nome: "Neutro da Lâmpada (A) - Clique nos pontos indicados", pasta: "NEUTRO_2", total: 25, imgId: "img-neutro-circuito", cor: "neutro", origem: { x: 77.8, y: 14.2 }, destino: { x: 79.5, y: 56.5 } },
-    { network: "Neutro da Lâmpada (B) - Clique nos pontos indicados", pasta: "NEUTRO_3", total: 26, imgId: "img-neutro-3", cor: "neutro", origem: { x: 92.5, y: 15.8 }, destino: { x: 90.6, y: 58 } }
-];
+        let etapaAtual = 0;
+        const cacheImagens = {};
 
-        let passoAtual = 0;
-        let frameAtual = 1;
-        let clicouOrigem = false;
-        let animando = false;
-        let cacheImagens = {};
-
-        // Inicialização do Simulador
-        function init() {
-            carregarImagensPassoAtual();
-            atualizarInterface();
+        function fecharSplash() {
+            document.getElementById('splash-screen').style.display = 'none';
+            proximoPasso();
         }
 
-        function atualizarInterface() {
-            if (passoAtual < roteiro.length) {
-                instrucaoTxt.textContent = roteiro[passoAtual].nome;
-            } else {
-                instrucaoTxt.textContent = "Treinamento Concluído com Sucesso!";
-            }
-            renderizarCenario();
-        }
+        function atualizarQuadroPosicao() {
+            const elDg = document.getElementById('comp-dg');
+            const elDr = document.getElementById('comp-dr');
+            const elInt1 = document.getElementById('comp-int1');
+            const elInt2 = document.getElementById('comp-int2');
 
-        // Simulação do cache/carregamento dinâmico
-        function carregarImagensPassoAtual() {
-            if (passoAtual >= roteiro.length) return;
-            let passo = roteiro[passoAtual];
-            cacheImagens[passo.pasta] = [];
-            
-            // Pré-carrega o primeiro frame estático
-            let img = new Image();
-            img.src = `${passo.pasta}/quadro0001.png`;
-            img.onload = () => { if(!animando) renderizarCenario(); };
-            cacheImagens[passo.pasta][1] = img;
-        }
+            const dgOn = elDg.getAttribute('data-state') === 'on';
+            const drOn = elDr.getAttribute('data-state') === 'on';
+            const int1On = elInt1.getAttribute('data-state') === 'on';
+            const int2On = elInt2.getAttribute('data-state') === 'on';
 
-        // Renderização no Canvas
-        function renderizarCenario() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Fundo de simulação (Preto ou imagem base se houver)
-            ctx.fillStyle = "#1b1e24";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('txt-dg').innerHTML = dgOn ? `<span class="status-on">[ ON ] ✅</span>` : `<span class="status-off">[ OFF ] ❌</span>`;
+            document.getElementById('txt-dr').innerHTML = drOn ? `<span class="status-on">[ ON ] ✅</span>` : `<span class="status-off">[ OFF ] ❌</span>`;
+            document.getElementById('txt-int1').innerHTML = int1On ? `<span class="status-on">[ ON ] ✅</span>` : `<span class="status-off">[ OFF ] ❌</span>`;
+            document.getElementById('txt-int2').innerHTML = int2On ? `<span class="status-on">[ ON ] ✅</span>` : `<span class="status-off">[ OFF ] ❌</span>`;
 
-            // Desenha o frame atual se ele existir no cache
-            if (passoAtual < roteiro.length) {
-                let passo = roteiro[passoAtual];
-                if (cacheImagens[passo.pasta] && cacheImagens[passo.pasta][frameAtual]) {
-                    ctx.drawImage(cacheImagens[passo.pasta][frameAtual], 0, 0, canvas.width, canvas.height);
-                }
-            }
+            if (etapaAtual >= roteiro.length) {
+                const lampA = document.getElementById('lamp-on-a');
+                const lampB = document.getElementById('lamp-on-b');
+                const placa = document.getElementById('placa-concluido');
 
-            // Desenha os pontos de clique apenas se não estiver animando
-            if (!animando && passoAtual < roteiro.length) {
-                desenharPontosDeConexao();
-            }
-        }
-
-        function desenharPontosDeConexao() {
-            let passo = roteiro[passoAtual];
-            
-            // Ponto de Origem (Apenas se ainda não foi clicado)
-            if (!clicouOrigem) {
-                desenharAlvo(passo.origem.x, passo.origem.y, "#ff0055");
-            }
-            // Ponto de Destino (Apenas se a origem já foi validada)
-            else {
-                desenharAlvo(passo.destino.x, passo.destino.y, "#00f3ff");
-            }
-        }
-
-        function desenharAlvo(porcentagemX, porcentagemY, cor) {
-            let x = (porcentagemX / 100) * canvas.width;
-            let y = (porcentagemY / 100) * canvas.height;
-
-            ctx.beginPath();
-            ctx.arc(x, y, 12, 0, 2 * Math.PI);
-            ctx.fillStyle = cor;
-            ctx.globalAlpha = 0.4;
-            ctx.fill();
-            
-            ctx.beginPath();
-            ctx.arc(x, y, 6, 0, 2 * Math.PI);
-            ctx.fillStyle = cor;
-            ctx.globalAlpha = 1.0;
-            ctx.fill();
-        }
-
-        // Monitoramento de Cliques do Usuário
-        canvas.addEventListener('click', function(event) {
-            if (animando || passoAtual >= roteiro.length) return;
-
-            const rect = canvas.getBoundingClientRect();
-            const xClicado = ((event.clientX - rect.left) / rect.width) * 100;
-            const yClicado = ((event.clientY - rect.top) / rect.height) * 100;
-
-            let passo = roteiro[passoAtual];
-            let alvo = !clicouOrigem ? passo.origem : passo.destino;
-
-            // Raio de tolerância do clique (Margem de erro da área clicável)
-            let margem = 4; 
-
-            if (Math.abs(xClicado - alvo.x) < margem && Math.abs(yClicado - alvo.y) < margem) {
-                executarFeedbackAudio(true);
-                if (!clicouOrigem) {
-                    clicouOrigem = true;
-                    atualizarInterface();
+                if (dgOn && drOn && int1On) {
+                    lampA.classList.remove('oculto');
                 } else {
-                    dispararAnimacaoCabo();
+                    lampA.classList.add('oculto');
+                }
+
+                if (dgOn && drOn && int2On) {
+                    lampB.classList.remove('oculto');
+                } else {
+                    lampB.classList.add('oculto');
+                }
+
+                if (dgOn && drOn && int1On && int2On) {
+                    if (!placa.dataset.placaMostrada) {
+                        placa.classList.remove('oculto');
+                        placa.dataset.placaMostrada = "true";
+                        setTimeout(() => {
+                            placa.classList.add('oculto');
+                        }, 5000);
+                    }
+                } else {
+                    placa.classList.add('oculto');
+                    delete placa.dataset.placaMostrada;
                 }
             } else {
-                executarFeedbackAudio(false);
+                document.getElementById('lamp-on-a').classList.add('oculto');
+                document.getElementById('lamp-on-b').classList.add('oculto');
+                document.getElementById('placa-concluido').classList.add('oculto');
             }
-        });
+        }
 
-        // Controle da Animação dos Frames
-        function dispararAnimacaoCabo() {
-            animando = true;
-            let passo = roteiro[passoAtual];
-            frameAtual = 1;
+        function toggleComp(el, off, on) {
+            if (el.id === 'comp-int1' || el.id === 'comp-int2') {
+                tocarSom('audio-int'); 
+            } else {
+                tocarSom('audio-disj'); 
+            }
+            
+            const state = el.getAttribute('data-state') === 'off' ? 'on' : 'off';
+            el.src = state === 'on' ? on : off;
+            el.setAttribute('data-state', state);
+            atualizarQuadroPosicao();
+        }
 
-            function rodarFrames() {
-                if (frameAtual <= passo.total) {
-                    // Carregamento 'on-the-fly' para não estourar a memória
-                    let img = new Image();
-                    let numeroQuadro = String(frameAtual).padStart(4, '0');
-                    img.src = `${passo.pasta}/quadro${numeroQuadro}.png`;
+        function proximoPasso() {
+            if (etapaAtual >= roteiro.length) {
+                document.getElementById('label-status').innerText = "FIAÇÃO CONCLUÍDA! LIGUE O DG, O DR E AS SEÇÕES DO INTERRUPTOR PARA TESTAR.";
+                document.getElementById('painel-dispositivos').classList.remove('oculto');
+                return;
+            }
+            const dados = roteiro[etapaAtual];
+            const nomeExibicao = dados.nome || dados.network;
+            document.getElementById('label-status').innerText = `CONECTE: ${nomeExibicao.toUpperCase()}`;
+            
+            if (dados.pasta === "FASE_2") document.getElementById('con-fase').classList.remove('oculto');
+            if (dados.pasta === "NEUTRO_2") document.getElementById('con-neutro').classList.remove('oculto');
+            
+            preCarregarCabo(dados);
+            criarPonto(dados.origem, dados.cor, function() {
+                this.classList.add('sucesso');
+                criarPonto(dados.destino, dados.cor, function() {
+                    document.getElementById('interacao-container').innerHTML = "";
+                    executarAnimacaoFluida(dados);
+                });
+            });
+        }
+
+        function preCarregarCabo(dados) {
+            if (!cacheImagens[dados.pasta]) {
+                cacheImagens[dados.pasta] = [];
+                for (let i = 1; i <= dados.total; i++) {
+                    const img = new Image();
+                    img.src = `${dados.pasta}/quadro${String(i).padStart(4, '0')}.png`;
+                    cacheImagens[dados.pasta].push(img);
+                }
+            }
+        }
+
+        function criarPonto(pos, coreClasse, cliqueFn) {
+            const ponto = document.createElement('div');
+            const container = document.getElementById('interacao-container');
+            if(!container) return;
+            ponto.className = `ponto ${coreClasse}`;
+            ponto.style.left = pos.x + "%"; ponto.style.top = pos.y + "%";
+            ponto.onclick = (e) => { e.stopPropagation(); cliqueFn.call(ponto); };
+            container.appendChild(ponto);
+        }
+
+        function executarAnimacaoFluida(dados) {
+            const imgElemento = document.getElementById(dados.imgId);
+            if(!imgElemento) return;
+            
+            imgElemento.classList.remove('oculto');
+            let frameIdx = 0; 
+            const frames = cacheImagens[dados.pasta];
+            let contador = 0;
+
+            function animar() {
+                // CORREÇÃO CRÍTICA: impede o loop de buscar um índice inexistente (undefined) além da lista carregada
+                if (frameIdx < frames.length) {
+                    if (contador % 3 === 0) { 
+                        if (frames[frameIdx] && frames[frameIdx].src) {
+                            imgElemento.src = frames[frameIdx].src; 
+                            frameIdx++; 
+                        } else {
+                            // Salvaguarda se a imagem falhar fisicamente
+                            frameIdx = frames.length; 
+                        }
+                    }
+                    contador++; 
+                    requestAnimationFrame(animar);
+                } else { 
+                    tocarSom('audio-conexao');
                     
-                    img.onload = () => {
-                        cacheImagens[passo.pasta][frameAtual] = img;
-                        renderizarCenario();
-                        frameAtual++;
-                        setTimeout(rodarFrames, 40); // Ajuste de velocidade da animação (~25 FPS)
-                    };
-                    img.onerror = () => {
-                        // Se falhar o carregamento de algum frame, avança para manter a estabilidade
-                        frameAtual++;
-                        rodarFrames();
-                    };
-                } else {
-                    // Finalizou a animação do cabo atual
-                    animando = false;
-                    clicouOrigem = false;
-                    frameAtual = 1;
-                    passoAtual++;
-                    carregarImagensPassoAtual();
-                    atualizarInterface();
+                    if (dados.pasta === "FASE_REDE") {
+                        document.getElementById('balao-fase-rede').classList.remove('oculto');
+                        document.getElementById('placa-dicas').classList.remove('oculto');
+                    }
+                    else if (dados.pasta === "NEUTRO_REDE") document.getElementById('balao-neutro-rede').classList.remove('oculto');
+                    else if (dados.pasta === "FASE_2") document.getElementById('balao-fase-2').classList.remove('oculto');
+                    else if (dados.pasta === "RETORNO") document.getElementById('balao-retorno-inicial').classList.remove('oculto');
+                    else if (dados.pasta === "RETORNO_1") { document.getElementById('balao-retorno').classList.remove('oculto'); document.getElementById('balao-conector').classList.remove('oculto'); }
+                    else if (dados.pasta === "NEUTRO_3") { 
+                        document.getElementById('balao-final').classList.remove('oculto'); 
+                        document.getElementById('balao-neutro-norma').classList.remove('oculto'); 
+                        document.getElementById('balao-neutro-concluido').classList.remove('oculto'); 
+                    }
+                    
+                    if (dados.pasta === "RETORNO") {
+                        document.getElementById('con-retorno').classList.remove('oculto');
+                    }
+                    
+                    if (dados.pasta === "NEUTRO_2") {
+                        document.getElementById('con-neutro-lamp').classList.remove('oculto');
+                    }
+                    
+                    etapaAtual++; 
+                    setTimeout(proximoPasso, 400); 
                 }
             }
-            rodarFrames();
+            requestAnimationFrame(animar);
         }
 
-        // Áudio e Efeitos Sonoros Simulados por API de Áudio do Navegador
-        function executarFeedbackAudio(sucesso) {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
+        function mostrarImagemTecnica(src) {
+            document.getElementById('instrucao-clique').classList.add('oculto');
+            const img = document.getElementById('img-tecnica-exibida');
+            img.onclick = null;
+            img.style.cursor = "default";
+            img.src = src;
+            document.getElementById('visualizador-tecnico').classList.remove('oculto');
+        }
 
-                if (sucesso) {
-                    osc.frequency.setValueAtTime(880, audioCtx.currentTime); // Som Agudo de Sucesso
-                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                    audioCtx.resume();
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.1);
+        function voltarParaLista() { 
+            document.getElementById('visualizador-tecnico').classList.add('oculto'); 
+        }
+
+        function abrirAjuda() { 
+            document.getElementById('overlay-ajuda').classList.remove('oculto'); 
+        }
+
+        function fecharAjuda() { 
+            document.getElementById('overlay-ajuda').classList.add('oculto'); 
+        }
+
+        function tocarSom(id) { 
+            const s = document.getElementById(id); 
+            if(s) { s.currentTime=0; s.play().catch(()=>{}); } 
+        }
+
+        function abrirAnimacaoConector() {
+            document.getElementById('instrucao-clique').classList.remove('oculto');
+            const img = document.getElementById('img-tecnica-exibida');
+            
+            img.src = 'conectder_on.png';
+            img.style.cursor = "pointer";
+            
+            img.onclick = function() {
+                if (img.src.includes('conectder_on.png')) {
+                    img.src = 'conectder_off.png';
+                    tocarSom('audio-conexao');
                 } else {
-                    osc.frequency.setValueAtTime(220, audioCtx.currentTime); // Som Grave de Erro
-                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                    audioCtx.resume();
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.2);
+                    img.src = 'conectder_on.png';
+                    tocarSom('audio-conexao');
                 }
-            } catch (e) {
-                console.log("AudioContext não suportado ou bloqueado pelo navegador.");
-            }
+            };
+            
+            document.getElementById('visualizador-tecnico').classList.remove('oculto');
         }
-
-        // Lógica de Segurança Restrita - Correção de persistência de dados
-        function resetarSimulador() {
-            passoAtual = 0;
-            frameAtual = 1;
-            clicouOrigem = false;
-            animando = false;
-            campoSenha.value = ""; // Limpa estritamente o campo ao resetar a tela
-            init();
-        }
-
-        function logoutSeguro() {
-            campoSenha.value = ""; // Garante que a credencial seja destruída na saída
-            alert("Sessão encerrada com segurança.");
-            resetarSimulador();
-        }
-
-        // Inicializa o simulador na montagem da janela
-        window.onload = init;
     </script>
 </body>
 </html>
